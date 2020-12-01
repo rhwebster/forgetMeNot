@@ -1,7 +1,8 @@
 'use strict';
+const db = require('../models');
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
+  up: async (queryInterface, Sequelize) => {
     /*
       Add altering commands here.
       Return a promise to correctly handle asynchronicity.
@@ -12,9 +13,15 @@ module.exports = {
         isBetaMember: false
       }], {});
     */
+    const tasks = await db.Task.findAll({
+      order: [['id']]
+    });
+    const tags = await db.Tag.findAll({
+      order: [['id']]
+    });
     return queryInterface.bulkInsert('TaggedTasks', [
-      {taskId: 1, tagId: 1, createdAt: new Date(), updatedAt: new Date()},
-      {taskId: 2, tagId: 1, createdAt: new Date(), updatedAt: new Date()},
+      {taskId: tasks[0].id, tagId: tags[0].id, createdAt: new Date(), updatedAt: new Date()},
+      {taskId: tasks[1].id, tagId: tags[0].id, createdAt: new Date(), updatedAt: new Date()},
     ]);
   },
 

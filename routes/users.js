@@ -8,8 +8,8 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.get('/log-in', csrfProtection, (req,res) => {
-  res.render('login', {
+router.get('/login', csrfProtection, (req,res) => {
+  res.render('log-in', {
     title: 'Login',
     csrfToken: req.csrfToken(),
   });
@@ -21,7 +21,7 @@ const loginValidators = [
 ]
 
 router.post(
-  '/log-in',
+  '/login',
   csrfProtection,
   loginValidators,
   asyncHandler(async (req, res) => {

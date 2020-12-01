@@ -13,8 +13,8 @@ module.exports = {
       }], {});
     */
     return queryInterface.bulkInsert('TaggedTasks', [
-      {taskId: 3, tagId: 1, createdAt: new Date(), updatedAt: new Date()},
-      {taskId: 4, tagId: 1, createdAt: new Date(), updatedAt: new Date()},
+      {taskId: 1, tagId: 1, createdAt: new Date(), updatedAt: new Date()},
+      {taskId: 2, tagId: 1, createdAt: new Date(), updatedAt: new Date()},
     ]);
   },
 

@@ -13,10 +13,10 @@ module.exports = {
       }], {});
     */
     return queryInterface.bulkInsert('Lists', [
-      {name: 'Inbox', userId: 6, createdAt: new Date(), updatedAt: new Date()},
-      {name: 'Inbox', userId: 7, createdAt: new Date(), updatedAt: new Date()},
-      {name: 'Inbox', userId: 8, createdAt: new Date(), updatedAt: new Date()},
-      {name: 'Inbox', userId: 9, createdAt: new Date(), updatedAt: new Date()},
+      {name: 'Inbox', userId: 1, createdAt: new Date(), updatedAt: new Date()},
+      {name: 'Inbox', userId: 2, createdAt: new Date(), updatedAt: new Date()},
+      {name: 'Inbox', userId: 3, createdAt: new Date(), updatedAt: new Date()},
+      {name: 'Inbox', userId: 4, createdAt: new Date(), updatedAt: new Date()},
     ]);
   },
 

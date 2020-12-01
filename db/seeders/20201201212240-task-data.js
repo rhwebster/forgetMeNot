@@ -15,16 +15,16 @@ module.exports = {
     return queryInterface.bulkInsert('Tasks', [
       {
         name: 'Garbage',
-        userId: 6,
-        listId: 9,
+        userId: 1,
+        listId: 1,
         // due: Date('2020-12-25'),
         completed: false, createdAt: new Date(), updatedAt: new Date()
       },
       {
         name: 'Dishes',
         notes: "There are a lot of dishes, please clean them",
-        userId: 7,
-        listId: 10,
+        userId: 2,
+        listId: 2,
         // due: Date('2020-12-24'),
         completed: false, createdAt: new Date(), updatedAt: new Date()
       },

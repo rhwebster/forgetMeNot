@@ -3,12 +3,13 @@ module.exports = (sequelize, DataTypes) => {
   const Tag = sequelize.define('Tag', {
     name: {
       type: DataTypes.STRING(20),
-      allowNull: false
+      allowNull: false,
+      unique: true
     }
   }, {});
   Tag.associate = function(models) {
     // associations can be defined here
-    Tag.belongsTo(models.TaggedTask, { foreignKey: "tagId"});
+    Tag.belongsToMany(models.Task, { through: "TaggedTask", foreignKey: "tagId", otherKey: "taskId", as: "tagwithtasks"});
   };
   return Tag;
 };

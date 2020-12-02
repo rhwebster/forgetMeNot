@@ -1,3 +1,13 @@
 h1 {
     color: #555555;
 }
+.wholepage{
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+}
+.main-body{
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}

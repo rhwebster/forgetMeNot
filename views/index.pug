@@ -8,22 +8,48 @@ append head
   script(src="/javascripts/index.js" type="module" defer)
 
 block content
+  //- nav(class='navbar navbar-expand-lg navbar-dark bg-primary')
+  //-   a(class='navbar-brand' href='/') Reading List
+  //-   button(class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarText' aria-controls='navbarText' aria-expanded='false' aria-label='Toggle navigation')
+  //-     span(class='navbar-toggler-icon')
+  //-   div(class='collapse navbar-collapse' id='navbarText')
+  //-     ul(class='navbar-nav mr-auto')
+  //-       //- Empty menu keeps the content that follows the
+  //-       //- unordered list correctly positioned on the
+  //-       //- right side of the navbar.
+  //-     if locals.authenticated
+  //-       span(class='navbar-text px-4') Welcome #{user.firstName}!
+  //-       form(class='form-inline pr-4' action='/users/logout' method='post')
+  //-         button(class='btn btn-sm btn-warning' type='submit') Logout
+  //-     else
+  //-       span(class='navbar-text px-4')
+  //-         a(class='btn btn-sm btn-dark mr-2' href='/users/login') Login
+  //-         a(class='btn btn-sm btn-dark' href='/users/register') Register  
   div(id='wholepage' class="wholepage")
-    div(id='top-navbar' class='top-navbar')
-      span
-        a(href='/demo') Demo
-      span
-        a(href='/about') About
-      span
-        button
-          a(href='/users/login') Login
-      span
-        button
-          a(href='/users/signup') Sign up
-    div(id='main-body' class='main-body')
-      div(id='side-navbar' class='side-navbar')
-        p Side Navbar
-      div(id='main-panel' class='main-panel')
-        p main view of tasks
-      div(id='side-panel' class='side-panel')
-        p rightside panel
+    if !locals.authenticated
+      div(id='top-navbar' class='top-navbar')
+        span
+          a(href='/demo') Demo
+        span
+          a(href='/about') About
+        span
+          button
+            a(href='/users/login') Login
+        span
+          button
+            a(href='/users/signup') Sign up
+    else 
+      div(id='top-navbar' class='top-navbar')
+        span(class='navbar-text px-4') Welcome #{user.firstName}!
+        span
+          a(href='/about') My-Cool-Link
+        span
+          button(method='post')
+            a(href='/users/logout') Logout
+      div(id='main-body' class='main-body')
+        div(id='side-navbar' class='side-navbar')
+          p Side Navbar
+        div(id='main-panel' class='main-panel')
+          p main view of tasks
+        div(id='side-panel' class='side-panel')
+          p rightside panel

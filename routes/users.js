@@ -165,4 +165,10 @@ router.post(
   })
 );
 
+router.all('/logout', (req, res) => {
+  logoutUser(req, res);
+  res.redirect('/users/login');
+});
+
+
 module.exports = router;

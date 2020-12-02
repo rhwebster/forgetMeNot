@@ -1,0 +1,7 @@
+include utils.pug
++validationErrorSummary(errors)
+form(action="/tags", method="post")
+  input(type='hidden' name='_csrf' value=csrfToken)
+  +field("", 'name')
+  div(class='py-4')
+    button(type='submit' class='btn btn-primary') Add a #{name}

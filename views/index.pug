@@ -49,22 +49,26 @@ block content
       div(id='main-body' class='main-body')
         div(id='side-navbar' class='side-navbar')
           p Side Navbar
-          div(class='side-navbar' id='inbox') Inbox
-            a(href='/users/lists/') Today
-            a(href='/users/lists/') Tomorrow
-            a(href='/users/lists/') This Week
-            a(href='/users/lists/') This Month
-          div(class='side-navbar' id='tasks') Tasks
+          div(class='inbox' id='inbox') Inbox
+            a(id='today' href='/users/lists') Today
+            a(id='tomorrow' href='/users/lists') Tomorrow
+            a(id='this-week' href='/users/lists') This Week
+            a(id='this-month' href='/users/lists') This Month
+          div(class='tasks' id='tasks') Tasks
             span
               button(method='post') +
                 a(href='')
-          div(class='side-navbar' id='lists') Lists
-            span
+            div(class='tasks' id='all-tasks')
               button
-                a(href='/users/lists') All
+                a(href='/') All
+          div(class='lists' id='lists') Lists
             span
               button(method='post')
                 a(href='/users/lists') +
+            div(class='lists' id='list-names')
+              span
+                button
+                  a(href='/users/lists') All
           div(class='tags' id='tags') Tags
             span 
               button(method='post') +

@@ -9,7 +9,6 @@ const { asyncHandler } = require("./utils");
 router.get(
   "/",
   asyncHandler(async (req, res, next) => {
-    console.log(req.session.auth);
     const userId = req.session.auth.userId;
     const list = await List.findOne({ where: { name: "Inbox", userId } });
     const tasks = await Task.findAll({
@@ -21,6 +20,5 @@ router.get(
     res.render("index", { title: "Forget Me Not Home", tasks });
   })
 );
-
 
 module.exports = router;

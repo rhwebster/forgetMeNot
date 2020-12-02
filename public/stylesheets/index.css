@@ -5,6 +5,7 @@ h1 {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    background-color: #72abd1;
 }
 .main-body{
     display: flex;
@@ -19,4 +20,10 @@ h1 {
 .inbox{
     display: flex;
     flex-direction: column;
+}
+.timed-list{
+    color: rgba(0, 0, 0, 0.4)
+}
+.list-of-class-tasks{
+    background-color: seashell;
 }

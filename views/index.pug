@@ -50,10 +50,10 @@ block content
         div(id='side-navbar' class='side-navbar')
           p Side Navbar
           div(class='inbox' id='inbox') Inbox
-            a(id='today' href='/users/lists') Today
-            a(id='tomorrow' href='/users/lists') Tomorrow
-            a(id='this-week' href='/users/lists') This Week
-            a(id='this-month' href='/users/lists') This Month
+            a(class='timed-list' id='today' href='/users/lists/today') Today
+            a(class='timed-list' id='tomorrow' href='/users/lists/tomorrow') Tomorrow
+            a(class='timed-list' id='this-week' href='/users/lists/') This Week
+            a(class='timed-list' id='this-month' href='/users/lists') This Month
           div(class='tasks' id='tasks') Tasks
             span
               button(method='post') +

@@ -1,5 +1,4 @@
-
-const { decodeBase64 } = require('bcryptjs');
+const { decodeBase64 } = require("bcryptjs");
 var express = require("express");
 
 var router = express.Router();
@@ -7,17 +6,20 @@ const bcrypt = require("bcryptjs");
 const db = require("../db/models");
 const { check, validationResult } = require("express-validator");
 const { csrfProtection, asyncHandler } = require("./utils");
+const { loginUser, logoutUser } = require("../auth");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
   res.send("respond with a resource");
 });
-router.get('/login', csrfProtection, (req,res) => {
-  res.render('log-in', {
-    title: 'Login',
+
+router.get("/login", csrfProtection, (req, res) => {
+  res.render("log-in", {
+    title: "Login",
     csrfToken: req.csrfToken(),
   });
 });
+
 const userValidators = [
   check("firstName")
     .exists({ checkFalsy: true })
@@ -112,40 +114,49 @@ router.post(
 );
 
 const loginValidators = [
-  check('emailAddress').exists({ checkFalsy: true }).withMessage('Please provide Email Address'),
-  check('password').exists({ checkFalsy: true }).withMessage('Please provide a valid Password'),
-]
+  check("email")
+    .exists({ checkFalsy: true })
+    .withMessage("Please provide Email Address"),
+  check("password")
+    .exists({ checkFalsy: true })
+    .withMessage("Please provide a valid Password"),
+];
 
 router.post(
-  '/login',
+  "/login",
   csrfProtection,
   loginValidators,
   asyncHandler(async (req, res) => {
-    const { emailAdress, password } = req.body;
+    const { email, password } = req.body;
 
     let errors = [];
     const validationErrors = validationResult(req);
 
-    if(validationErrors.isEmpty()) {
-      const user = await db.User.findOne({ where: {emailAdress} });
+    if (validationErrors.isEmpty()) {
+      const user = await db.User.findOne({ where: { email } });
 
       if (user !== null) {
-        const passwordMatch = await bcrypt.compare(password, user.hashedPassword.toString());
+        const passwordMatch = await bcrypt.compare(
+          password,
+          user.hashedPassword.toString()
+        );
 
         if (passwordMatch) {
           loginUser(req, res, user);
-          return res.redirect('/');
+          return res.redirect("/");
         }
       }
 
-      errors.push('Invalid credentials. Please doublecheck email address and password');
+      errors.push(
+        "Invalid credentials. Please doublecheck email address and password"
+      );
     } else {
-      errors.validationErrors.array().map((error) => error.msg);
+      errors = validationErrors.array().map((error) => error.msg);
     }
 
-    res.render('log-in', {
-      title: 'Login',
-      emailAdress,
+    res.render("log-in", {
+      title: "Login",
+      email,
       errors,
       csrfToken: req.csrfToken(),
     });

@@ -34,13 +34,13 @@ h1 {
 .inbox{
     display: flex;
     flex-direction: column;
-  }
-  .timed-list{
+}
+.timed-list{
     color: rgba(0, 0, 0, 0.4)
-  }
-  .list-of-class-tasks{
+}
+.list-of-class-tasks{
     background-color: seashell;
-  }
+}
 
 /* The Modal (background) */
 .modal {

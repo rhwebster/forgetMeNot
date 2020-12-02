@@ -20,6 +20,13 @@ router.get("/login", csrfProtection, (req, res) => {
   });
 });
 
+router.get("/lists", csrfProtection, (req, res) => {
+  res.render("lists", {
+    title: "Lists",
+    csrfToken: req.csrfToken(),
+  });
+});
+
 const userValidators = [
   check("firstName")
     .exists({ checkFalsy: true })

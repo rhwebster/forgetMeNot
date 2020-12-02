@@ -9,7 +9,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     let { tasks } = await res.json();
     const taskHtml = [];
     tasks.forEach((task) => {
-      let html = `<li>${task.name}</li>`;
+      let tags = task.TasksWithTags;
+      let html = `<li><div>${task.name}`;
+      tags.forEach((tag) => {
+        html += `<span class="tag-class">${tag.name}</span>`;
+      });
       taskHtml.push(html);
     });
     taskContainer.innerHTML = taskHtml.join("");
@@ -29,7 +33,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let { tasks } = await res.json();
       const taskHtml = [];
       tasks.forEach((task) => {
-        let html = `<li>${task.name}</li>`;
+        let tags = task.TasksWithTags;
+        let html = `<li>${task.name}`;
+        tags.forEach((tag) => {
+          html += `<span class="tag-class">${tag.name}</span>`;
+        });
         taskHtml.push(html);
       });
       taskContainer.innerHTML = taskHtml.join("");

@@ -1,3 +1,4 @@
+
 window.addEventListener("DOMContentLoaded", async (event) => {
   const taskContainer = document.getElementById("list-of-tasks");
   const addTaskButton = document.getElementById("add-task-button");

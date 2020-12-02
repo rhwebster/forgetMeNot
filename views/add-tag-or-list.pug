@@ -1,6 +1,7 @@
 include utils.pug
 +validationErrorSummary(errors)
-form(action="/tags", method="post")
+
+form(action=path, method="post")
   input(type='hidden' name='_csrf' value=csrfToken)
   +field("", 'name')
   div(class='py-4')

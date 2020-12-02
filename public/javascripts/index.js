@@ -14,7 +14,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
         body: JSON.stringify(nameToSend),
       });
       let { tasks } = await res.json();
-      console.log(tasks);
       const taskContainer = document.getElementById("taskContainer");
       const newTask = tasks[tasks.length - 1].name;
       const li = document.createElement("li");

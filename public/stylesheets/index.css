@@ -1,3 +1,18 @@
 h1 {
     color: #555555;
 }
+.wholepage{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.main-body{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.top-navbar{
+    display: flex;
+    justify-content: flex-end;
+    padding: 5px;
+}

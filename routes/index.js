@@ -5,6 +5,7 @@ const { Task, User, List } = require("../db/models");
 const { asyncHandler } = require("./utils");
 
 /* GET home page. */
+
 router.get(
   "/",
   asyncHandler(async (req, res, next) => {
@@ -17,8 +18,9 @@ router.get(
         listId: list.id,
       },
     });
-    res.render("index", { title: "a/A Express Skeleton Home", tasks });
+    res.render("index", { title: "Forget Me Not Home", tasks });
   })
 );
+
 
 module.exports = router;

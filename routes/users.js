@@ -73,6 +73,7 @@ router.get("/signup", csrfProtection, (req, res) => {
   const user = db.User.build();
   res.render("sign-up", {
     title: "Sign Up",
+    style: "./stylesheets/sign-up.css",
     user,
     csrfToken: req.csrfToken(),
   });
@@ -105,6 +106,7 @@ router.post(
       const errors = validatorErrors.array().map((error) => error.msg);
       res.render("sign-up", {
         title: "Sign Up",
+        style: "./stylesheets/sign-up.css",
         user,
         errors,
         csrfToken: req.csrfToken(),
@@ -162,5 +164,11 @@ router.post(
     });
   })
 );
+
+router.all('/logout', (req, res) => {
+  logoutUser(req, res);
+  res.redirect('/users/login');
+});
+
 
 module.exports = router;

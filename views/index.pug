@@ -7,5 +7,22 @@ append head
   script(src="/javascripts/index.js" type="module" defer)
 
 block content
-  h1= title
-  p Welcome to your Project Skeleton
+  div(id='wholepage' class="wholepage")
+    div(id='top-navbar' class='top-navbar')
+      span
+        a(href='/demo') Demo
+      span
+        a(href='/about') About
+      span
+        button
+          a(href='/users/login') Login
+      span
+        button
+          a(href='/users/signup') Sign up
+    div(id='main-body' class='main-body')
+      div(id='side-navbar' class='side-navbar')
+        p Side Navbar
+      div(id='main-panel' class='main-panel')
+        p main view of tasks
+      div(id='side-panel' class='side-panel')
+        p rightside panel

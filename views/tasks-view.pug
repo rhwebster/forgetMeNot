@@ -1,0 +1,13 @@
+div(id='main-task-view-div' class='main-task-view-div')
+  div(id='task-top-navbar' class='task-top-navbar') Top navbar
+  div(id='task-action-bar' class='task-action-bar') action bar
+  div(id='add-a-task-div' class='add-a-task-class')
+    form(action="/tasks", method="post")
+      input(type="text" id='task-notes')
+      button() Add a Task
+  div(id='list-of-tasks-div' class='list-of-tasks-class')
+    ul
+      //- each task in tasks
+      //-   li
+      //-     div 
+          //- detail view of each task

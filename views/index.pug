@@ -49,6 +49,26 @@ block content
       div(id='main-body' class='main-body')
         div(id='side-navbar' class='side-navbar')
           p Side Navbar
+          div(class='side-navbar' id='inbox') Inbox
+            a(href='/users/lists/') Today
+            a(href='/users/lists/') Tomorrow
+            a(href='/users/lists/') This Week
+            a(href='/users/lists/') This Month
+          div(class='side-navbar' id='tasks') Tasks
+            span
+              button(method='post') +
+                a(href='')
+          div(class='side-navbar' id='lists') Lists
+            span
+              button
+                a(href='/users/lists') All
+            span
+              button(method='post')
+                a(href='/users/lists') +
+          div(class='tags' id='tags') Tags
+            span 
+              button(method='post') +
+                a(href='')
         div(id='main-panel' class='main-panel')
           include tasks-view.pug
         div(id='side-panel' class='side-panel')

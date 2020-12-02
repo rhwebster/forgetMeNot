@@ -11,3 +11,8 @@ h1 {
     flex-direction: row;
     justify-content: space-between;
 }
+.top-navbar{
+    display: flex;
+    justify-content: flex-end;
+    padding: 5px;
+}

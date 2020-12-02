@@ -33,13 +33,14 @@ const userValidators = [
     .withMessage("Last Name must not be more than 30 characters long"),
   check("email")
     .exists({ checkFalsy: true })
-    .withMessage("Please provide a value for Email Address")
+    .withMessage("Please provide a value for Email 
+                 ")
     .isLength({ max: 50 })
     .withMessage("Email Address must not be more than 50 characters long")
     .isEmail()
     .withMessage("Email Address is not a valid email")
     .custom((value) => {
-      return db.User.findOne({ where: { emailAddress: value } }).then(
+      return db.User.findOne({ where: { email: value } }).then(
         (user) => {
           if (user) {
             return Promise.reject(
@@ -85,9 +86,9 @@ router.post(
   csrfProtection,
   userValidators,
   asyncHandler(async (req, res) => {
-    const { emailAddress, firstName, lastName, password } = req.body;
+    const { email, firstName, lastName, password } = req.body;
     const user = db.User.build({
-      emailAddress,
+      email,
       firstName,
       lastName,
     });

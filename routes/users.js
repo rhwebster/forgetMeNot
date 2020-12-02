@@ -37,13 +37,15 @@ const userValidators = [
     .isEmail()
     .withMessage("Email Address is not a valid email")
     .custom((value) => {
-      return db.User.findOne({ where: { email: value } }).then((user) => {
-        if (user) {
-          return Promise.reject(
-            "The provided Email Address is already in use by another account"
-          );
+      return db.User.findOne({ where: { emailAddress: value } }).then(
+        (user) => {
+          if (user) {
+            return Promise.reject(
+              "The provided Email Address is already in use by another account"
+            );
+          }
         }
-      });
+      );
     }),
   check("password")
     .exists({ checkFalsy: true })
@@ -81,9 +83,9 @@ router.post(
   csrfProtection,
   userValidators,
   asyncHandler(async (req, res) => {
-    const { email, firstName, lastName, password } = req.body;
+    const { emailAddress, firstName, lastName, password } = req.body;
     const user = db.User.build({
-      email,
+      emailAddress,
       firstName,
       lastName,
     });

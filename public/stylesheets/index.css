@@ -3,11 +3,11 @@ h1 {
 }
 .wholepage{
     display: flex;
-    flex-direction: row;
-    justify-content: stretch;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
 .main-body{
     display: flex;
     flex-direction: row;
-    align-items: stretch;
+    justify-content: space-between;
 }

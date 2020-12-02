@@ -1,8 +1,10 @@
 include utils.pug
 +validationErrorSummary(errors)
-
-form(action=path, method="post")
-  input(type='hidden' name='_csrf' value=csrfToken)
-  +field("", 'name')
-  div(class='py-4')
-    button(type='submit' class='btn btn-primary') Add a #{name}
+form(action="/tags", method="post")
+  if locals.authenticated
+    input(type='hidden' name='_csrf' value=csrfToken)
+    +field("", 'name')
+    div(class='py-4')
+      button(type='submit' class='btn btn-primary') Add a #{name}
+  else
+    

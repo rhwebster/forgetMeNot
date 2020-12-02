@@ -1,9 +1,24 @@
 // const asyncHandler = (handler) => (req, res, next) =>
 //   handler(req, res, next).catch(next);
 
-window.addEventListener("DOMContentLoaded", (event) => {
-  const addTaskButton = document.getElementById("addTask");
-  const taskField = document.getElementById("taskName");
+window.addEventListener("DOMContentLoaded", async (event) => {
+  const taskContainer = document.getElementById("list-of-tasks");
+  const addTaskButton = document.getElementById("add-task-button");
+  const taskField = document.getElementById("task-name");
+
+  try {
+    const res = await fetch("/api/tasks");
+    let { tasks } = await res.json();
+    const taskHtml = [];
+    tasks.forEach((task) => {
+      let html = `<li>${task.name}</li>`;
+      taskHtml.push(html);
+    });
+    taskContainer.innerHTML = taskHtml.join("");
+  } catch (e) {
+    console.error(e);
+  }
+
   addTaskButton.addEventListener("click", async (event) => {
     const value = taskField.value;
     const nameToSend = { name: value };
@@ -14,11 +29,12 @@ window.addEventListener("DOMContentLoaded", (event) => {
         body: JSON.stringify(nameToSend),
       });
       let { tasks } = await res.json();
-      const taskContainer = document.getElementById("taskContainer");
-      const newTask = tasks[tasks.length - 1].name;
-      const li = document.createElement("li");
-      li.innerHTML = newTask;
-      taskContainer.appendChild(li);
+      const taskHtml = [];
+      tasks.forEach((task) => {
+        let html = `<li>${task.name}</li>`;
+        taskHtml.push(html);
+      });
+      taskContainer.innerHTML = taskHtml.join("");
     } catch (e) {
       console.error(e);
     }

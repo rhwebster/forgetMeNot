@@ -3,6 +3,16 @@ const router = express.Router();
 const { Task, User, List } = require("../db/models");
 const { asyncHandler } = require("../routes/utils");
 
+router.get(
+  "/tasks",
+  asyncHandler(async (req, res) => {
+    const userId = req.session.auth.userId;
+    const list = await List.findOne({ where: { userId, name: "Inbox" } });
+    const tasks = await Task.findAll({ where: { userId, listId: list.id } });
+    res.json({ tasks });
+  })
+);
+
 router.post(
   "/tasks",
   asyncHandler(async (req, res) => {

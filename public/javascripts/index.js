@@ -27,7 +27,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let html;
       tasks.forEach((task) => {
         let tags = task.TasksWithTags;
-        html = `<li class="filled"><span class="task-text">${task.name}</span>`;
+        html = `<li id="ele-${task.id}" class="filled"><span class="task-text">${task.name}</span>`;
         tags.forEach((tag) => {
           html += `<span class="tag-class">${tag.name}</span>`;
         });
@@ -67,36 +67,38 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       taskContainer.innerHTML = taskHtml.join("");
       const inboxLink = document.getElementById("inbox");
       const numTasksElement = document.createElement("span");
+      numTasksElement.classList.add("num-tasks");
       numTasksElement.innerHTML = tasks.length;
       inboxLink.appendChild(numTasksElement);
     } catch (e) {
       console.error(e);
     }
-  }
-  const detailPanel = document.getElementById("task-detail-panel");
-  const tasksClickable = document.querySelectorAll(".filled");
-  const taskNameDetail = document.getElementById("task-name-detail");
-  tasksClickable.forEach((taskEle) => {
-    taskEle.addEventListener("click", async (event) => {
-      const taskNameInput = document.getElementById("name-panel-text");
-      const taskDueDate = document.getElementById("due-date-input");
-      const currentList = document.getElementById("current-list");
-      //   const taskNameInput = document.getElementById("name-panel-text");
-      try {
-        const id = taskEle.id.slice(4);
-        console.log(id);
-        const res = await fetch(`/api/tasks/${id}`);
-        let { task } = await res.json();
-        taskNameInput.value = task.name;
-        taskDueDate.innerHTML = task.due;
-        currentList.innerHTML = task.List.name;
-      } catch (e) {
-        console.error(e);
-      }
-      detailPanel.classList.remove("panel-hidden");
-      detailPanel.classList.add("panel-shown");
+    const detailPanel = document.getElementById("task-detail-panel");
+    const tasksClickable = document.querySelectorAll(".filled");
+    // const taskNameDetail = document.getElementById("task-name-detail");
+    tasksClickable.forEach((taskEle) => {
+      taskEle.addEventListener("click", async (event) => {
+        const taskNameInput = document.getElementById("name-panel-text");
+        const taskDueDate = document.getElementById("due-date-input");
+        const currentList = document.getElementById("current-list");
+        //   const taskNameInput = document.getElementById("name-panel-text");
+        console.log(taskEle);
+        try {
+          const id = taskEle.id.slice(4);
+          console.log(id);
+          const res = await fetch(`/api/tasks/${id}`);
+          let { task } = await res.json();
+          taskNameInput.value = task.name;
+          taskDueDate.innerHTML = task.due;
+          currentList.innerHTML = task.List.name;
+        } catch (e) {
+          console.error(e);
+        }
+        detailPanel.classList.remove("panel-hidden");
+        detailPanel.classList.add("panel-shown");
+      });
     });
-  });
+  }
 
   populateTasks();
 
@@ -114,7 +116,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const taskHtml = [];
       tasks.forEach((task) => {
         let tags = task.TasksWithTags;
-        let html = `<li class="filled"><span class="task-text">${task.name}</span>`;
+        let html = `<li id="ele-${task.id} "class="filled"><span class="task-text">${task.name}</span>`;
         tags.forEach((tag) => {
           html += `<span class="tag-class">${tag.name}</span>`;
         });
@@ -183,7 +185,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const res = await fetch("/api/tags", tagPostObject);
       const resJson = await res.json();
       if (!res.ok) {
-        const p = document.getElementById('p-add-errors');
+        const p = document.getElementById("p-add-errors");
         console.log(resJson.errors);
         p.innerText = resJson.errors.join("/br");
         return;
@@ -259,10 +261,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // When the user clicks on <span> (x), close the modal
   span.onclick = function () {
     modal.style.display = "none";
-  }
+  };
 
-  const searchButton = document.getElementById('searchButton');
-  const searchText = document.getElementById('searchText');
+  const searchButton = document.getElementById("searchButton");
+  const searchText = document.getElementById("searchText");
   function searchAndDisplay() {
     event.preventDefault();
     let textToSearch = searchText.value;
@@ -270,12 +272,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     populateTasks(`/api/tasks/search/${textToSearch}`);
     searchText.value = "";
   }
-  searchButton.addEventListener('click', event => {
+  searchButton.addEventListener("click", (event) => {
     searchAndDisplay();
   });
-  searchText.addEventListener('keydown', event => {
-    if (event.key === 'Enter') {
+  searchText.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
       searchAndDisplay();
     }
-  })
+  });
 });

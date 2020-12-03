@@ -1,47 +1,86 @@
 h1 {
   color: #555555;
 }
+html {
+  overflow: hidden;
+}
+
 .wholepage {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   background-color: #72abd1;
+  height: auto;
 }
+
+.right-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+  height: auto;
+  overflow: clip;
+}
+
 .main-body {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  background-color: lightskyblue;
+  /* justify-content: space-between; */
+  background-color: rgb(215, 231, 245);
+  position: relative;
+  height: 100%;
 }
 .top-navbar {
   display: flex;
   justify-content: flex-end;
+  height: 40px;
+  background-color: rgb(0, 96, 191);
   padding: 5px;
 }
 
 .side-navbar {
-  background-color: lightskyblue;
-  width: 15%;
-  height: 500px;
+  background-color: rgb(215, 231, 245);
+  box-sizing: border-box;
+  width: 180px;
+  min-width: 180px;
+  margin-left: 15px;
+  margin-right: 15px;
+  border-bottom: 1px solid rgb(191, 217, 241);
 }
 .main-panel {
   background-color: white;
   width: 50%;
+  min-width: 500px;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
-  margin-top: 8px;
+  margin-top: 12px;
+  z-index: 1;
 }
 .side-panel {
-  background-color: lightblue;
-  width: 35%;
-  margin: 8px 8px 8px 0px;
+  background-color: rgb(228, 238, 248);
+  width: 50%;
+  /* justify-self: flex-end;
+  width: auto; */
+  margin: 12px 12px 12px -2px;
+  z-index: 0;
+  padding-left: 10px;
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
+  max-height: 100vh;
 }
 
-.inbox {
+.due-nav {
   display: flex;
   flex-direction: column;
+  padding-left: 10px;
+}
+.side-navbar a {
+  display: flex;
+  flex-direction: row;
+}
+
+.side-navbar a:hover {
+  background-color: rgb(191, 215, 239);
 }
 .timed-list {
   color: rgba(0, 0, 0, 0.4);
@@ -49,8 +88,6 @@ h1 {
 
 .list-of-tasks-class {
   background-color: white;
-  /* border: 2px solid grey; */
-
   width: auto;
 }
 
@@ -58,6 +95,7 @@ h1 {
   list-style-type: none;
   box-sizing: border-box;
   border-top: 1px dotted rgb(229, 229, 229);
+  height: 100%;
 }
 
 #list-of-tasks li {

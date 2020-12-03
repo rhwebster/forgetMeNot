@@ -41,10 +41,9 @@ router.post(
   asyncHandler(async (req, res) => {
     const { name } = req.body;
     const userId = req.session.auth.userId;
-    console.log(req.body, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     const list = db.List.build({
       name,
-      userId
+      userId,
     });
 
     const validatorErrors = validationResult(req);

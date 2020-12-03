@@ -66,6 +66,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     taskContainer.innerHTML = taskHtml.join("");
     const inboxLink = document.getElementById("inbox");
     const numTasksElement = document.createElement("span");
+    numTasksElement.classList.add("num-tasks");
     numTasksElement.innerHTML = tasks.length;
     inboxLink.appendChild(numTasksElement);
   } catch (e) {
@@ -156,7 +157,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let { tags } = await res.json();
       const tagHtml = [];
       tags.forEach((tag) => {
-        let html = `<li id="li-${tag.name}">${tag.name} <button id="btn-${tag.name}">X</button></li>`;
+        let html = `<li id="li-${tag.name}">${tag.name} <button class="tag-button" id="btn-${tag.name}">X</button></li>`;
         tagHtml.push(html);
       });
       tagContainer.innerHTML = tagHtml.join("");

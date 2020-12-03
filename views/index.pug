@@ -31,9 +31,10 @@ block content
             a(href='/users/logout') Logout
       div(id='main-body' class='main-body')
         div(id='side-navbar' class='side-navbar')
-          p Side Navbar
-          div(class="due-nav")
-            div(class='inbox' id='inbox') Inbox
+          p Forget Me Not (logo?)
+          div(class="due-nav nav-ele")
+            div(class='inbox' id='inbox') 
+              span Inbox
             div(class="inbox-link")
               a(class='timed-list' id='today' href='/lists/today') Today
             div(class="inbox-link")
@@ -42,15 +43,14 @@ block content
               a(class='timed-list' id='this-week' href='/lists/') This Week
             div(class="inbox-link")
               a(class='timed-list' id='this-month' href='/lists') This Month
-            div(class="inbox-link")
-          div(class='tasks' id='tasks') Tasks
+          div(class='tasks nav-ele' id='tasks') Tasks
             span
               button(method='post') +
                 a(href='')
             div(class='tasks' id='all-tasks')
               button
                 a(href='/') All
-          div(class='lists' id='lists') Lists
+          div(class='lists nav-ele' id='lists') Lists
             span
               button(method='post' id='addListBtn')
                 a(href='/lists') +
@@ -58,10 +58,12 @@ block content
               span
                 button
                   a(href='/lists') All
-          div(class='tags' id='tags') Tags
-            span 
-              button(id='addTagBtn') +
-                a(href='')
+          div(class='tags nav-ele' id='tags')
+            div(class="tags-header")
+              span(id="tag-span") Tags
+              span 
+                button(id='addTagBtn' class="tag-button") +
+                  a(href='')
             div(id='list-of-tags-div' class='list-of-tags-class')
         div(id="right-body" class="right-body")
           div(id='main-panel' class='main-panel')

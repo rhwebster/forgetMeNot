@@ -72,16 +72,88 @@ html {
 .due-nav {
   display: flex;
   flex-direction: column;
-  padding-left: 10px;
 }
-.side-navbar a {
+.due-nav div {
   display: flex;
   flex-direction: row;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 10px;
 }
 
-.side-navbar a:hover {
-  background-color: rgb(191, 215, 239);
+.list-of-tags-class {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
 }
+
+.list-of-tags-class li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 10px;
+}
+
+#tag-span {
+  padding-left: 10px;
+}
+
+.tag-button {
+  background-color: rgb(215, 231, 245);
+  border: 1px solid rgb(122, 178, 224);
+  color: rgb(122, 178, 224);
+}
+
+.tag-button:hover {
+  background-color: rgb(122, 178, 224);
+  color: rgb(215, 231, 245);
+  cursor: pointer;
+}
+
+.tags-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.list-of-tags-class li:hover {
+  background-color: rgb(191, 215, 239);
+  cursor: pointer;
+}
+
+.inbox {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.due-nav div:hover {
+  background-color: rgb(191, 215, 239);
+  cursor: pointer;
+}
+
+.due-nav a {
+  text-decoration: none;
+  color: #000;
+}
+
+.nav-ele {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgb(191, 217, 241);
+}
+
+.num-tasks {
+  justify-self: flex-end;
+  background-color: rgb(200 220 241);
+  font-size: 13px;
+  padding: 3px;
+}
+
 .timed-list {
   color: rgba(0, 0, 0, 0.4);
 }

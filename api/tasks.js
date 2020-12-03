@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Task, User, List, Tag } = require("../db/models");
 const { asyncHandler } = require("../routes/utils");
+const { Op } = require('sequelize');
 
 router.get(
   "/tasks",
@@ -63,9 +64,35 @@ router.get(
           as: "TasksWithTags",
         },
       ],
-    });
+      });
     res.json({ task });
   })
 );
 
+router.get(
+  "/tasks/search/:text",
+  asyncHandler(async (req, res) => {
+    const textToSearch = req.params.text;
+    const userId = req.session.auth.userId;
+    const whereObject = {userId};
+    console.log('texttoSearch', textToSearch);
+    if(textToSearch !== 'all'){
+      whereObject.name = {
+        [Op.iLike]: `%${textToSearch}%`,
+      }
+    }
+    console.log('\n\nWhereobject', whereObject);
+    const tasks = await Task.findAll({
+      where: whereObject,
+      include: [
+        {
+          model: Tag,
+          as: "TasksWithTags",
+        },
+      ],
+      order: [["createdAt", "ASC"]],
+    });
+    res.json({ tasks });
+  })
+);
 module.exports = router;

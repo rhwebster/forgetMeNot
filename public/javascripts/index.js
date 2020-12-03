@@ -19,58 +19,59 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const taskField = document.getElementById("task-name");
   const tagContainer = document.getElementById("list-of-tags-div");
 
-  try {
-    const res = await fetch("/api/tasks");
-    let { tasks } = await res.json();
-    const taskHtml = [];
-    let html;
-    tasks.forEach((task) => {
-      let tags = task.TasksWithTags;
-      html = `<li id="ele-${task.id}" class="filled"><span class="task-text">${task.name}</span>`;
-      tags.forEach((tag) => {
-        html += `<span class="tag-class">${tag.name}</span>`;
-      });
-      if (task.due) {
-        const today = new Date();
-        const todayMonth = today.getMonth();
-        const todayDate = today.getDate();
-        const todayYear = today.getYear();
-        const date = new Date(task.due);
-        const month = date.getMonth();
-        const monthText = months[month];
-        const day = date.getDate();
-        const year = date.getYear();
-        if (day < todayDate) {
-          html += `<span class="overdue date-text">${monthText} ${day}</span>`;
-        } else if (
-          month === todayMonth &&
-          day === todayDate &&
-          year === todayYear
-        ) {
-          html += `<span class="today date-text">Today</span>`;
-        } else if (
-          month === todayMonth &&
-          day === todayDate + 1 &&
-          year === todayYear
-        ) {
-          html += `<span class="date-text">Tomorrow</span>`;
-        } else {
-          html += `<span class="date-text">${monthText} ${day}</span>`;
+  async function populateTasks(link = "/api/tasks", taskObject = {}) {
+    try {
+      const res = await fetch(link, taskObject);
+      let { tasks } = await res.json();
+      const taskHtml = [];
+      let html;
+      tasks.forEach((task) => {
+        let tags = task.TasksWithTags;
+        html = `<li class="filled"><span class="task-text">${task.name}</span>`;
+        tags.forEach((tag) => {
+          html += `<span class="tag-class">${tag.name}</span>`;
+        });
+        if (task.due) {
+          const today = new Date();
+          const todayMonth = today.getMonth();
+          const todayDate = today.getDate();
+          const todayYear = today.getYear();
+          const date = new Date(task.due);
+          const month = date.getMonth();
+          const monthText = months[month];
+          const day = date.getDate();
+          const year = date.getYear();
+          if (day < todayDate) {
+            html += `<span class="overdue date-text">${monthText} ${day}</span>`;
+          } else if (
+            month === todayMonth &&
+            day === todayDate &&
+            year === todayYear
+          ) {
+            html += `<span class="today date-text">Today</span>`;
+          } else if (
+            month === todayMonth &&
+            day === todayDate + 1 &&
+            year === todayYear
+          ) {
+            html += `<span class="date-text">Tomorrow</span>`;
+          } else {
+            html += `<span class="date-text">${monthText} ${day}</span>`;
+          }
         }
+        taskHtml.push(html);
+      });
+      for (let i = 0; i < 50 - tasks.length; i++) {
+        taskHtml.push(`<li><span></span></li>`);
       }
-      taskHtml.push(html);
-    });
-    for (let i = 0; i < 50 - tasks.length; i++) {
-      taskHtml.push(`<li><span></span></li>`);
+      taskContainer.innerHTML = taskHtml.join("");
+      const inboxLink = document.getElementById("inbox");
+      const numTasksElement = document.createElement("span");
+      numTasksElement.innerHTML = tasks.length;
+      inboxLink.appendChild(numTasksElement);
+    } catch (e) {
+      console.error(e);
     }
-    taskContainer.innerHTML = taskHtml.join("");
-    const inboxLink = document.getElementById("inbox");
-    const numTasksElement = document.createElement("span");
-    numTasksElement.classList.add("num-tasks");
-    numTasksElement.innerHTML = tasks.length;
-    inboxLink.appendChild(numTasksElement);
-  } catch (e) {
-    console.error(e);
   }
   const detailPanel = document.getElementById("task-detail-panel");
   const tasksClickable = document.querySelectorAll(".filled");
@@ -96,6 +97,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       detailPanel.classList.add("panel-shown");
     });
   });
+
+  populateTasks();
+
   const clickHandler = async (event) => {
     addTaskButton.classList.remove("shown");
     const value = taskField.value;
@@ -177,7 +181,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   async function populateTags(tagPostObject = {}) {
     try {
       const res = await fetch("/api/tags", tagPostObject);
-      let { tags } = await res.json();
+      const resJson = await res.json();
+      if (!res.ok) {
+        const p = document.getElementById('p-add-errors');
+        console.log(resJson.errors);
+        p.innerText = resJson.errors.join("/br");
+        return;
+      }
+      let { tags } = resJson;
       const tagHtml = [];
       tags.forEach((tag) => {
         let html = `<li id="li-${tag.name}">${tag.name} <button class="tag-button" id="btn-${tag.name}">X</button></li>`;
@@ -217,9 +228,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const addTagBtn = document.getElementById("addTagBtn");
   const addListBtn = document.getElementById("addListBtn");
 
-  const btn = document.getElementById("addTag");
+  const popupAddTagBtn = document.getElementById("addTag");
 
-  btn.addEventListener("click", async (event) => {
+  popupAddTagBtn.addEventListener("click", async (event) => {
     event.preventDefault();
     const inputName = document.getElementById("inputName");
     const value = inputName.value;
@@ -248,5 +259,23 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // When the user clicks on <span> (x), close the modal
   span.onclick = function () {
     modal.style.display = "none";
-  };
+  }
+
+  const searchButton = document.getElementById('searchButton');
+  const searchText = document.getElementById('searchText');
+  function searchAndDisplay() {
+    event.preventDefault();
+    let textToSearch = searchText.value;
+    if (!textToSearch.length) textToSearch = "all";
+    populateTasks(`/api/tasks/search/${textToSearch}`);
+    searchText.value = "";
+  }
+  searchButton.addEventListener('click', event => {
+    searchAndDisplay();
+  });
+  searchText.addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+      searchAndDisplay();
+    }
+  })
 });

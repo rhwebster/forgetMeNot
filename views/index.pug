@@ -21,14 +21,8 @@ block content
         span
           button
             a(href='/users/signup') Sign up
-    else 
-      div(id='top-navbar' class='top-navbar')
-        span(class='navbar-text px-4') Welcome #{user.firstName}!
-        span
-          a(href='/about') My-Cool-Link
-        span
-          button(method='post')
-            a(href='/users/logout') Logout
+    else
+      include top-navbar.pug
       div(id='main-body' class='main-body')
         div(id='side-navbar' class='side-navbar')
           p Forget Me Not (logo?)

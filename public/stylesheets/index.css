@@ -10,11 +10,11 @@ html {
   flex-direction: column;
   justify-content: space-evenly;
   background-color: #72abd1;
-  height: auto;
 }
 
 .right-body {
   display: flex;
+  position: relative;
   flex-direction: row;
   justify-content: space-evenly;
   width: 100%;
@@ -27,8 +27,8 @@ html {
   flex-direction: row;
   /* justify-content: space-between; */
   background-color: rgb(215, 231, 245);
-  position: relative;
-  height: 100%;
+  /* position: relative; */
+  height: 100vh;
 }
 .top-navbar {
   display: flex;
@@ -41,6 +41,7 @@ html {
 .side-navbar {
   background-color: rgb(215, 231, 245);
   box-sizing: border-box;
+  height: auto;
   width: 180px;
   min-width: 180px;
   margin-left: 15px;
@@ -50,7 +51,9 @@ html {
 .main-panel {
   background-color: white;
   width: 50%;
-  min-width: 500px;
+  position: absolute;
+  left: 0;
+  top: 0;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
   margin-top: 12px;
@@ -58,7 +61,11 @@ html {
 }
 .side-panel {
   background-color: rgb(228, 238, 248);
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 50%;
+  height: 100%;
   /* justify-self: flex-end;
   width: auto; */
   margin: 12px 12px 12px -2px;
@@ -66,22 +73,122 @@ html {
   padding-left: 10px;
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
-  max-height: 100vh;
+}
+
+.panel-hidden {
+  transform: translateX(999px);
+}
+
+.panel-shown {
+  transition-duration: 1.5s;
+}
+#task-detail-panel {
+  background-color: white;
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  z-index: 1;
+  right: 0;
+  top: 0;
+  border-left: 2px solid rgb(217, 217, 217);
+  margin: 12px 12px 12px 0px;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-top-left-radius: 6px;
 }
 
 .due-nav {
   display: flex;
   flex-direction: column;
-  padding-left: 10px;
 }
-.side-navbar a {
+.due-nav div {
   display: flex;
   flex-direction: row;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 10px;
 }
 
-.side-navbar a:hover {
-  background-color: rgb(191, 215, 239);
+.list-of-tags-class {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
 }
+
+.list-of-tags-class li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 10px;
+}
+
+#tag-span {
+  padding-left: 10px;
+}
+
+.tag-button {
+  background-color: rgb(215, 231, 245);
+  border: 1px solid rgb(122, 178, 224);
+  height: 20px;
+  width: 20px;
+  font-size: 10px;
+  text-align: center;
+  line-height: 1em;
+  border-radius: 4px;
+  color: rgb(122, 178, 224);
+}
+
+.tag-button:hover {
+  background-color: rgb(122, 178, 224);
+  color: rgb(215, 231, 245);
+  cursor: pointer;
+}
+
+.tags-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.list-of-tags-class li:hover {
+  background-color: rgb(191, 215, 239);
+  cursor: pointer;
+}
+
+.inbox {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.due-nav div:hover {
+  background-color: rgb(191, 215, 239);
+  cursor: pointer;
+}
+
+.due-nav a {
+  text-decoration: none;
+  color: #000;
+}
+
+.nav-ele {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgb(191, 217, 241);
+}
+
+.num-tasks {
+  justify-self: flex-end;
+  background-color: rgb(200 220 241);
+  font-size: 13px;
+  padding: 3px;
+}
+
 .timed-list {
   color: rgba(0, 0, 0, 0.4);
 }

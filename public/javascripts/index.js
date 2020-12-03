@@ -73,6 +73,31 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       console.error(e);
     }
   }
+  const detailPanel = document.getElementById("task-detail-panel");
+  const tasksClickable = document.querySelectorAll(".filled");
+  const taskNameDetail = document.getElementById("task-name-detail");
+  tasksClickable.forEach((taskEle) => {
+    taskEle.addEventListener("click", async (event) => {
+      const taskNameInput = document.getElementById("name-panel-text");
+      const taskDueDate = document.getElementById("due-date-input");
+      const currentList = document.getElementById("current-list");
+      //   const taskNameInput = document.getElementById("name-panel-text");
+      try {
+        const id = taskEle.id.slice(4);
+        console.log(id);
+        const res = await fetch(`/api/tasks/${id}`);
+        let { task } = await res.json();
+        taskNameInput.value = task.name;
+        taskDueDate.innerHTML = task.due;
+        currentList.innerHTML = task.List.name;
+      } catch (e) {
+        console.error(e);
+      }
+      detailPanel.classList.remove("panel-hidden");
+      detailPanel.classList.add("panel-shown");
+    });
+  });
+
   populateTasks();
 
   const clickHandler = async (event) => {
@@ -166,7 +191,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let { tags } = resJson;
       const tagHtml = [];
       tags.forEach((tag) => {
-        let html = `<li id="li-${tag.name}">${tag.name} <button id="btn-${tag.name}">X</button></li>`;
+        let html = `<li id="li-${tag.name}">${tag.name} <button class="tag-button" id="btn-${tag.name}">X</button></li>`;
         tagHtml.push(html);
       });
       tagContainer.innerHTML = tagHtml.join("");

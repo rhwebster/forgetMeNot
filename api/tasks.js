@@ -49,4 +49,23 @@ router.post(
   })
 );
 
+router.get(
+  "/tasks/:id",
+  asyncHandler(async (req, res) => {
+    const taskId = req.params.id;
+    console.log(taskId);
+    const task = await Task.findOne({
+      where: { id: taskId },
+      include: [
+        List,
+        {
+          model: Tag,
+          as: "TasksWithTags",
+        },
+      ],
+    });
+    res.json({ task });
+  })
+);
+
 module.exports = router;

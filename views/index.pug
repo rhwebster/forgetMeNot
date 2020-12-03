@@ -75,4 +75,29 @@ block content
                 include add-tag-or-list-pop-up.pug
           div(id='side-panel' class='side-panel')
             p rightside panel
+          div(id="task-detail-panel" class="panel-hidden")
+            div(id="task-info")
+              div(id="close-button-panel")
+                span(id="close-text") close
+                button(id="close-button") x
+              div(id="task-name-panel")
+                input(id="name-panel-text")
+              div(id="due-elements")
+                span(id="due-text-panel") due
+                span(id="due-date-input")
+              div(id="list-info-panel")
+                span(id="list-header-text") list
+                span(id="current-list") 
+              div(id="tags-div")
+                span(id="tags-header") tags
+                ul(id="tags-list")
+            div(id="notes")
+              div(id="notes-header") Notes
+              div(id="add-a-note")
+                input(id="notes-input" placeholder="Add a note...")
+              div(id="notes-list-div")
+                ul(id="note-list")
+
+              
+                
 

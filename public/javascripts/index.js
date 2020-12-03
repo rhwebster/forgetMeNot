@@ -26,7 +26,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     let html;
     tasks.forEach((task) => {
       let tags = task.TasksWithTags;
-      html = `<li class="filled"><span class="task-text">${task.name}</span>`;
+      html = `<li id="ele-${task.id}" class="filled"><span class="task-text">${task.name}</span>`;
       tags.forEach((tag) => {
         html += `<span class="tag-class">${tag.name}</span>`;
       });
@@ -72,7 +72,30 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   } catch (e) {
     console.error(e);
   }
-
+  const detailPanel = document.getElementById("task-detail-panel");
+  const tasksClickable = document.querySelectorAll(".filled");
+  const taskNameDetail = document.getElementById("task-name-detail");
+  tasksClickable.forEach((taskEle) => {
+    taskEle.addEventListener("click", async (event) => {
+      const taskNameInput = document.getElementById("name-panel-text");
+      const taskDueDate = document.getElementById("due-date-input");
+      const currentList = document.getElementById("current-list");
+      //   const taskNameInput = document.getElementById("name-panel-text");
+      try {
+        const id = taskEle.id.slice(4);
+        console.log(id);
+        const res = await fetch(`/api/tasks/${id}`);
+        let { task } = await res.json();
+        taskNameInput.value = task.name;
+        taskDueDate.innerHTML = task.due;
+        currentList.innerHTML = task.List.name;
+      } catch (e) {
+        console.error(e);
+      }
+      detailPanel.classList.remove("panel-hidden");
+      detailPanel.classList.add("panel-shown");
+    });
+  });
   const clickHandler = async (event) => {
     addTaskButton.classList.remove("shown");
     const value = taskField.value;

@@ -61,23 +61,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         }
         taskHtml.push(html);
       });
-      for (let i = 0; i < 35 - tasks.length; i++) {
+      for (let i = 0; i < 50 - tasks.length; i++) {
         taskHtml.push(`<li><span></span></li>`);
       }
-      taskHtml.push(html);
-    });
-    for (let i = 0; i < 50 - tasks.length; i++) {
-      taskHtml.push(`<li><span></span></li>`);
+      taskContainer.innerHTML = taskHtml.join("");
+      const inboxLink = document.getElementById("inbox");
+      const numTasksElement = document.createElement("span");
+      numTasksElement.innerHTML = tasks.length;
+      inboxLink.appendChild(numTasksElement);
+    } catch (e) {
+      console.error(e);
     }
-    taskContainer.innerHTML = taskHtml.join("");
-    const inboxLink = document.getElementById("inbox");
-    const numTasksElement = document.createElement("span");
-    numTasksElement.innerHTML = tasks.length;
-    inboxLink.appendChild(numTasksElement);
-  } catch (e) {
-    console.error(e);
   }
-
   populateTasks();
 
   const clickHandler = async (event) => {
@@ -161,7 +156,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   async function populateTags(tagPostObject = {}) {
     try {
       const res = await fetch("/api/tags", tagPostObject);
-      let { tags } = await res.json();
+      const resJson = await res.json();
+      if (!res.ok) {
+        const p = document.getElementById('p-add-errors');
+        console.log(resJson.errors);
+        p.innerText = resJson.errors.join("/br");
+        return;
+      }
+      let { tags } = resJson;
       const tagHtml = [];
       tags.forEach((tag) => {
         let html = `<li id="li-${tag.name}">${tag.name} <button id="btn-${tag.name}">X</button></li>`;
@@ -201,9 +203,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const addTagBtn = document.getElementById("addTagBtn");
   const addListBtn = document.getElementById("addListBtn");
 
-  const btn = document.getElementById("addTag");
+  const popupAddTagBtn = document.getElementById("addTag");
 
-  btn.addEventListener("click", async (event) => {
+  popupAddTagBtn.addEventListener("click", async (event) => {
     event.preventDefault();
     const inputName = document.getElementById("inputName");
     const value = inputName.value;
@@ -236,10 +238,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   const searchButton = document.getElementById('searchButton');
   const searchText = document.getElementById('searchText');
-  function searchAndDisplay(){
+  function searchAndDisplay() {
     event.preventDefault();
     let textToSearch = searchText.value;
-    if(!textToSearch.length) textToSearch = "all";
+    if (!textToSearch.length) textToSearch = "all";
     populateTasks(`/api/tasks/search/${textToSearch}`);
     searchText.value = "";
   }
@@ -247,7 +249,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     searchAndDisplay();
   });
   searchText.addEventListener('keydown', event => {
-    if(event.key === 'Enter'){
+    if (event.key === 'Enter') {
       searchAndDisplay();
     }
   })

@@ -15,6 +15,7 @@ const listsRouter = require('./routes/lists')
 const { restoreUser, requireAuth } = require('./auth');
 
 const tasksApiRouter = require("./api/tasks");
+const apiTagsRouter = require('./api/tags');
 
 
 
@@ -57,6 +58,7 @@ app.use("/lists", listsRouter);
 app.use("/tags", tagsRouter);
 // app.use("/tasks", tasksRouter);
 app.use("/api", tasksApiRouter);
+app.use("/api/tags", apiTagsRouter);
 
 
 // catch 404 and forward to error handler

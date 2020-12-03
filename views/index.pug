@@ -26,11 +26,17 @@ block content
       div(id='main-body' class='main-body')
         div(id='side-navbar' class='side-navbar')
           p Side Navbar
-          div(class='inbox' id='inbox') Inbox
-            a(class='timed-list' id='today' href='/lists/today') Today
-            a(class='timed-list' id='tomorrow' href='/lists/tomorrow') Tomorrow
-            a(class='timed-list' id='this-week' href='/lists/') This Week
-            a(class='timed-list' id='this-month' href='/lists') This Month
+          div(class="due-nav")
+            div(class='inbox' id='inbox') Inbox
+            div(class="inbox-link")
+              a(class='timed-list' id='today' href='/lists/today') Today
+            div(class="inbox-link")
+              a(class='timed-list' id='tomorrow' href='/lists/tomorrow') Tomorrow
+            div(class="inbox-link")
+              a(class='timed-list' id='this-week' href='/lists/') This Week
+            div(class="inbox-link")
+              a(class='timed-list' id='this-month' href='/lists') This Month
+            div(class="inbox-link")
           div(class='tasks' id='tasks') Tasks
             span
               button(method='post') +
@@ -51,13 +57,14 @@ block content
               button(id='addTagBtn') +
                 a(href='')
             div(id='list-of-tags-div' class='list-of-tags-class')
-        div(id='main-panel' class='main-panel')
-          include tasks-view.pug
-          div(id="myModal" class="modal")
-            //- Modal content
-            div(class="modal-content")
-              span(class="close") X
-              include add-tag-or-list-pop-up.pug
-        div(id='side-panel' class='side-panel')
-          p rightside panel
+        div(id="right-body" class="right-body")
+          div(id='main-panel' class='main-panel')
+            include tasks-view.pug
+            div(id="myModal" class="modal")
+              //- Modal content
+              div(class="modal-content")
+                span(class="close") X
+                include add-tag-or-list-pop-up.pug
+          div(id='side-panel' class='side-panel')
+            p rightside panel
 

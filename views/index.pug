@@ -46,10 +46,8 @@ block content
                 a(href='/') All
           div(class='lists' id='lists') Lists
             span
-
-              button(method='post')
+              button(method='post' id='addListBtn')
                 a(href='/lists') +
-
             div(class='lists' id='list-names')
               span
                 button
@@ -57,14 +55,15 @@ block content
           div(class='tags' id='tags') Tags
             span 
               button(id='addTagBtn') +
-                a(href='')          
+                a(href='')
+            div(id='list-of-tags-div' class='list-of-tags-class')
         div(id='main-panel' class='main-panel')
           include tasks-view.pug
           div(id="myModal" class="modal")
             //- Modal content
             div(class="modal-content")
               span(class="close") X
-              include add-tag-or-list.pug
+              include add-tag-or-list-pop-up.pug
         div(id='side-panel' class='side-panel')
           p rightside panel
 

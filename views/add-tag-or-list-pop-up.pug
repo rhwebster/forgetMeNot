@@ -1,0 +1,10 @@
+include utils.pug
++validationErrorSummary(errors)
+form
+  //- (action="/tags", method="post")
+  if locals.authenticated
+    input(type='hidden' name='_csrf' value=csrfToken)
+    +field("", 'inputName')
+    div(class='py-4')
+      button(type='submit' class='btn btn-primary' id="addTag") Add a #{name}
+  else

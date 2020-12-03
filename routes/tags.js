@@ -47,7 +47,6 @@ router.post(
     const validatorErrors = validationResult(req);
 
     if (validatorErrors.isEmpty()) {
-      console.log("Got a tag name", name);
       await tag.save();
       res.redirect("/");
     } else {
@@ -55,7 +54,6 @@ router.post(
       res.render("add-tag-or-list", {
         title: "Add a Tag",
         name: "Tag",
-        style: "./stylesheets/sign-up.css",
         path: "/tags",
         tag,
         errors,

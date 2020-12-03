@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Task, User, List } = require("../db/models");
+const { Task, User, List, Tag } = require("../db/models");
 const { asyncHandler } = require("../routes/utils");
 
 router.get(
@@ -8,7 +8,15 @@ router.get(
   asyncHandler(async (req, res) => {
     const userId = req.session.auth.userId;
     const list = await List.findOne({ where: { userId, name: "Inbox" } });
-    const tasks = await Task.findAll({ where: { userId, listId: list.id } });
+    const tasks = await Task.findAll({
+      where: { userId, listId: list.id },
+      include: [
+        {
+          model: Tag,
+          as: "TasksWithTags",
+        },
+      ],
+    });
     res.json({ tasks });
   })
 );
@@ -26,7 +34,15 @@ router.post(
       listId: list.id,
       completed: false,
     });
-    const tasks = await Task.findAll({ where: { userId, listId: list.id } });
+    const tasks = await Task.findAll({
+      where: { userId, listId: list.id },
+      include: [
+        {
+          model: Tag,
+          as: "TasksWithTags",
+        },
+      ],
+    });
     res.json({ tasks });
   })
 );

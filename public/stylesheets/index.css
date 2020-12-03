@@ -1,85 +1,111 @@
 h1 {
-    color: #555555;
+  color: #555555;
 }
-.wholepage{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    background-color: #72abd1;
+.wholepage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  background-color: #72abd1;
 }
-.main-body{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.main-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
-.top-navbar{
-    display: flex;
-    justify-content: flex-end;
-    padding: 5px;
-}
-
-.side-navbar{
-    background-color: lightskyblue;
-    width: 15%;
-    height:  500px;
-}
-.main-panel{
-    background-color: white;
-    width: 50%;
-}
-.side-panel{
-    background-color: lightblue;
-    width: 35%;
+.top-navbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
 }
 
-.inbox{
-    display: flex;
-    flex-direction: column;
+.side-navbar {
+  background-color: lightskyblue;
+  width: 15%;
+  height: 500px;
 }
-.timed-list{
-    color: rgba(0, 0, 0, 0.4)
+.main-panel {
+  background-color: white;
+  width: 50%;
 }
-.list-of-class-tasks{
-    background-color: seashell;
+.side-panel {
+  background-color: lightblue;
+  width: 35%;
 }
 
+.inbox {
+  display: flex;
+  flex-direction: column;
+}
+.timed-list {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.list-of-tasks-class {
+  background-color: seashell;
+  border: 2px solid grey;
+  border-radius: 5px;
+  width: 600px;
+}
+
+#list-of-tasks {
+  list-style-type: none;
+  box-sizing: border-box;
+}
+
+#list-of-tasks li {
+  padding: 5px;
+  border-bottom: 1px solid lightgray;
+  align-items: center;
+}
+
+#add-a-task-div {
+  border-bottom: 1px solid lightgray;
+}
+
+.tag-class {
+  box-sizing: border-box;
+  color: white;
+  font-size: 0.75em;
+  background: green;
+  margin-left: 10px;
+  border-radius: 2px;
+}
 
 /* The Modal (background) */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.2); /* Black w/ opacity */
-  }
-  
-  /* Modal Content */
-  .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 30%;
-  }
-  
-  /* The Close Button */
-  .close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-  }
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.2); /* Black w/ opacity */
+}
 
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 30%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}

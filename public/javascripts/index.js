@@ -10,14 +10,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     let { tasks } = await res.json();
     const taskHtml = [];
     tasks.forEach((task) => {
-      let html = `<li>${task.name}</li>`;
+      let tags = task.TasksWithTags;
+      let html = `<li><div>${task.name}`;
+      tags.forEach((tag) => {
+        html += `<span class="tag-class">${tag.name}</span>`;
+      });
       taskHtml.push(html);
     });
     taskContainer.innerHTML = taskHtml.join("");
   } catch (e) {
     console.error(e);
   }
-
+  
   addTaskButton.addEventListener("click", async (event) => {
     const value = taskField.value;
     const nameToSend = { name: value };
@@ -30,7 +34,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let { tasks } = await res.json();
       const taskHtml = [];
       tasks.forEach((task) => {
-        let html = `<li>${task.name}</li>`;
+        let tags = task.TasksWithTags;
+        let html = `<li>${task.name}`;
+        tags.forEach((tag) => {
+          html += `<span class="tag-class">${tag.name}</span>`;
+        });
         taskHtml.push(html);
       });
       taskContainer.innerHTML = taskHtml.join("");
@@ -38,6 +46,42 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       console.error(e);
     }
   });
+
+  async function populateTags(tagPostObject = {}) {
+    try {
+      const res = await fetch("/api/tags", tagPostObject);
+      let { tags } = await res.json();
+      const tagHtml = [];
+      tags.forEach((tag) => {
+        let html = `<li id="li-${tag.name}">${tag.name} <button id="btn-${tag.name}">X</button></li>`;
+        tagHtml.push(html);
+      });
+      tagContainer.innerHTML = tagHtml.join("");
+      tags.forEach((tag) => {
+        document.getElementById(`btn-${tag.name}`)
+          .addEventListener('click', async event => {
+            event.preventDefault();
+            try {
+              const res = await fetch(`/api/tags/${tag.name}`, {
+                method: 'DELETE',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: tag.name }),
+              });
+              let { name } = await res.json();
+              console.log("json back", name);
+              const li = document.getElementById(`li-${name}`);
+              tagContainer.removeChild(li);
+            } catch (e) {
+              console.error(e);
+            }
+          });
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  populateTags();
   // Get the modal
   const modal = document.getElementById("myModal");
 
@@ -49,46 +93,16 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   btn.addEventListener('click', async event => {
     event.preventDefault();
-    const inputName = document.getElementById('inputName');    
+    const inputName = document.getElementById('inputName');
     const value = inputName.value;
-    const nameToSend = { name: value };    
-    try{
-      const res = await fetch('/api/tags', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nameToSend),
-      });
-      let { tags } = await res.json();
-      console.log(tags);
-      const tagHtml = [];
-      tags.forEach((tag) => {
-        let html = `<li id="li-${tag.name}">${tag.name} <button id="btn-${tag.name}">X</button></li>`;
-        tagHtml.push(html);
-      });
-      tagContainer.innerHTML = tagHtml.join("");      
-      tags.forEach((tag) => {
-        document.getElementById(`btn-${tag.name}`)
-          .addEventListener('click', async event=>{
-            event.preventDefault();
-            try{
-              const res = await fetch(`/api/tags/${tag.name}`, {
-                method: 'DELETE',
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({name: tag.name}),   
-              });
-              let {name} = await res.json();
-              console.log("json back", name);
-              const li = document.getElementById(`li-${name}`);
-              tagContainer.removeChild(li);
-            } catch(e){
-
-            }
-          });
-      });
-
-    } catch(e){
-
-    }
+    const nameToSend = { name: value };
+    populateTags({
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(nameToSend),
+    });
+    inputName.value = "";
+    modal.style.display = "none";
   });
 
   // Get the <span> element that closes the modal
@@ -105,5 +119,5 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // When the user clicks on <span> (x), close the modal
   span.onclick = function () {
     modal.style.display = "none";
-  }  
+  }
 });

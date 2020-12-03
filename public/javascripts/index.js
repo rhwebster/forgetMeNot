@@ -61,23 +61,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         }
         taskHtml.push(html);
       });
-      for (let i = 0; i < 35 - tasks.length; i++) {
+      for (let i = 0; i < 50 - tasks.length; i++) {
         taskHtml.push(`<li><span></span></li>`);
       }
-      taskHtml.push(html);
-    });
-    for (let i = 0; i < 50 - tasks.length; i++) {
-      taskHtml.push(`<li><span></span></li>`);
-    }
-    taskContainer.innerHTML = taskHtml.join("");
-    const inboxLink = document.getElementById("inbox");
-    const numTasksElement = document.createElement("span");
-    numTasksElement.innerHTML = tasks.length;
-    inboxLink.appendChild(numTasksElement);
-  } catch (e) {
-    console.error(e);
+      taskContainer.innerHTML = taskHtml.join("");
+      const inboxLink = document.getElementById("inbox");
+      const numTasksElement = document.createElement("span");
+      numTasksElement.innerHTML = tasks.length;
+      inboxLink.appendChild(numTasksElement);
+    } catch (e) {
+      console.error(e);
+    }  
   }
-
   populateTasks();
 
   const clickHandler = async (event) => {

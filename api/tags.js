@@ -6,6 +6,7 @@ const db = require("../db/models");
 const { check, validationResult } = require("express-validator");
 const { csrfProtection, asyncHandler } = require("../routes/utils");
 const { loginUser, logoutUser, requireAuth } = require("../auth");
+const { Op } = require('sequelize');
 
 router.get(
   "/",
@@ -57,7 +58,11 @@ router.delete(
     console.log('name to delete ', name);
     console.log('Tag name', name);
     const tag = await db.Tag.findOne({
-      where: {name},
+      where: {
+        name: {
+          [Op.iLike]: `%${name}%`,
+        }
+      },
     });
     await tag.destroy();
     console.log('found a tag', tag);

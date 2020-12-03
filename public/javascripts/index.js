@@ -19,54 +19,58 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const taskField = document.getElementById("task-name");
   const tagContainer = document.getElementById("list-of-tags-div");
 
-  try {
-    const res = await fetch("/api/tasks");
-    let { tasks } = await res.json();
-    const taskHtml = [];
-    let html;
-    tasks.forEach((task) => {
-      let tags = task.TasksWithTags;
-      html = `<li class="filled"><span class="task-text">${task.name}</span>`;
-      tags.forEach((tag) => {
-        html += `<span class="tag-class">${tag.name}</span>`;
-      });
-      if (task.due) {
-        const today = new Date();
-        const todayMonth = today.getMonth();
-        const todayDate = today.getDate();
-        const todayYear = today.getYear();
-        const date = new Date(task.due);
-        const month = date.getMonth();
-        const monthText = months[month];
-        const day = date.getDate();
-        const year = date.getYear();
-        if (day < todayDate) {
-          html += `<span class="overdue date-text">${monthText} ${day}</span>`;
-        } else if (
-          month === todayMonth &&
-          day === todayDate &&
-          year === todayYear
-        ) {
-          html += `<span class="today date-text">Today</span>`;
-        } else if (
-          month === todayMonth &&
-          day === todayDate + 1 &&
-          year === todayYear
-        ) {
-          html += `<span class="date-text">Tomorrow</span>`;
-        } else {
-          html += `<span class="date-text">${monthText} ${day}</span>`;
+  async function populateTasks(link = "/api/tasks", taskObject = {}) {
+    try {
+      const res = await fetch(link, taskObject);
+      let { tasks } = await res.json();
+      const taskHtml = [];
+      let html;
+      tasks.forEach((task) => {
+        let tags = task.TasksWithTags;
+        html = `<li class="filled"><span class="task-text">${task.name}</span>`;
+        tags.forEach((tag) => {
+          html += `<span class="tag-class">${tag.name}</span>`;
+        });
+        if (task.due) {
+          const today = new Date();
+          const todayMonth = today.getMonth();
+          const todayDate = today.getDate();
+          const todayYear = today.getYear();
+          const date = new Date(task.due);
+          const month = date.getMonth();
+          const monthText = months[month];
+          const day = date.getDate();
+          const year = date.getYear();
+          if (day < todayDate) {
+            html += `<span class="overdue date-text">${monthText} ${day}</span>`;
+          } else if (
+            month === todayMonth &&
+            day === todayDate &&
+            year === todayYear
+          ) {
+            html += `<span class="today date-text">Today</span>`;
+          } else if (
+            month === todayMonth &&
+            day === todayDate + 1 &&
+            year === todayYear
+          ) {
+            html += `<span class="date-text">Tomorrow</span>`;
+          } else {
+            html += `<span class="date-text">${monthText} ${day}</span>`;
+          }
         }
+        taskHtml.push(html);
+      });
+      for (let i = 0; i < 35 - tasks.length; i++) {
+        taskHtml.push(`<li><span></span></li>`);
       }
-      taskHtml.push(html);
-    });
-    for (let i = 0; i < 35 - tasks.length; i++) {
-      taskHtml.push(`<li><span></span></li>`);
+      taskContainer.innerHTML = taskHtml.join("");
+    } catch (e) {
+      console.error(e);
     }
-    taskContainer.innerHTML = taskHtml.join("");
-  } catch (e) {
-    console.error(e);
   }
+
+  populateTasks();
 
   const clickHandler = async (event) => {
     addTaskButton.classList.remove("shown");
@@ -221,4 +225,22 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   span.onclick = function () {
     modal.style.display = "none";
   }
+
+  const searchButton = document.getElementById('searchButton');
+  const searchText = document.getElementById('searchText');
+  function searchAndDisplay(){
+    event.preventDefault();
+    let textToSearch = searchText.value;
+    if(!textToSearch.length) textToSearch = "all";
+    populateTasks(`/api/tasks/search/${textToSearch}`);
+    searchText.value = "";
+  }
+  searchButton.addEventListener('click', event => {
+    searchAndDisplay();
+  });
+  searchText.addEventListener('keydown', event => {
+    if(event.key === 'Enter'){
+      searchAndDisplay();
+    }
+  })
 });

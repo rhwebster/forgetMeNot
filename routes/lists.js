@@ -57,14 +57,14 @@ router.get('/lists/today', requireAuth, csrfProtection, asyncHandler(async (req,
   })
 }));
 
-router.get('/lists/today', requireAuth, csrfProtection, asyncHandler(async (req, res) => {
+router.get('/lists/tomorrow', requireAuth, csrfProtection, asyncHandler(async (req, res) => {
   const userId = req.session.auth.userId;
   const tomorrowList = await db.Task.findAll({
     where:
       [{
         due: {
           [Op.gt]: new Date(),
-          [Op.lt]: new Date(new Date().setDate(new Date().getDate())),
+          [Op.lt]: new Date(new Date().setDate(new Date().getDate()) + 1),
         }
       }, { userId }]
   })

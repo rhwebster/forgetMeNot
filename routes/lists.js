@@ -107,7 +107,7 @@ router.post(
     const userId = req.session.auth.userId;
     const list = db.List.build({
       name,
-      userId
+      userId,
     });
 
     const validatorErrors = validationResult(req);

@@ -16,6 +16,7 @@ router.get(
           as: "TasksWithTags",
         },
       ],
+      order: [["createdAt", "ASC"]],
     });
     res.json({ tasks });
   })
@@ -42,6 +43,7 @@ router.post(
           as: "TasksWithTags",
         },
       ],
+      order: [["createdAt", "ASC"]],
     });
     res.json({ tasks });
   })

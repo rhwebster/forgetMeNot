@@ -24,13 +24,20 @@ const listValidator = [
     }),
 ];
 /* GET users listing. */
-router.get("/", requireAuth, csrfProtection, listValidator, (req, res) => {
+
+
+router.get("/", requireAuth, csrfProtection, listValidator, async(req, res) => {
+  const userId = req.session.auth.userId;
+  const list = await db.List.findAll({ where: { userId } });
+  console.log(req)
   res.render("add-tag-or-list", {
     title: "Add a List",
     name: "List",
     path: "/lists",
     csrfToken: req.csrfToken(),
+    list
   });
+  
 });
 
 router.post(
@@ -41,7 +48,6 @@ router.post(
   asyncHandler(async (req, res) => {
     const { name } = req.body;
     const userId = req.session.auth.userId;
-    console.log(req.body, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     const list = db.List.build({
       name,
       userId

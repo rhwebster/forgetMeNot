@@ -13,7 +13,7 @@ module.exports = {
       }], {});
     */
     return queryInterface.bulkInsert('Tags', [
-      {name: 'Urgent', createdAt: new Date(), updatedAt: new Date()},
+      {name: 'urgent', createdAt: new Date(), updatedAt: new Date()},
     ]);
   },
 

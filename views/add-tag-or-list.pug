@@ -1,15 +1,15 @@
-extends layout
+extends index
 append head
-  link(rel="stylesheet" href="/stylesheets/tags-and-lists.css")
+  link(rel="stylesheet" href="/stylesheets/list.css")
 include utils.pug
 
   block content
     input(type='hidden' name='_csrf' value=csrfToken)
-    div
-      each listItem in list
-        div #{listItem.name}
-          //- p: a(href="/lists:id") checkout list
     div(class='py-4')
       p: a(href="/") Back To Home
+    div(class='box')
+      each listItem in list
+        a(class='list-item' href='/lists/:id') #{listItem.name}
+          //- p: a(href="/lists:id") checkout list
     div(class='py-4')
 

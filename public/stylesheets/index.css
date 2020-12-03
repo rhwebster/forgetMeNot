@@ -206,3 +206,8 @@ h1 {
   text-decoration: none;
   cursor: pointer;
 }
+
+.list-item{
+  display: flex;
+  justify-content: center;
+}

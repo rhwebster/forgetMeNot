@@ -23,8 +23,15 @@ const listValidator = [
       });
     }),
 ];
-/* GET users listing. */
+// /* GET users listing. */
+router.get('/1', requireAuth, csrfProtection, listValidator, asyncHandler( async(req, res) => {
+  res.render("list", {
+    title: "Tasks in List",
+    name: `${db.List.name}`,
+    csrfToken: req.csrfToken(),
 
+  });
+ })); 
 
 router.get("/", requireAuth, csrfProtection, listValidator, async(req, res) => {
   const userId = req.session.auth.userId;

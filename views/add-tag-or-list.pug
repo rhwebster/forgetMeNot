@@ -1,10 +1,15 @@
+extends layout
+append head
+  link(rel="stylesheet" href="/stylesheets/tags-and-lists.css")
 include utils.pug
-+validationErrorSummary(errors)
-form(action="/tags", method="post")
-  if locals.authenticated
+
+  block content
     input(type='hidden' name='_csrf' value=csrfToken)
-    +field("", 'name')
+    div
+      each listItem in list
+        div #{listItem.name}
+          //- p: a(href="/lists:id") checkout list
     div(class='py-4')
-      button(type='submit' class='btn btn-primary') Add a #{name}
-  else
-    
+      p: a(href="/") Back To Home
+    div(class='py-4')
+

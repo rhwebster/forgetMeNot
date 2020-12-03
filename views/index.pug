@@ -33,10 +33,10 @@ block content
         div(id='side-navbar' class='side-navbar')
           p Side Navbar
           div(class='inbox' id='inbox') Inbox
-            a(class='timed-list' id='today' href='/users/lists/today') Today
-            a(class='timed-list' id='tomorrow' href='/users/lists/tomorrow') Tomorrow
-            a(class='timed-list' id='this-week' href='/users/lists/') This Week
-            a(class='timed-list' id='this-month' href='/users/lists') This Month
+            a(class='timed-list' id='today' href='/lists/today') Today
+            a(class='timed-list' id='tomorrow' href='/lists/tomorrow') Tomorrow
+            a(class='timed-list' id='this-week' href='/lists/') This Week
+            a(class='timed-list' id='this-month' href='/lists') This Month
           div(class='tasks' id='tasks') Tasks
             span
               button(method='post') +
@@ -46,12 +46,14 @@ block content
                 a(href='/') All
           div(class='lists' id='lists') Lists
             span
-              button(id='addListBtn') +
-                a(href='')            
+
+              button(method='post')
+                a(href='/lists') +
+
             div(class='lists' id='list-names')
               span
                 button
-                  a(href='/users/lists') All
+                  a(href='/lists') All
           div(class='tags' id='tags') Tags
             span 
               button(id='addTagBtn') +

@@ -18,6 +18,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const addTaskButton = document.getElementById("add-task-button");
   const taskField = document.getElementById("task-name");
   const tagContainer = document.getElementById("list-of-tags-div");
+  const detailPanel = document.getElementById("task-detail-panel");
+  const taskNameInput = document.getElementById("name-panel-text");
 
   async function populateTasks(link = "/api/tasks", taskObject = {}) {
     try {
@@ -73,14 +75,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     } catch (e) {
       console.error(e);
     }
-    const detailPanel = document.getElementById("task-detail-panel");
+
     const tasksClickable = document.querySelectorAll(".filled");
     // const taskNameDetail = document.getElementById("task-name-detail");
     tasksClickable.forEach((taskEle) => {
       taskEle.addEventListener("click", async (event) => {
-        const taskNameInput = document.getElementById("name-panel-text");
         const taskDueDate = document.getElementById("due-date-input");
         const currentList = document.getElementById("current-list");
+        const notesList = document.getElementById("");
         //   const taskNameInput = document.getElementById("name-panel-text");
         console.log(taskEle);
         try {
@@ -101,7 +103,28 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   }
 
   populateTasks();
-
+  const closeButton = document.getElementById("close-button-panel");
+  closeButton.addEventListener("click", (event) => {
+    detailPanel.classList.remove("panel-shown");
+    detailPanel.classList.add("panel-hidden");
+  });
+  const updateTaskName = async (updatedName, taskId) => {
+    const nameToSend = { name: updatedName };
+    try {
+      const res = await fetch(`/api/tasks/${taskId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nameToSend),
+      });
+      populateTasks();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  taskNameInput.addEventListener(
+    "keypress",
+    updateTaskName(taskNameInput.value, idToUpdate)
+  );
   const clickHandler = async (event) => {
     addTaskButton.classList.remove("shown");
     const value = taskField.value;

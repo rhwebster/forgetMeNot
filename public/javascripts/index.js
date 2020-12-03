@@ -60,10 +60,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       }
       taskHtml.push(html);
     });
-    for (let i = 0; i < 35 - tasks.length; i++) {
+    for (let i = 0; i < 50 - tasks.length; i++) {
       taskHtml.push(`<li><span></span></li>`);
     }
     taskContainer.innerHTML = taskHtml.join("");
+    const inboxLink = document.getElementById("inbox");
+    const numTasksElement = document.createElement("span");
+    numTasksElement.innerHTML = tasks.length;
+    inboxLink.appendChild(numTasksElement);
   } catch (e) {
     console.error(e);
   }
@@ -116,7 +120,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         }
         taskHtml.push(html);
       });
-      for (let i = 0; i < 35 - tasks.length; i++) {
+      for (let i = 0; i < 50 - tasks.length; i++) {
         taskHtml.push(`<li><span></span></li>`);
       }
       taskContainer.innerHTML = taskHtml.join("");
@@ -157,12 +161,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       });
       tagContainer.innerHTML = tagHtml.join("");
       tags.forEach((tag) => {
-        document.getElementById(`btn-${tag.name}`)
-          .addEventListener('click', async event => {
+        document
+          .getElementById(`btn-${tag.name}`)
+          .addEventListener("click", async (event) => {
             event.preventDefault();
             try {
               const res = await fetch(`/api/tags/${tag.name}`, {
-                method: 'DELETE',
+                method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name: tag.name }),
               });
@@ -184,20 +189,19 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // Get the modal
   const modal = document.getElementById("myModal");
 
-
   // Get the button that opens the modal
   const addTagBtn = document.getElementById("addTagBtn");
   const addListBtn = document.getElementById("addListBtn");
 
-  const btn = document.getElementById('addTag');
+  const btn = document.getElementById("addTag");
 
-  btn.addEventListener('click', async event => {
+  btn.addEventListener("click", async (event) => {
     event.preventDefault();
-    const inputName = document.getElementById('inputName');
+    const inputName = document.getElementById("inputName");
     const value = inputName.value;
     const nameToSend = { name: value };
     populateTags({
-      method: 'POST',
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nameToSend),
     });
@@ -207,7 +211,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   // Get the <span> element that closes the modal
   const span = document.getElementsByClassName("close")[0];
-  console.log('span', span);
+  console.log("span", span);
 
   // When the user clicks the button, open the modal
   addTagBtn.onclick = function () {
@@ -220,5 +224,5 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // When the user clicks on <span> (x), close the modal
   span.onclick = function () {
     modal.style.display = "none";
-  }
+  };
 });

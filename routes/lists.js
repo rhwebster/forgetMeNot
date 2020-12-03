@@ -24,14 +24,78 @@ const listValidator = [
     }),
 ];
 /* GET users listing. */
-router.get("/", requireAuth, csrfProtection, listValidator, (req, res) => {
+
+
+router.get("/", requireAuth, csrfProtection, listValidator, async(req, res) => {
+  const userId = req.session.auth.userId;
+  const list = await db.List.findAll({ where: { userId } });
+  console.log(req)
   res.render("add-tag-or-list", {
     title: "Add a List",
     name: "List",
     path: "/lists",
     csrfToken: req.csrfToken(),
+    list
   });
+  
 });
+
+router.get('/lists/today', requireAuth, csrfProtection, asyncHandler(async (req, res) => {
+  const userId = req.session.auth.userId;
+  const todayList = await db.Task.findAll({ where:
+    [{ due: {
+      [Op.gt]: new Date(),
+      [Op.lt]: new Date(new Date().setDate(new Date().getDate())),
+    }
+  }, { userId }] })
+  res.render("tasks-due-today", {
+    title: "Due Today",
+    name: "Today's Tasks",
+    path: '/lists/today',
+    csrfToken: req.csrfToken(),
+    todayList
+  })
+}));
+
+router.get('/lists/tomorrow', requireAuth, csrfProtection, asyncHandler(async (req, res) => {
+  const userId = req.session.auth.userId;
+  const tomorrowList = await db.Task.findAll({
+    where:
+      [{
+        due: {
+          [Op.gt]: new Date(),
+          [Op.lt]: new Date(new Date().setDate(new Date().getDate()) + 1),
+        }
+      }, { userId }]
+  })
+  res.render("tasks-due-tomorrow", {
+    title: "Due Tomorrow",
+    name: "Tomorrow's Tasks",
+    path: '/lists/tomorrow',
+    csrfToken: req.csrfToken(),
+    tomorrowList
+  })
+}));
+
+router.get('/lists/this-week', requireAuth, csrfProtection, asyncHandler(async (req, res) => {
+  const userId = req.session.auth.userId;
+  const weekList = await db.Task.findAll({
+    where:
+      [{
+        due: {
+          [Op.gt]: new Date(),
+          [Op.lt]: new Date(new Date().setDate(new Date().getDate()) + 7),
+        }
+      }, { userId }]
+  })
+  res.render("tasks-due-this-week", {
+    title: "Due This Week",
+    name: "This Week's Tasks",
+    path: '/lists/this-week',
+    csrfToken: req.csrfToken(),
+    weekList
+  })
+}));
 
 router.post(
   "/",
@@ -41,7 +105,6 @@ router.post(
   asyncHandler(async (req, res) => {
     const { name } = req.body;
     const userId = req.session.auth.userId;
-    console.log(req.body, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     const list = db.List.build({
       name,
       userId

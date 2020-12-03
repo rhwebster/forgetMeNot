@@ -41,10 +41,17 @@ h1 {
 }
 
 .list-of-tasks-class {
-  background-color: seashell;
-  border: 2px solid grey;
+  background-color: white;
+  /* border: 2px solid grey; */
   border-radius: 5px;
-  width: 600px;
+  width: auto;
+}
+
+#task-name {
+  /* background-color: white; */
+  box-sizing: border-box;
+  width: 100%;
+  height: 30px;
 }
 
 #list-of-tasks {
@@ -59,7 +66,23 @@ h1 {
 }
 
 #add-a-task-div {
+  margin: 5px 0px;
   border-bottom: 1px solid lightgray;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+#add-task-button {
+  background-color: #008cba;
+  color: white;
+  height: 30px;
+  margin: 5px;
+  border: none;
+}
+
+.hidden {
+  display: none;
 }
 
 .tag-class {

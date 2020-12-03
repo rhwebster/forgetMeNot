@@ -1,9 +1,12 @@
-
 window.addEventListener("DOMContentLoaded", async (event) => {
   const taskContainer = document.getElementById("list-of-tasks");
   const addTaskButton = document.getElementById("add-task-button");
   const taskField = document.getElementById("task-name");
   const tagContainer = document.getElementById("list-of-tags-div");
+  const addDiv = document.getElementById("add-a-task-div");
+  addDiv.addEventListener("click", (event) => {
+    addTaskButton.classList.remove("hidden");
+  });
 
   try {
     const res = await fetch("/api/tasks");
@@ -107,14 +110,15 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   // Get the <span> element that closes the modal
   const span = document.getElementsByClassName("close")[0];
+  console.log('span', span);
 
-  // When the user clicks the button, open the modal 
+  // When the user clicks the button, open the modal
   addTagBtn.onclick = function () {
     modal.style.display = "block";
-  }
+  };
   addListBtn.onclick = function () {
     modal.style.display = "block";
-  }
+  };
 
   // When the user clicks on <span> (x), close the modal
   span.onclick = function () {

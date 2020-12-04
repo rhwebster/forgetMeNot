@@ -1,17 +1,4 @@
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+import {months, tagColors} from './data-arrays.js';
 
 window.addEventListener("DOMContentLoaded", async (event) => {
   const taskContainer = document.getElementById("list-of-tasks");
@@ -43,7 +30,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         if (tags) {
           html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
           tags.forEach((tag) => {
-            html += `<span class="tag-class">${tag.name}</span>`;
+            html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id%20]};">${tag.name}</span>`;
           });
         }
 
@@ -118,7 +105,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
           let html = "";
           currentTask.TasksWithTags.forEach((tag) => {
-            html += `<span class="tag-class remove-tag">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+            html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id%20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
           });
 
           tagsList.innerHTML = html;
@@ -196,7 +183,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         if (tags) {
           html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
           tags.forEach((tag) => {
-            html += `<span class="tag-class">${tag.name}</span>`;
+            html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id%20]};>${tag.name}</span>`;
           });
         }
         if (task.due) {
@@ -342,7 +329,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const tagHtml = [];
 
       tags.forEach((tag) => {
-        let html = `<li id="li-${tag.id}"><div class="left-tag-div"><div class="green-tag"></div><span>${tag.name}</span></div><button class="tag-button" id="btn-${tag.id}"><span class="tag-button-text">-</span></button></li>`;
+        let html = `<li id="li-${tag.id}"><div class="left-tag-div"><div class="color-tag" style="background-color:${tagColors[tag.id%20]};"></div><span>${tag.name}</span></div><button class="tag-button" id="btn-${tag.id}"><span class="tag-button-text">-</span></button></li>`;        
 
         tagHtml.push(html);
       });
@@ -485,7 +472,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const { task } = await res.json();
       currentTask = task;
       currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="tag-class remove-tag">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id%20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
       });
       tagsList.innerHTML = html;
       const xTagButtons = document.querySelectorAll(".x-button");
@@ -517,7 +504,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const { task } = await res.json();
       currentTask = task;
       currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="tag-class remove-tag">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id%20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
       });
       tagsList.innerHTML = html;
       const xTagButtons = document.querySelectorAll(".x-button");

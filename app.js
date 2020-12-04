@@ -15,7 +15,7 @@ const listsRouter = require("./routes/lists");
 const { restoreUser, requireAuth } = require("./auth");
 
 const tasksApiRouter = require("./api/tasks");
-const apiTagsRouter = require('./api/tags');
+const apiTagsRouter = require("./api/tags");
 
 const app = express();
 
@@ -30,10 +30,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // set up session middleware
 const store = new SequelizeStore({ db: sequelize });
-app.use((req, res, next) => {
-  console.log("cookies in middleware", req.signedCookies);
-  next();
-});
 
 app.use(
   session({

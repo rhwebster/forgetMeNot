@@ -6,7 +6,7 @@ const db = require("../db/models");
 const { check, validationResult } = require("express-validator");
 const { csrfProtection, asyncHandler } = require("../routes/utils");
 const { loginUser, logoutUser, requireAuth } = require("../auth");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 router.get(
   "/",
@@ -38,7 +38,6 @@ router.post(
   tagValidator,
   asyncHandler(async (req, res) => {
     const { name } = req.body;
-    console.log('Tag name', name);
     const tag = db.Tag.build({
       name,
     });
@@ -48,11 +47,10 @@ router.post(
     if (validatorErrors.isEmpty()) {
       await tag.save();
       const tags = await db.Tag.findAll();
-      console.log('all tags', tags);
       res.json({ tags });
     } else {
       const errors = validatorErrors.array().map((error) => error.msg);
-      res.status(400).json({errors});
+      res.status(400).json({ errors });
     }
   })
 );
@@ -65,11 +63,10 @@ router.delete(
     const { id } = req.params;
     const tag = await db.Tag.findOne({
       where: {
-        id
+        id,
       },
     });
     await tag.destroy();
-    console.log('found a tag', tag);
     res.json({ id });
   })
 );

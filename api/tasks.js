@@ -26,12 +26,13 @@ router.get(
 router.post(
   "/tasks",
   asyncHandler(async (req, res) => {
-    const { name } = req.body;
+    const { name, due } = req.body;
 
     const userId = req.session.auth.userId;
     const list = await List.findOne({ where: { userId, name: "Inbox" } });
     const task = await Task.create({
       name,
+      due,
       userId,
       listId: list.id,
       completed: false,
@@ -54,7 +55,6 @@ router.get(
   "/tasks/:id",
   asyncHandler(async (req, res) => {
     const taskId = req.params.id;
-    console.log(taskId);
     const task = await Task.findOne({
       where: { id: taskId },
       include: [
@@ -70,17 +70,16 @@ router.get(
 );
 
 router.get(
-  "/tasks/search/:taskName\/?",
+  "/tasks/search/:taskName/?",
   asyncHandler(async (req, res) => {
     const taskNameToSearch = req.params.taskName;
     const userId = req.session.auth.userId;
     const whereObject = { userId };
-    if (taskNameToSearch !== 'all') {
+    if (taskNameToSearch !== "all") {
       whereObject.name = {
         [Op.iLike]: `%${taskNameToSearch}%`,
-      }
+      };
     }
-    console.log("\n\nWhereobject", whereObject);
     const tasks = await Task.findAll({
       where: whereObject,
       include: [
@@ -102,11 +101,10 @@ router.get(
     const userId = req.session.auth.userId;
     const whereObject = { userId };
     const tagId = req.params.tagId;
-    console.log("tagId", tagId);
     let taggedTasks = await TaggedTask.findAll({
       where: {
-        tagId
-      }
+        tagId,
+      },
     });
 
     let tasks = [];
@@ -114,7 +112,7 @@ router.get(
       const task = await Task.findOne({
         where: {
           id: taggedTasks[i].taskId,
-          userId: userId
+          userId: userId,
         },
         include: [
           {

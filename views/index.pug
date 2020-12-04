@@ -11,6 +11,8 @@ block content
   div(id='wholepage' class="wholepage")
     if !locals.authenticated
       div(id='top-navbar' class='top-navbar')
+        div
+          a(href='/'): img(src='/images/logo' alt='login' style='width:100px;height:100px;' )      
         span
           a(href='/demo') Demo
         span
@@ -25,7 +27,8 @@ block content
       include top-navbar.pug
       div(id='main-body' class='main-body')
         div(id='side-navbar' class='side-navbar')
-          p Forget Me Not (logo?)
+          div
+            a(href='/'): img(src='/images/logo' alt='login' style='width:100px;height:100px;')
           div(class="due-nav nav-ele")
             div(class='inbox' id='inbox') 
               span Inbox

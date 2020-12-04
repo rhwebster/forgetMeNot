@@ -134,11 +134,40 @@ router.put(
   "/tasks/:id/edit",
   asyncHandler(async (req, res) => {
     const { name, due, notes, list } = req.body;
+    const task = await Task.findByPk(req.params.id);
     if (name !== undefined) {
-      const task = await Task.findByPk(req.params.id);
       await task.update({ name });
+      res.json({ task });
+    } else if (notes !== undefined) {
+      await task.update({ notes });
+      res.json({ task });
     }
-    res.json({ message: "Updated!" });
+  })
+);
+
+router.delete(
+  "/tasks/:taskId/tag/:tagId/delete",
+  asyncHandler(async (req, res) => {
+    const taskId = req.params.taskId;
+    const tagId = req.params.tagId;
+    const taggedTask = await TaggedTask.findOne({
+      where: {
+        taskId,
+        tagId,
+      },
+    });
+    await taggedTask.destroy();
+    const task = await Task.findOne({
+      where: { id: taskId },
+      include: [
+        List,
+        {
+          model: Tag,
+          as: "TasksWithTags",
+        },
+      ],
+    });
+    res.json({ task });
   })
 );
 

@@ -5,6 +5,10 @@ html {
   overflow: hidden;
 }
 
+body {
+  font-family: "Segoe UI", "Helvetica";
+}
+
 .wholepage {
   display: flex;
   flex-direction: column;
@@ -62,15 +66,18 @@ html {
 .side-panel {
   background-color: rgb(228, 238, 248);
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
+  width: auto;
+  max-width: 51%;
   height: 100%;
+  z-index: 1;
+  right: 12px;
+  top: 12px;
+  left: 50%;
+  margin-left: -5px;
   /* justify-self: flex-end;
   width: auto; */
-  margin: 12px 12px 12px -2px;
+
   z-index: 0;
-  padding-left: 10px;
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
 }
@@ -81,20 +88,21 @@ html {
 }
 
 .panel-shown {
-  transition-duration: 1s;
+  transition-duration: 0.6s;
 }
 #task-detail-panel {
   background-color: white;
+  box-sizing: border-box;
   position: absolute;
-  width: 50%;
+  width: auto;
+  max-width: 50%;
   height: 100%;
   z-index: 1;
-  right: 0;
-  top: 0;
+  right: 12px;
+  top: 12px;
+  left: 50%;
   border-left: 2px solid rgb(217, 217, 217);
-  margin: 12px 12px 12px 0px;
   border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
   border-top-left-radius: 6px;
 }
 
@@ -108,6 +116,16 @@ html {
   flex-direction: column;
 }
 
+.remove-tag {
+  display: flex;
+  flex-direction: row;
+}
+
+.x-button {
+  font-size: 10px;
+  cursor: pointer;
+}
+
 #close-button-panel {
   align-self: flex-end;
   color: gray;
@@ -117,9 +135,9 @@ html {
 }
 
 #task-name-panel {
-  margin-left: 35px;
+  margin-left: 25px;
   margin-bottom: 15px;
-  border-left: 3px solid gray;
+  border-left: 3px solid rgb(204, 204, 204);
   padding-left: 6px;
 }
 
@@ -141,6 +159,129 @@ html {
   border: 1px solid rgb(50, 149, 255);
   border-radius: 2px;
 }
+
+.panel-text {
+  color: rgb(155, 155, 155);
+  font-size: 13px;
+  margin-left: 45px;
+  margin-right: 45px;
+}
+
+#tags-header-text {
+  color: rgb(155, 155, 155);
+  font-size: 13px;
+  margin-left: 45px;
+  margin-right: 38px;
+}
+
+#due-elements {
+  margin-bottom: 15px;
+}
+
+#due-date-input {
+  font-size: 14px;
+}
+
+#list-info-panel {
+  margin-bottom: 6px;
+}
+
+#current-list {
+  font-size: 14px;
+  margin-left: 5px;
+}
+
+#task-info {
+  border-bottom: 1px dotted rgb(229, 229, 229);
+}
+
+#tags-div {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 50px;
+}
+
+#notes-header {
+  margin-top: 20px;
+  padding-left: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px dotted rgb(229, 229, 229);
+}
+
+#add-a-note {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dotted rgb(229, 229, 229);
+}
+
+#notes-input {
+  align-self: center;
+  box-sizing: border-box;
+  width: 96%;
+  margin-left: 10px;
+  margin-right: 10px;
+  height: 30px;
+  border: 1px solid rgb(229, 229, 229);
+  border-radius: 2px;
+}
+
+#notes-input:hover {
+  border: 1px solid rgb(190, 190, 190);
+}
+
+#notes-input:focus {
+  outline: none;
+  border: 1px solid rgb(50, 149, 255);
+  border-radius: 2px;
+}
+
+#add-note-button.shown {
+  background-color: rgb(46, 140, 235);
+  width: 75px;
+  height: 35px;
+  transition: height 0.25s ease-in;
+  margin-top: 10px;
+  margin-left: 14px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#add-note-button {
+  color: white;
+  height: 0;
+  transition: height 0.5s ease-out;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#note-button-text {
+  font-weight: bold;
+  font-size: 0.9em;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#add-note-button:hover {
+  box-shadow: 0px 1px 1px mediumblue;
+}
+
+.notes-list-item {
+  list-style-type: none;
+  font-size: 13px;
+  padding: 8px 8px 8px 15px;
+  border-bottom: 1px dotted rgb(229, 229, 229);
+}
+
+.panel-elements {
+  display: flex;
+  flex-direction: row;
+}
+
 .due-nav {
   display: flex;
   flex-direction: column;
@@ -163,26 +304,43 @@ html {
 .list-of-tags-class li {
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-between;
   padding-top: 3px;
   padding-bottom: 3px;
-  padding-left: 10px;
+  padding-left: 4px;
 }
 
 #tag-span {
   padding-left: 10px;
 }
 
+.left-tag-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .tag-button {
   background-color: rgb(215, 231, 245);
   border: 1px solid rgb(122, 178, 224);
-  height: 20px;
-  width: 20px;
-  font-size: 10px;
-  text-align: center;
-  line-height: 1em;
+  height: 16px;
+  width: 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
   border-radius: 4px;
   color: rgb(122, 178, 224);
+}
+
+.green-tag {
+  height: 12px;
+  width: 12px;
+  margin-right: 4px;
+  background-color: rgb(115, 163, 65);
+  border-radius: 2px;
 }
 
 .tag-button:hover {
@@ -221,6 +379,7 @@ html {
 }
 
 .nav-ele {
+  font-size: 15px;
   margin-bottom: 15px;
   padding-bottom: 15px;
   border-bottom: 1px solid rgb(191, 217, 241);
@@ -255,11 +414,12 @@ html {
   padding: 5px;
   border-bottom: 1px dotted rgb(229, 229, 229);
   align-items: center;
-  height: 30px;
+  height: 32px;
 }
 
 #list-of-tasks li.filled {
   cursor: pointer;
+  transition-duration: 500ms;
 }
 
 #list-of-tasks li.filled:hover {
@@ -267,9 +427,23 @@ html {
   background-color: rgb(255, 255, 214);
 }
 
+.left-border {
+  width: 3px;
+  height: 26px;
+  background-color: rgb(204, 204, 204);
+  margin-left: 12px;
+  margin-right: 6px;
+}
+
+.task-check-box:before {
+  border-left: 3px solid gray;
+  border-right: 3px solid violet;
+}
+
 .task-text {
-  font-size: 15px;
-  margin-left: 15px;
+  font-size: 14px;
+  margin-left: 5px;
+  margin-right: 3px;
 }
 
 .date-text {
@@ -300,6 +474,7 @@ html {
   height: 30px;
   border: 1px solid rgb(229, 229, 229);
   border-radius: 2px;
+  margin-bottom: 5px;
 }
 
 #task-name:hover {
@@ -315,8 +490,7 @@ html {
 #add-task-button.shown {
   background-color: rgb(46, 140, 235);
   height: 35px;
-  max-height: 35px !important;
-  transition: max-height 0.25s ease-in !important;
+  transition: height 0.25s ease-in;
   margin: 6px;
   margin-right: 15px;
   border: none;
@@ -326,11 +500,11 @@ html {
 
 #add-task-button {
   color: white;
-  max-height: 0;
-  transition: max-height 0.25s ease-out;
+  height: 0;
+  transition: height 0.25s ease-out;
   overflow: hidden;
   display: flex;
-  align-content: center;
+  align-items: center;
 }
 
 #button-text {
@@ -338,7 +512,6 @@ html {
   font-size: 0.8em;
   padding-left: 10px;
   padding-right: 10px;
-  align-self: center;
 }
 
 #add-task-button:hover {
@@ -351,8 +524,8 @@ html {
   color: white;
   font-size: 0.6rem;
   background: rgb(115, 163, 65);
-  margin-left: 10px;
-  padding: 1px 4px 2px;
+  margin-left: 4px;
+  padding: 3px 4px 3px;
   border-radius: 3px;
 }
 
@@ -394,4 +567,36 @@ html {
   color: #000;
   text-decoration: none;
   cursor: pointer;
+}
+
+@media screen and (max-width: 1000px) {
+  .main-panel {
+    transform: translateY(100px);
+    transition-duration: 1s;
+    width: auto;
+    right: 12px;
+  }
+
+  .side-panel {
+    left: 6px;
+    /* transition-duration: 0.75s; */
+    border-top-left-radius: 6px;
+    height: 100px;
+    max-width: 100%;
+    width: auto;
+  }
+  #task-detail-panel.panel-shown {
+    position: fixed;
+    max-width: 100%;
+    left: 209px;
+    top: 52px;
+    right: 12px;
+    transition-duration: 0s;
+  }
+}
+
+@media screen and (min-width: 1001px) {
+  .main-panel {
+    transition-duration: 0.75s;
+  }
 }

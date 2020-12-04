@@ -36,11 +36,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       tasks.forEach((task) => {
         let tags = task.TasksWithTags;
         if (tags) {
-        html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
-        tags.forEach((tag) => {
-          html += `<span class="tag-class">${tag.name}</span>`;
-        });
-       }
+          html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
+          tags.forEach((tag) => {
+            html += `<span class="tag-class">${tag.name}</span>`;
+          });
+        }
 
         if (task.due) {
           const today = new Date();
@@ -185,8 +185,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const taskHtml = [];
       tasks.forEach((task) => {
         let tags = task.TasksWithTags;
+        let html;
         if (tags) {
-          let html = `<li id="ele-${task.id} "class="filled"><span class="task-text">${task.name}</span>`;
+          html = `<li id="ele-${task.id} "class="filled"><span class="task-text">${task.name}</span>`;
           tags.forEach((tag) => {
             html += `<span class="tag-class">${tag.name}</span>`;
           });
@@ -313,12 +314,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         const p = document.getElementById("p-add-errors");
         console.log(resJson.errors);
         p.innerText = resJson.errors.join("/br");
-        return;
+        return false;
       }
       let { tags } = resJson;
       const tagHtml = [];
+
       tags.forEach((tag) => {
-        let html = `<li id="li-${tag.name}"><div class="left-tag-div"><div class="green-tag"></div><span>${tag.name}</span></div><button class="tag-button" id="btn-${tag.name}"><span class="tag-button-text">-</span></button></li>`;
+        let html = `<li id="li-${tag.id}"><div class="left-tag-div"><div class="green-tag"></div><span>${tag.name}</span></div><button class="tag-button" id="btn-${tag.id}"><span class="tag-button-text">-</span></button></li>`;
 
         tagHtml.push(html);
       });
@@ -342,16 +344,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
               console.error(e);
             }
           });
-        document.getElementById(`li-${tag.id}`)
-          .addEventListener('click', event => {
+        document
+          .getElementById(`li-${tag.id}`)
+          .addEventListener("click", (event) => {
             event.preventDefault();
-            console.log('you clicked', `li-${tag.id}`);
+            console.log("you clicked", `li-${tag.id}`);
             searchAndDisplay(tag.id);
           });
       });
     } catch (e) {
       console.error(e);
     }
+    return true;
   }
 
   populateTags();

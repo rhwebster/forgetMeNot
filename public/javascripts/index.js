@@ -22,6 +22,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const taskNameInput = document.getElementById("name-panel-text");
   const noteList = document.getElementById("note-list");
   const tagsList = document.getElementById("tags-list");
+  const dueDatePicker = document.getElementById("due-input");
+  const dueDateHead = document.getElementById("due-text-enter");
+  const addTaskOptions = document.getElementById("task-add-options");
+  const dueInput = document.getElementById("due-input");
 
   let currentTask;
   let currentUser;
@@ -97,10 +101,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         currentList.innerHTML = "";
         noteList.innerHTML = "";
         //   const taskNameInput = document.getElementById("name-panel-text");
-        console.log(taskEle);
         try {
           const id = taskEle.id.slice(4);
-          console.log(id);
           const res = await fetch(`/api/tasks/${id}`);
           let { task } = await res.json();
           currentTask = task;
@@ -114,17 +116,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           populateNotes();
 
           let html = "";
-          console.log(currentTask);
           currentTask.TasksWithTags.forEach((tag) => {
             html += `<span class="tag-class remove-tag">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
           });
 
           tagsList.innerHTML = html;
           const xTagButtons = document.querySelectorAll(".x-button");
-          console.log(xTagButtons);
           xTagButtons.forEach((button) => {
             button.addEventListener("click", (event) => {
-              console.log("HEy");
               removeTag(button);
             });
           });
@@ -146,7 +145,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   const updateTaskName = async (updatedName, taskId) => {
     const nameToSend = { name: updatedName };
-    console.log(nameToSend);
     try {
       const res = await fetch(`/api/tasks/${taskId}/edit`, {
         method: "PUT",
@@ -173,8 +171,16 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   }
   const clickHandler = async (event) => {
     addTaskButton.classList.remove("shown");
+    dueDatePicker.classList.remove("shown");
+    dueDateHead.classList.remove("shown");
     const value = taskField.value;
-    const nameToSend = { name: value };
+    let dueInputValue = dueInput.value;
+
+    if (dueInputValue.length === 0) {
+      dueInputValue = null;
+    }
+
+    const nameToSend = { name: value, due: dueInputValue };
     try {
       const res = await fetch("/api/tasks", {
         method: "POST",
@@ -228,6 +234,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       taskContainer.innerHTML = taskHtml.join("");
       taskField.value = "";
       taskField.blur();
+      populateTasks();
     } catch (e) {
       console.error(e);
     }
@@ -241,7 +248,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     if (currentTask.notes === "RESERVED") {
       notes.push(`****${value}`);
     } else {
-      console.log(currentTask.notes);
       notes = [...currentTask.notes.split("****")];
       notes.push(value);
     }
@@ -286,6 +292,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     event.preventDefault();
   });
 
+  addTaskOptions.addEventListener("mousedown", (event) => {
+    event.preventDefault();
+  });
+
   addTaskButton.addEventListener("click", clickHandler);
   taskField.addEventListener("keyup", (event) => {
     if (!taskField.value.length) {
@@ -297,9 +307,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   taskField.addEventListener("focus", (event) => {
     addTaskButton.removeEventListener("click", clickHandler);
     addTaskButton.classList.add("shown");
+    dueDateHead.classList.add("shown");
+    dueDatePicker.classList.add("shown");
   });
   taskField.addEventListener("blur", (event) => {
     addTaskButton.classList.remove("shown");
+    dueDateHead.classList.remove("shown");
+    dueDatePicker.classList.remove("shown");
   });
 
   addTaskButton.addEventListener("mousedown", (event) => {
@@ -338,7 +352,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
                 body: JSON.stringify({ id: tag.id }),
               });
               let { id } = await res.json();
-              console.log("json back", id);
+
               const li = document.getElementById(`li-${id}`);
               tagContainer.removeChild(li);
             } catch (e) {
@@ -349,7 +363,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           .getElementById(`li-${tag.id}`)
           .addEventListener("click", (event) => {
             event.preventDefault();
-            console.log("you clicked", `li-${tag.id}`);
             searchAndDisplay(tag.id);
           });
       });
@@ -385,7 +398,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   // Get the <span> element that closes the modal
   const span = document.getElementsByClassName("close")[0];
-  console.log("span", span);
 
   // When the user clicks the button, open the modal
   addTagBtn.onclick = function () {
@@ -406,7 +418,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     event.preventDefault();
     let textToSearch = searchText.value;
     if (!textToSearch.length) textToSearch = "all";
-    console.log(`/api/tasks/search/${textToSearch}/${tagName}`);
     populateTasks(`/api/tasks/search/${textToSearch}/${tagName}`);
     searchText.value = "";
   }
@@ -423,10 +434,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       currentTask.notes = "RESERVED";
       return;
     }
-    console.log(currentTask.notes);
+
     const notesArr = currentTask.notes.split("****");
     noteList.innerHTML = "";
-    console.log(notesArr);
+
     for (let i = 1; i < notesArr.length; i++) {
       noteList.innerHTML += `<li class="notes-list-item">${notesArr[i]}</li>`;
     }
@@ -454,7 +465,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const xTagButtons = document.querySelectorAll(".x-button");
       xTagButtons.forEach((button) => {
         button.addEventListener("click", (event) => {
-          console.log("HEy");
           removeTag(button);
         });
       });

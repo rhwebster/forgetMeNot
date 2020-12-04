@@ -4,6 +4,8 @@ div(id='main-task-view-div' class='main-task-view-div')
   div(id='list-of-tasks-div' class='list-of-tasks-class')
     div(id='add-a-task-div')
       input(type="text" id='task-name' placeholder="Add a task...")
-      div(id="add-task-button")
-        span(id="button-text") Add Task
+      div(id="task-add-options")
+        input(type="date" id="due-input" class="shown-input")
+        div(id="add-task-button")
+          span(id="button-text") Add Task
     ul(id="list-of-tasks")

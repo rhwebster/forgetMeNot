@@ -187,7 +187,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         let tags = task.TasksWithTags;
         let html;
         if (tags) {
-          html = `<li id="ele-${task.id} "class="filled"><span class="task-text">${task.name}</span>`;
+          html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
           tags.forEach((tag) => {
             html += `<span class="tag-class">${tag.name}</span>`;
           });

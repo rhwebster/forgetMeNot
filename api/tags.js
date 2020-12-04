@@ -57,24 +57,20 @@ router.post(
   })
 );
 router.delete(
-  "/:name",
+  "/:id",
   requireAuth,
   // csrfProtection,
   // tagValidator,
   asyncHandler(async (req, res) => {
-    const { name } = req.params;
-    console.log('name to delete ', name);
-    console.log('Tag name', name);
+    const { id } = req.params;
     const tag = await db.Tag.findOne({
       where: {
-        name: {
-          [Op.iLike]: `%${name}%`,
-        }
+        id
       },
     });
     await tag.destroy();
     console.log('found a tag', tag);
-    res.json({ name });
+    res.json({ id });
   })
 );
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Task, User, List, Tag } = require("../db/models");
+const { Task, User, List, Tag, TaggedTask } = require("../db/models");
 const { asyncHandler } = require("../routes/utils");
 const { Op } = require('sequelize');
 
@@ -70,15 +70,14 @@ router.get(
 );
 
 router.get(
-  "/tasks/search/:text",
+  "/tasks/search/:taskName\/?",
   asyncHandler(async (req, res) => {
-    const textToSearch = req.params.text;
+    const taskNameToSearch = req.params.taskName;
     const userId = req.session.auth.userId;
     const whereObject = {userId};
-    console.log('texttoSearch', textToSearch);
-    if(textToSearch !== 'all'){
+    if(taskNameToSearch !== 'all'){
       whereObject.name = {
-        [Op.iLike]: `%${textToSearch}%`,
+        [Op.iLike]: `%${taskNameToSearch}%`,
       }
     }
     console.log('\n\nWhereobject', whereObject);
@@ -95,4 +94,36 @@ router.get(
     res.json({ tasks });
   })
 );
+
+router.get(
+  "/tasks/search/:taskName/:tagId",
+  asyncHandler(async (req, res) => {
+    const taskNameToSearch = req.params.taskName;
+    const userId = req.session.auth.userId;
+    const whereObject = {userId};
+    console.log("tagId", req.params.tagId);
+    if(taskNameToSearch !== 'all'){
+      whereObject.name = {
+        [Op.iLike]: `%${taskNameToSearch}%`,
+      }
+    }
+    console.log('\n\nWhereobject', whereObject);
+    const tasks = await Task.findAll({
+      include: [
+        {
+          model: Tag,
+          where: {
+            tagId
+          },
+          through: {
+            model: TaggedTask
+          }
+        },
+      ],
+      order: [["createdAt", "ASC"]],
+    });
+    res.json({ tasks });
+  })
+);
+
 module.exports = router;

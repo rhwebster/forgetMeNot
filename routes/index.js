@@ -3,6 +3,7 @@ const db = require("../db/models");
 var router = express.Router();
 const { Task, User, List } = require("../db/models");
 const { asyncHandler } = require("./utils");
+const path = require('path');
 
 /* GET home page. */
 
@@ -24,5 +25,10 @@ router.get(
     }
   })
 );
+
+router.get('/images/logo', asyncHandler(async (req, res, next) => {
+  res.sendFile(path.join(__dirname, '../images/fmnlogo1.png')); //square logo
+  // res.sendFile(path.join(__dirname, '../images/fmnlogo2.png')); //the forgetmenot flower logo
+}));
 
 module.exports = router;

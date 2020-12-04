@@ -9,15 +9,19 @@ const { asyncHandler } = require("./utils");
 router.get(
   "/",
   asyncHandler(async (req, res, next) => {
-    const userId = req.session.auth.userId;
-    const list = await List.findOne({ where: { name: "Inbox", userId } });
-    const tasks = await Task.findAll({
-      where: {
-        userId,
-        listId: list.id,
-      },
-    });
-    res.render("index", { title: "Forget Me Not Home", tasks });
+    if (req.session.auth) {
+      const userId = req.session.auth.userId;
+      const list = await List.findOne({ where: { name: "Inbox", userId } });
+      const tasks = await Task.findAll({
+        where: {
+          userId,
+          listId: list.id,
+        },
+      });
+      res.render("index", { title: "Forget Me Not Home", tasks });
+    } else {
+      res.render("index", { title: "Forget Me Not Home"});
+    }
   })
 );
 

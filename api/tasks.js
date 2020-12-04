@@ -55,7 +55,6 @@ router.get(
   "/tasks/:id",
   asyncHandler(async (req, res) => {
     const taskId = req.params.id;
-    console.log(taskId);
     const task = await Task.findOne({
       where: { id: taskId },
       include: [
@@ -81,7 +80,6 @@ router.get(
         [Op.iLike]: `%${taskNameToSearch}%`,
       };
     }
-    console.log("\n\nWhereobject", whereObject);
     const tasks = await Task.findAll({
       where: whereObject,
       include: [
@@ -103,7 +101,6 @@ router.get(
     const userId = req.session.auth.userId;
     const whereObject = { userId };
     const tagId = req.params.tagId;
-    console.log("tagId", tagId);
     let taggedTasks = await TaggedTask.findAll({
       where: {
         tagId,

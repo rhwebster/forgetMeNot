@@ -64,7 +64,7 @@ router.get(
           as: "TasksWithTags",
         },
       ],
-      });
+    });
     res.json({ task });
   })
 );
@@ -74,8 +74,8 @@ router.get(
   asyncHandler(async (req, res) => {
     const taskNameToSearch = req.params.taskName;
     const userId = req.session.auth.userId;
-    const whereObject = {userId};
-    if(taskNameToSearch !== 'all'){
+    const whereObject = { userId };
+    if (taskNameToSearch !== 'all') {
       whereObject.name = {
         [Op.iLike]: `%${taskNameToSearch}%`,
       }
@@ -100,28 +100,36 @@ router.get(
   asyncHandler(async (req, res) => {
     const taskNameToSearch = req.params.taskName;
     const userId = req.session.auth.userId;
-    const whereObject = {userId};
-    console.log("tagId", req.params.tagId);
-    if(taskNameToSearch !== 'all'){
-      whereObject.name = {
-        [Op.iLike]: `%${taskNameToSearch}%`,
+    const whereObject = { userId };
+    const tagId = req.params.tagId;
+    console.log("tagId", tagId);
+    let taggedTasks = await TaggedTask.findAll({
+      where: {
+        tagId
       }
-    }
-    console.log('\n\nWhereobject', whereObject);
-    const tasks = await Task.findAll({
-      include: [
-        {
-          model: Tag,
-          where: {
-            tagId
-          },
-          through: {
-            model: TaggedTask
-          }
-        },
-      ],
-      order: [["createdAt", "ASC"]],
     });
+
+    console.log(taggedTasks);
+
+    let tasks = [];
+    for (let i = 0; i < taggedTasks.length; i++){
+      const task = await Task.findOne({
+        where: {
+          id: taggedTasks[i].taskId,
+          // userId
+        },
+        include: [
+          {
+            model: Tag,
+            as: "TasksWithTags",
+          },
+        ],
+        order: [["createdAt", "ASC"]],
+      });
+      console.log(task);
+      tasks.push(task);
+    }
+
     res.json({ tasks });
   })
 );

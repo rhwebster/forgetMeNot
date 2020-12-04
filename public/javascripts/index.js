@@ -381,6 +381,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const inputName = document.getElementById("inputName");
 
   const popupAddTagBtn = document.getElementById("addTag");
+  const popupAddListBtn = document.getElementById('addList')
 
   popupAddTagBtn.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -419,6 +420,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     popupAddTagBtn.innerText = "Add List";
     inputName.focus();
   };
+  // addListBtn.onclick = function () {
+  //   modal.style.display = "block";
+  //   popupAddListBtn.innerText = "Add List";
+  //   inputName.focus();
+  // };
 
   // When the user clicks on <span> (x), close the modal
   span.onclick = function () {

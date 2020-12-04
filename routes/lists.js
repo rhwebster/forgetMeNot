@@ -43,6 +43,21 @@ router.get(
   }
 );
 
+router.get('/:id(\\d+)', requireAuth, csrfProtection, listValidator, asyncHandler(async (req, res, next) => {
+  const userId = req.session.auth.userId;
+  const listId = parseInt(req.params.id, 10);
+  const list = await db.List.findOne({ where: { name: 'Groceries', userId } });
+  const tasks = await db.Task.findAll({
+    where: {
+      userId,
+      listId: list.id,
+    },
+  });
+  const tags = await db.Tag.findAll();
+  const pageName = 'list';
+  res.render("index", { title: `${db.List.name}`, tasks, tags, pageName });
+}));
+
 router.get(
   "/lists/today",
   requireAuth,

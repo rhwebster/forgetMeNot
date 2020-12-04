@@ -125,11 +125,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       console.error(e);
     }
   };
+
   taskNameInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter" && taskNameInput.value !== currentTask.name) {
       updateTaskName(taskNameInput.value, currentTask.id);
     }
   });
+
   const clickHandler = async (event) => {
     addTaskButton.classList.remove("shown");
     const value = taskField.value;

@@ -294,9 +294,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // When the user clicks the button, open the modal
   addTagBtn.onclick = function () {
     modal.style.display = "block";
+    popupAddTagBtn.innerText = "Add Tag";
   };
   addListBtn.onclick = function () {
     modal.style.display = "block";
+    popupAddTagBtn.innerText = "Add List";
   };
 
   // When the user clicks on <span> (x), close the modal

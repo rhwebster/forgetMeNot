@@ -20,7 +20,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const tagContainer = document.getElementById("list-of-tags-div");
   const detailPanel = document.getElementById("task-detail-panel");
   const taskNameInput = document.getElementById("name-panel-text");
+  const noteList = document.getElementById("note-list");
+  const tagsList = document.getElementById("tags-list");
+
   let currentTask;
+  let currentUser;
+  let currentList;
 
   async function populateTasks(link = "/api/tasks", taskObject = {}) {
     try {
@@ -31,11 +36,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       tasks.forEach((task) => {
         let tags = task.TasksWithTags;
         if (tags) {
-          html = `<li id="ele-${task.id}" class="filled"><span class="task-text">${task.name}</span>`;
-          tags.forEach((tag) => {
-            html += `<span class="tag-class">${tag.name}</span>`;
-          });
-        }
+        html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
+        tags.forEach((tag) => {
+          html += `<span class="tag-class">${tag.name}</span>`;
+        });
+       }
+
         if (task.due) {
           const today = new Date();
           const todayMonth = today.getMonth();
@@ -87,7 +93,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       taskEle.addEventListener("click", async (event) => {
         const taskDueDate = document.getElementById("due-date-input");
         const currentList = document.getElementById("current-list");
-        const notesList = document.getElementById("");
+        taskDueDate.innerHTML = "";
+        currentList.innerHTML = "";
+        noteList.innerHTML = "";
         //   const taskNameInput = document.getElementById("name-panel-text");
         console.log(taskEle);
         try {
@@ -97,8 +105,29 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           let { task } = await res.json();
           currentTask = task;
           taskNameInput.value = task.name;
-          taskDueDate.innerHTML = task.due;
+          if (task.due) {
+            let dateHtml = new Date(task.due).toDateString();
+            taskDueDate.innerHTML = dateHtml;
+          }
+
           currentList.innerHTML = task.List.name;
+          populateNotes();
+
+          let html = "";
+          console.log(currentTask);
+          currentTask.TasksWithTags.forEach((tag) => {
+            html += `<span class="tag-class remove-tag">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+          });
+
+          tagsList.innerHTML = html;
+          const xTagButtons = document.querySelectorAll(".x-button");
+          console.log(xTagButtons);
+          xTagButtons.forEach((button) => {
+            button.addEventListener("click", (event) => {
+              console.log("HEy");
+              removeTag(button);
+            });
+          });
         } catch (e) {
           console.error(e);
         }
@@ -114,6 +143,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     detailPanel.classList.remove("panel-shown");
     detailPanel.classList.add("panel-hidden");
   });
+
   const updateTaskName = async (updatedName, taskId) => {
     const nameToSend = { name: updatedName };
     console.log(nameToSend);
@@ -123,18 +153,24 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nameToSend),
       });
+      taskNameInput.addEventListener("keypress", keyPressEvent);
       populateTasks();
     } catch (e) {
       console.error(e);
     }
   };
 
-  taskNameInput.addEventListener("keypress", (event) => {
-    if (event.key === "Enter" && taskNameInput.value !== currentTask.name) {
+  taskNameInput.addEventListener("keypress", keyPressEvent);
+
+  function keyPressEvent(event) {
+    if (
+      event.key === "Enter" &&
+      taskNameInput.value !== currentTask.name &&
+      taskNameInput.value !== ""
+    ) {
       updateTaskName(taskNameInput.value, currentTask.id);
     }
-  });
-
+  }
   const clickHandler = async (event) => {
     addTaskButton.classList.remove("shown");
     const value = taskField.value;
@@ -195,6 +231,60 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       console.error(e);
     }
   };
+  const saveNoteButton = document.getElementById("add-note-button");
+  const noteField = document.getElementById("notes-input");
+  //   saveNoteButton
+  const noteHandler = async (event) => {
+    let notes = [];
+    const value = noteField.value;
+    if (currentTask.notes === "RESERVED") {
+      notes.push(`****${value}`);
+    } else {
+      console.log(currentTask.notes);
+      notes = [...currentTask.notes.split("****")];
+      notes.push(value);
+    }
+    const noteToSend = notes.join("****");
+    saveNoteButton.classList.remove("shown");
+    try {
+      const res = await fetch(`/api/tasks/${currentTask.id}/edit`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notes: noteToSend }),
+      });
+      let { task } = await res.json();
+      currentTask.notes = task.notes;
+      noteField.value = "";
+      noteField.blur();
+
+      //   currentTask.notes = await res.json().notes;
+    } catch (e) {
+      console.error(e);
+    }
+
+    populateNotes();
+  };
+
+  saveNoteButton.addEventListener("click", noteHandler);
+  noteField.addEventListener("keyup", (event) => {
+    if (!noteField.value.length) {
+      saveNoteButton.removeEventListener("click", noteHandler);
+    } else {
+      saveNoteButton.addEventListener("click", noteHandler);
+    }
+  });
+  noteField.addEventListener("focus", (event) => {
+    saveNoteButton.removeEventListener("click", noteHandler);
+    saveNoteButton.classList.add("shown");
+  });
+  noteField.addEventListener("blur", (event) => {
+    saveNoteButton.classList.remove("shown");
+  });
+
+  saveNoteButton.addEventListener("mousedown", (event) => {
+    event.preventDefault();
+  });
+
   addTaskButton.addEventListener("click", clickHandler);
   taskField.addEventListener("keyup", (event) => {
     if (!taskField.value.length) {
@@ -228,7 +318,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let { tags } = resJson;
       const tagHtml = [];
       tags.forEach((tag) => {
-        let html = `<li id="li-${tag.id}">${tag.name} <button class="tag-button" id="btn-${tag.id}">X</button></li>`;
+        let html = `<li id="li-${tag.name}"><div class="left-tag-div"><div class="green-tag"></div><span>${tag.name}</span></div><button class="tag-button" id="btn-${tag.name}"><span class="tag-button-text">-</span></button></li>`;
+
         tagHtml.push(html);
       });
       tagContainer.innerHTML = tagHtml.join("");
@@ -322,4 +413,50 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       searchAndDisplay();
     }
   });
+  function populateNotes() {
+    if (currentTask.notes === null) {
+      currentTask.notes = "RESERVED";
+      return;
+    }
+    console.log(currentTask.notes);
+    const notesArr = currentTask.notes.split("****");
+    noteList.innerHTML = "";
+    console.log(notesArr);
+    for (let i = 1; i < notesArr.length; i++) {
+      noteList.innerHTML += `<li class="notes-list-item">${notesArr[i]}</li>`;
+    }
+  }
+  async function removeTag(tagButton) {
+    const ids = tagButton.id;
+    const idsArr = ids.split("tt");
+    const taskIdWithTag = idsArr[0];
+    const tagIdWithTag = idsArr[1];
+
+    try {
+      const res = await fetch(
+        `/api/tasks/${taskIdWithTag}/tag/${tagIdWithTag}/delete`,
+        {
+          method: "DELETE",
+        }
+      );
+      let html = "";
+      const { task } = await res.json();
+      currentTask = task;
+      currentTask.TasksWithTags.forEach((tag) => {
+        html += `<span class="tag-class remove-tag">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+      });
+      tagsList.innerHTML = html;
+      const xTagButtons = document.querySelectorAll(".x-button");
+      xTagButtons.forEach((button) => {
+        button.addEventListener("click", (event) => {
+          console.log("HEy");
+          removeTag(button);
+        });
+      });
+      populateTasks();
+      //   currentTask.notes = await res.json().notes;
+    } catch (e) {
+      console.error(e);
+    }
+  }
 });

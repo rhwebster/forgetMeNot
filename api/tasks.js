@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Task, User, List, Tag } = require("../db/models");
 const { asyncHandler } = require("../routes/utils");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 router.get(
   "/tasks",
@@ -64,7 +64,7 @@ router.get(
           as: "TasksWithTags",
         },
       ],
-      });
+    });
     res.json({ task });
   })
 );
@@ -74,14 +74,14 @@ router.get(
   asyncHandler(async (req, res) => {
     const textToSearch = req.params.text;
     const userId = req.session.auth.userId;
-    const whereObject = {userId};
-    console.log('texttoSearch', textToSearch);
-    if(textToSearch !== 'all'){
+    const whereObject = { userId };
+    console.log("texttoSearch", textToSearch);
+    if (textToSearch !== "all") {
       whereObject.name = {
         [Op.iLike]: `%${textToSearch}%`,
-      }
+      };
     }
-    console.log('\n\nWhereobject', whereObject);
+    console.log("\n\nWhereobject", whereObject);
     const tasks = await Task.findAll({
       where: whereObject,
       include: [
@@ -95,4 +95,17 @@ router.get(
     res.json({ tasks });
   })
 );
+
+router.put(
+  "/tasks/:id/edit",
+  asyncHandler(async (req, res) => {
+    const { name, due, notes, list } = req.body;
+    if (name !== undefined) {
+      const task = await Task.findByPk(req.params.id);
+      await task.update({ name });
+    }
+    res.json({ message: "Updated!" });
+  })
+);
+
 module.exports = router;

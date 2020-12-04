@@ -85,7 +85,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const numTasksElement = document.createElement("span");
       numTasksElement.classList.add("num-tasks");
       numTasksElement.innerHTML = tasks.length;
-      inboxLink.innerHTML = "<span>Inbox</span>";
+      inboxLink.innerHTML =
+        "<a class='timed-list' id='inbox-link' href='/'>Inbox</a>";
       inboxLink.appendChild(numTasksElement);
     } catch (e) {
       console.error(e);

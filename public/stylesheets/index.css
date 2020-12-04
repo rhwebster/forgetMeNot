@@ -343,6 +343,14 @@ body {
   border-radius: 2px;
 }
 
+.color-tag {
+  height: 12px;
+  width: 12px;
+  margin-right: 4px;
+  border-radius: 2px;
+}
+
+
 .tag-button:hover {
   background-color: rgb(122, 178, 224);
   color: rgb(215, 231, 245);
@@ -588,6 +596,17 @@ body {
   padding: 3px 4px 3px;
   border-radius: 3px;
 }
+
+.no-color-tag-class {
+  display: inline-block;
+  box-sizing: border-box;
+  color: white;
+  font-size: 0.6rem;
+  margin-left: 4px;
+  padding: 3px 4px 3px;
+  border-radius: 3px;
+}
+
 
 /* The Modal (background) */
 .modal {

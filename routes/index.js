@@ -22,7 +22,8 @@ router.get(
       const tags = await Tag.findAll();
       res.render("index", { title: "Forget Me Not Home", tasks, tags });
     } else {
-      res.render("index", { title: "Forget Me Not Home"});
+      res.redirect('/users/login');
+      // res.render("index", { title: "Forget Me Not Home"});
     }
   })
 );

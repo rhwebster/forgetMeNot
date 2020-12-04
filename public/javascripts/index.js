@@ -18,6 +18,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const addTaskButton = document.getElementById("add-task-button");
   const taskField = document.getElementById("task-name");
   const tagContainer = document.getElementById("list-of-tags-div");
+  const detailPanel = document.getElementById("task-detail-panel");
+  const taskNameInput = document.getElementById("name-panel-text");
+  let currentTask;
 
   async function populateTasks(link = "/api/tasks", taskObject = {}) {
     try {
@@ -72,18 +75,19 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const numTasksElement = document.createElement("span");
       numTasksElement.classList.add("num-tasks");
       numTasksElement.innerHTML = tasks.length;
+      inboxLink.innerHTML = "<span>Inbox</span>";
       inboxLink.appendChild(numTasksElement);
     } catch (e) {
       console.error(e);
     }
-    const detailPanel = document.getElementById("task-detail-panel");
+
     const tasksClickable = document.querySelectorAll(".filled");
     // const taskNameDetail = document.getElementById("task-name-detail");
     tasksClickable.forEach((taskEle) => {
       taskEle.addEventListener("click", async (event) => {
-        const taskNameInput = document.getElementById("name-panel-text");
         const taskDueDate = document.getElementById("due-date-input");
         const currentList = document.getElementById("current-list");
+        const notesList = document.getElementById("");
         //   const taskNameInput = document.getElementById("name-panel-text");
         console.log(taskEle);
         try {
@@ -91,6 +95,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           console.log(id);
           const res = await fetch(`/api/tasks/${id}`);
           let { task } = await res.json();
+          currentTask = task;
           taskNameInput.value = task.name;
           taskDueDate.innerHTML = task.due;
           currentList.innerHTML = task.List.name;
@@ -104,6 +109,31 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   }
 
   populateTasks();
+  const closeButton = document.getElementById("close-button-panel");
+  closeButton.addEventListener("click", (event) => {
+    detailPanel.classList.remove("panel-shown");
+    detailPanel.classList.add("panel-hidden");
+  });
+  const updateTaskName = async (updatedName, taskId) => {
+    const nameToSend = { name: updatedName };
+    console.log(nameToSend);
+    try {
+      const res = await fetch(`/api/tasks/${taskId}/edit`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nameToSend),
+      });
+      populateTasks();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  taskNameInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter" && taskNameInput.value !== currentTask.name) {
+      updateTaskName(taskNameInput.value, currentTask.id);
+    }
+  });
 
   const clickHandler = async (event) => {
     addTaskButton.classList.remove("shown");

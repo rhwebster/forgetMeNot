@@ -76,11 +76,12 @@ html {
 }
 
 .panel-hidden {
-  transform: translateX(999px);
+  transform: translateX(1500px);
+  transition-duration: 1s;
 }
 
 .panel-shown {
-  transition-duration: 1.5s;
+  transition-duration: 1s;
 }
 #task-detail-panel {
   background-color: white;
@@ -97,6 +98,49 @@ html {
   border-top-left-radius: 6px;
 }
 
+#task-detail-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+#task-info {
+  display: flex;
+  flex-direction: column;
+}
+
+#close-button-panel {
+  align-self: flex-end;
+  color: gray;
+  margin-top: 10px;
+  margin-right: 9px;
+  cursor: pointer;
+}
+
+#task-name-panel {
+  margin-left: 35px;
+  margin-bottom: 15px;
+  border-left: 3px solid gray;
+  padding-left: 6px;
+}
+
+#name-panel-text {
+  align-self: center;
+  height: 30px;
+  font-size: 16px;
+  border: none;
+  border-radius: 2px;
+  width: 80%;
+}
+
+#name-panel-text:hover {
+  border: 1px solid rgb(190, 190, 190);
+}
+
+#name-panel-text:focus {
+  outline: none;
+  border: 1px solid rgb(50, 149, 255);
+  border-radius: 2px;
+}
 .due-nav {
   display: flex;
   flex-direction: column;
@@ -251,7 +295,6 @@ html {
 }
 
 #task-name {
-  /* background-color: white; */
   align-self: center;
   width: 96%;
   height: 30px;

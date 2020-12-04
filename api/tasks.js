@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Task, User, List, Tag, TaggedTask } = require("../db/models");
 const { asyncHandler } = require("../routes/utils");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 router.get(
   "/tasks",
@@ -80,7 +80,7 @@ router.get(
         [Op.iLike]: `%${taskNameToSearch}%`,
       }
     }
-    console.log('\n\nWhereobject', whereObject);
+    console.log("\n\nWhereobject", whereObject);
     const tasks = await Task.findAll({
       where: whereObject,
       include: [
@@ -110,7 +110,7 @@ router.get(
     });
 
     let tasks = [];
-    for (let i = 0; i < taggedTasks.length; i++){
+    for (let i = 0; i < taggedTasks.length; i++) {
       const task = await Task.findOne({
         where: {
           id: taggedTasks[i].taskId,
@@ -124,10 +124,21 @@ router.get(
         ],
         order: [["createdAt", "ASC"]],
       });
-      if(task) tasks.push(task);
+      if (task) tasks.push(task);
     }
 
     res.json({ tasks });
+  })
+);
+router.put(
+  "/tasks/:id/edit",
+  asyncHandler(async (req, res) => {
+    const { name, due, notes, list } = req.body;
+    if (name !== undefined) {
+      const task = await Task.findByPk(req.params.id);
+      await task.update({ name });
+    }
+    res.json({ message: "Updated!" });
   })
 );
 

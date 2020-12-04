@@ -27,10 +27,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let html;
       tasks.forEach((task) => {
         let tags = task.TasksWithTags;
-        html = `<li id="ele-${task.id}" class="filled"><span class="task-text">${task.name}</span>`;
-        tags.forEach((tag) => {
-          html += `<span class="tag-class">${tag.name}</span>`;
-        });
+        if (tags) {
+          html = `<li id="ele-${task.id}" class="filled"><span class="task-text">${task.name}</span>`;
+          tags.forEach((tag) => {
+            html += `<span class="tag-class">${tag.name}</span>`;
+          });
+        }
         if (task.due) {
           const today = new Date();
           const todayMonth = today.getMonth();
@@ -117,10 +119,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const taskHtml = [];
       tasks.forEach((task) => {
         let tags = task.TasksWithTags;
-        let html = `<li id="ele-${task.id} "class="filled"><span class="task-text">${task.name}</span>`;
-        tags.forEach((tag) => {
-          html += `<span class="tag-class">${tag.name}</span>`;
-        });
+        if (tags) {
+          let html = `<li id="ele-${task.id} "class="filled"><span class="task-text">${task.name}</span>`;
+          tags.forEach((tag) => {
+            html += `<span class="tag-class">${tag.name}</span>`;
+          });
+        }
         if (task.due) {
           const today = new Date();
           const todayMonth = today.getMonth();
@@ -272,7 +276,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   const searchButton = document.getElementById("searchButton");
   const searchText = document.getElementById("searchText");
-  function searchAndDisplay(tagName="") {
+  function searchAndDisplay(tagName = "") {
     event.preventDefault();
     let textToSearch = searchText.value;
     if (!textToSearch.length) textToSearch = "all";

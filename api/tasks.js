@@ -109,14 +109,12 @@ router.get(
       }
     });
 
-    console.log(taggedTasks);
-
     let tasks = [];
     for (let i = 0; i < taggedTasks.length; i++){
       const task = await Task.findOne({
         where: {
           id: taggedTasks[i].taskId,
-          // userId
+          userId: userId
         },
         include: [
           {
@@ -126,8 +124,7 @@ router.get(
         ],
         order: [["createdAt", "ASC"]],
       });
-      console.log(task);
-      tasks.push(task);
+      if(task) tasks.push(task);
     }
 
     res.json({ tasks });

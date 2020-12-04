@@ -325,6 +325,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         tagHtml.push(html);
       });
       tagContainer.innerHTML = tagHtml.join("");
+
       tags.forEach((tag) => {
         document
           .getElementById(`btn-${tag.id}`)

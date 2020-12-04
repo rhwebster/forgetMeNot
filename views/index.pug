@@ -37,14 +37,16 @@ block content
               a(class='timed-list' id='this-week' href='/lists/') This Week
             div(class="inbox-link")
               a(class='timed-list' id='this-month' href='/lists') This Month
-          div(class='tasks nav-ele' id='tasks') Tasks
+          div(class='tasks nav-ele' id='tasks')
+            span Tasks
             span
               button(method='post') +
                 a(href='')
             div(class='tasks' id='all-tasks')
               button
                 a(href='/') All
-          div(class='lists nav-ele' id='lists') Lists
+          div(class='lists nav-ele' id='lists')
+            span Lists
             span
               button(method='post' id='addListBtn')
                 a(href='/lists') +
@@ -75,19 +77,21 @@ block content
                 span(id="close-text") close x
               div(id="task-name-panel")
                 input(id="name-panel-text")
-              div(id="due-elements")
-                span(id="due-text-panel") due
+              div(id="due-elements" class="panel-elements")
+                span(id="due-text-panel" class="panel-text") due
                 span(id="due-date-input")
-              div(id="list-info-panel")
-                span(id="list-header-text") list
+              div(id="list-info-panel" class="panel-elements") 
+                span(id="list-header-text" class="panel-text") list
                 div(id="current-list")
               div(id="tags-div")
-                span(id="tags-header") tags
-                ul(id="tags-list")
+                span(id="tags-header-text") tags
+                div(id="tags-list")
             div(id="notes")
               div(id="notes-header") Notes
               div(id="add-a-note")
                 input(id="notes-input" placeholder="Add a note...")
+                div(id="add-note-button") 
+                  span(id="note-button-text") Save
               div(id="notes-list-div")
                 ul(id="note-list")
 

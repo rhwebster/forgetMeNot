@@ -1,7 +1,7 @@
 var express = require("express");
 const db = require("../db/models");
 var router = express.Router();
-const { Task, User, List } = require("../db/models");
+const { Task, User, List, Tag, TaggedTask } = require("../db/models");
 const { asyncHandler } = require("./utils");
 const path = require('path');
 
@@ -19,7 +19,8 @@ router.get(
           listId: list.id,
         },
       });
-      res.render("index", { title: "Forget Me Not Home", tasks });
+      const tags = await Tag.findAll();
+      res.render("index", { title: "Forget Me Not Home", tasks, tags });
     } else {
       res.render("index", { title: "Forget Me Not Home"});
     }

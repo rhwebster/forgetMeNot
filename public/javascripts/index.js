@@ -22,6 +22,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const taskNameInput = document.getElementById("name-panel-text");
   const noteList = document.getElementById("note-list");
   const tagsList = document.getElementById("tags-list");
+  const tagSelector = document.getElementById('tag-selector');
   const dueDatePicker = document.getElementById("due-input");
   const dueDateHead = document.getElementById("due-text-enter");
   const addTaskOptions = document.getElementById("task-add-options");
@@ -317,11 +318,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     dueDatePicker.classList.remove("shown");
   });
 
+  taskField.addEventListener('keydown', event => {
+    if (event.key == "Enter") {
+      addTaskButton.click();
+    }
+  });
+
   addTaskButton.addEventListener("mousedown", (event) => {
     event.preventDefault();
   });
 
   async function populateTags(tagPostObject = {}) {
+    let tagId = undefined;
     try {
       const res = await fetch("/api/tags", tagPostObject);
       const resJson = await res.json();
@@ -329,7 +337,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         const p = document.getElementById("p-add-errors");
         console.log(resJson.errors);
         p.innerText = resJson.errors.join("/br");
-        return false;
+        return tagId;
       }
       let { tags } = resJson;
       const tagHtml = [];
@@ -340,6 +348,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         tagHtml.push(html);
       });
       tagContainer.innerHTML = tagHtml.join("");
+      tagId = tags[tags.length - 1].id;
 
       tags.forEach((tag) => {
         document
@@ -353,9 +362,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
                 body: JSON.stringify({ id: tag.id }),
               });
               let { id } = await res.json();
-
+              // console.log("json back", id);
               const li = document.getElementById(`li-${id}`);
+              const option = document.getElementById(`option-${id}`);
+              // console.log(option);
               tagContainer.removeChild(li);
+              tagSelector.removeChild(option);
             } catch (e) {
               console.error(e);
             }
@@ -370,7 +382,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     } catch (e) {
       console.error(e);
     }
-    return true;
+    return tagId;
   }
 
   populateTags();
@@ -380,21 +392,31 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // Get the button that opens the modal
   const addTagBtn = document.getElementById("addTagBtn");
   const addListBtn = document.getElementById("addListBtn");
+  const inputName = document.getElementById("inputName");
 
   const popupAddTagBtn = document.getElementById("addTag");
 
   popupAddTagBtn.addEventListener("click", async (event) => {
     event.preventDefault();
-    const inputName = document.getElementById("inputName");
     const value = inputName.value;
     const nameToSend = { name: value };
-    populateTags({
+    const tagId = await populateTags({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nameToSend),
     });
-    inputName.value = "";
-    modal.style.display = "none";
+    console.log('tagId', tagId);
+    if (tagId > 0) {
+      // add this new tag to the select tagSelector
+      const newTagOption = document.createElement('option');
+      newTagOption.value = tagId;
+      newTagOption.id = `option-${tagId}`;
+      newTagOption.text = inputName.value;
+      tagSelector.add(newTagOption);
+      // console.log(newTagOption);
+      inputName.value = "";
+      modal.style.display = "none";
+    }
   });
 
   // Get the <span> element that closes the modal
@@ -403,9 +425,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // When the user clicks the button, open the modal
   addTagBtn.onclick = function () {
     modal.style.display = "block";
+    popupAddTagBtn.innerText = "Add Tag";
+    inputName.focus();
   };
   addListBtn.onclick = function () {
     modal.style.display = "block";
+    popupAddTagBtn.innerText = "Add List";
+    inputName.focus();
   };
 
   // When the user clicks on <span> (x), close the modal
@@ -475,4 +501,35 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       console.error(e);
     }
   }
+
+  // tagSelector.addEventListener('click', event => {
+  //   // console.log('click', event);
+  // });
+  tagSelector.addEventListener('change', async event => {
+    const tagId = tagSelector.value;
+    console.log('change', tagId);
+    try {
+      const res = await fetch(`/api/tasks/${currentTask.id}/edit`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tagId }),
+      });
+      let html = "";
+      const { task } = await res.json();
+      currentTask = task;
+      currentTask.TasksWithTags.forEach((tag) => {
+        html += `<span class="tag-class remove-tag">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+      });
+      tagsList.innerHTML = html;
+      const xTagButtons = document.querySelectorAll(".x-button");
+      xTagButtons.forEach((button) => {
+        button.addEventListener("click", (event) => {
+          removeTag(button);
+        });
+      });
+      populateTasks();
+    } catch (e) {
+
+    }
+  });
 });

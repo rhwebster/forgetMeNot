@@ -223,7 +223,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         const p = document.getElementById("p-add-errors");
         console.log(resJson.errors);
         p.innerText = resJson.errors.join("/br");
-        return;
+        return false;
       }
       let { tags } = resJson;
       const tagHtml = [];
@@ -261,6 +261,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     } catch (e) {
       console.error(e);
     }
+    return true;
   }
 
   populateTags();
@@ -278,13 +279,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     const inputName = document.getElementById("inputName");
     const value = inputName.value;
     const nameToSend = { name: value };
-    populateTags({
+    if(await populateTags({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nameToSend),
-    });
-    inputName.value = "";
-    modal.style.display = "none";
+    })) {
+      inputName.value = "";
+      modal.style.display = "none";
+    }
   });
 
   // Get the <span> element that closes the modal

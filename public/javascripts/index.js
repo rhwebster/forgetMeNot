@@ -30,10 +30,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let html;
       tasks.forEach((task) => {
         let tags = task.TasksWithTags;
-        html = `<li id="ele-${task.id}" class="filled"><span class="task-text">${task.name}</span>`;
-        tags.forEach((tag) => {
-          html += `<span class="tag-class">${tag.name}</span>`;
-        });
+        if (tags) {
+          html = `<li id="ele-${task.id}" class="filled"><span class="task-text">${task.name}</span>`;
+          tags.forEach((tag) => {
+            html += `<span class="tag-class">${tag.name}</span>`;
+          });
+        }
         if (task.due) {
           const today = new Date();
           const todayMonth = today.getMonth();
@@ -69,6 +71,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       }
       taskContainer.innerHTML = taskHtml.join("");
       const inboxLink = document.getElementById("inbox");
+      inboxLink.innerHTML = "<span>Inbox</span>";
       const numTasksElement = document.createElement("span");
       numTasksElement.classList.add("num-tasks");
       numTasksElement.innerHTML = tasks.length;
@@ -146,10 +149,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const taskHtml = [];
       tasks.forEach((task) => {
         let tags = task.TasksWithTags;
-        let html = `<li id="ele-${task.id} "class="filled"><span class="task-text">${task.name}</span>`;
-        tags.forEach((tag) => {
-          html += `<span class="tag-class">${tag.name}</span>`;
-        });
+        if (tags) {
+          let html = `<li id="ele-${task.id} "class="filled"><span class="task-text">${task.name}</span>`;
+          tags.forEach((tag) => {
+            html += `<span class="tag-class">${tag.name}</span>`;
+          });
+        }
         if (task.due) {
           const today = new Date();
           const todayMonth = today.getMonth();
@@ -223,28 +228,34 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let { tags } = resJson;
       const tagHtml = [];
       tags.forEach((tag) => {
-        let html = `<li id="li-${tag.name}">${tag.name} <button class="tag-button" id="btn-${tag.name}">X</button></li>`;
+        let html = `<li id="li-${tag.id}">${tag.name} <button class="tag-button" id="btn-${tag.id}">X</button></li>`;
         tagHtml.push(html);
       });
       tagContainer.innerHTML = tagHtml.join("");
       tags.forEach((tag) => {
         document
-          .getElementById(`btn-${tag.name}`)
+          .getElementById(`btn-${tag.id}`)
           .addEventListener("click", async (event) => {
             event.preventDefault();
             try {
-              const res = await fetch(`/api/tags/${tag.name}`, {
+              const res = await fetch(`/api/tags/${tag.id}`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: tag.name }),
+                body: JSON.stringify({ id: tag.id }),
               });
-              let { name } = await res.json();
-              console.log("json back", name);
-              const li = document.getElementById(`li-${name}`);
+              let { id } = await res.json();
+              console.log("json back", id);
+              const li = document.getElementById(`li-${id}`);
               tagContainer.removeChild(li);
             } catch (e) {
               console.error(e);
             }
+          });
+        document.getElementById(`li-${tag.id}`)
+          .addEventListener('click', event => {
+            event.preventDefault();
+            console.log('you clicked', `li-${tag.id}`);
+            searchAndDisplay(tag.id);
           });
       });
     } catch (e) {
@@ -295,11 +306,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   const searchButton = document.getElementById("searchButton");
   const searchText = document.getElementById("searchText");
-  function searchAndDisplay() {
+  function searchAndDisplay(tagName = "") {
     event.preventDefault();
     let textToSearch = searchText.value;
     if (!textToSearch.length) textToSearch = "all";
-    populateTasks(`/api/tasks/search/${textToSearch}`);
+    console.log(`/api/tasks/search/${textToSearch}/${tagName}`);
+    populateTasks(`/api/tasks/search/${textToSearch}/${tagName}`);
     searchText.value = "";
   }
   searchButton.addEventListener("click", (event) => {

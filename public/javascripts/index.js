@@ -139,6 +139,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     detailPanel.classList.remove("panel-shown");
     detailPanel.classList.add("panel-hidden");
   });
+
   const updateTaskName = async (updatedName, taskId) => {
     const nameToSend = { name: updatedName };
     console.log(nameToSend);
@@ -148,18 +149,24 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nameToSend),
       });
+      taskNameInput.addEventListener("keypress", keyPressEvent);
       populateTasks();
     } catch (e) {
       console.error(e);
     }
   };
 
-  taskNameInput.addEventListener("keypress", (event) => {
-    if (event.key === "Enter" && taskNameInput.value !== currentTask.name) {
+  taskNameInput.addEventListener("keypress", keyPressEvent);
+
+  function keyPressEvent(event) {
+    if (
+      event.key === "Enter" &&
+      taskNameInput.value !== currentTask.name &&
+      taskNameInput.value !== ""
+    ) {
       updateTaskName(taskNameInput.value, currentTask.id);
     }
-  });
-
+  }
   const clickHandler = async (event) => {
     addTaskButton.classList.remove("shown");
     const value = taskField.value;

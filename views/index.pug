@@ -5,7 +5,7 @@ append head
   link(rel="stylesheet" href="/stylesheets/index.css")
   
   //- add page specific js
-  script(src="/javascripts/index.js" type="module" defer)
+  script(src=`/javascripts/${pageName}.js` type="module" defer)
 
 block content 
   div(id='wholepage' class="wholepage")
@@ -38,31 +38,18 @@ block content
               a(class='timed-list' id='tomorrow' href='/lists/tomorrow') Tomorrow
             div(class="inbox-link")
               a(class='timed-list' id='this-week' href='/lists/') This Week
-            div(class="inbox-link")
-              a(class='timed-list' id='this-month' href='/lists') This Month
-          div(class='tasks nav-ele' id='tasks')
-            span Tasks
-            span
-              button(method='post') +
-                a(href='')
-            div(class='tasks' id='all-tasks')
-              button
-                a(href='/') All
-          div(class='lists nav-ele' id='lists')
-            span Lists
-            span
-              button(method='post' id='addListBtn')
-                a(href='/lists') +
-            div(class='lists' id='list-names')
-              span
-                button
-                  a(href='/lists') All
+          div(class="wrap-collabsible")
+            input(id="collapsible" class="toggle" type="checkbox" checked)
+            label(for="collapsible" class="lbl-toggle") Lists
+            div(class="collapsible-content")
+              div(class="content-inner")
+                button(id='addListBtn' class="tag-button") +
+                button(href='/lists') All
           div(class='tags nav-ele' id='tags')
             div(class="tags-header")
               span(id="tag-span") Tags
               span 
                 button(id='addTagBtn' class="tag-button") +
-                  a(href='')
             div(id='list-of-tags-div' class='list-of-tags-class')
         div(id="right-body" class="right-body")
           div(id='main-panel' class='main-panel')

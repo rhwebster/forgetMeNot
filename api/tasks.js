@@ -133,13 +133,38 @@ router.get(
 router.put(
   "/tasks/:id/edit",
   asyncHandler(async (req, res) => {
-    const { name, due, notes, list } = req.body;
+    const { name, due, notes, list, tagId } = req.body;
     const task = await Task.findByPk(req.params.id);
     if (name !== undefined) {
       await task.update({ name });
       res.json({ task });
     } else if (notes !== undefined) {
       await task.update({ notes });
+      res.json({ task });
+    } else if (tagId !== undefined) {
+      taskId = req.params.id;
+      let taggedTask = await TaggedTask.findOne({
+        where: {
+          taskId,
+          tagId,
+        },
+      }); // Look to see if there is such a taggedTask
+      if (!taggedTask) { // if not then create one to add the link
+        taggedTask = await TaggedTask.create({
+          taskId,
+          tagId,
+        });
+      }
+      const task = await Task.findOne({
+        where: { id: taskId },
+        include: [
+          List,
+          {
+            model: Tag,
+            as: "TasksWithTags",
+          },
+        ],
+      });
       res.json({ task });
     }
   })

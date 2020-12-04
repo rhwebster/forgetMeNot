@@ -22,6 +22,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const taskNameInput = document.getElementById("name-panel-text");
   const noteList = document.getElementById("note-list");
   const tagsList = document.getElementById("tags-list");
+  const tagSelector = document.getElementById('tag-selector');
 
   let currentTask;
   let currentUser;
@@ -302,11 +303,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     addTaskButton.classList.remove("shown");
   });
 
+  taskField.addEventListener('keydown', event => {
+    if (event.key == "Enter") {
+      addTaskButton.click();
+    }
+  });
+
   addTaskButton.addEventListener("mousedown", (event) => {
     event.preventDefault();
   });
 
   async function populateTags(tagPostObject = {}) {
+    let tagId = undefined;
     try {
       const res = await fetch("/api/tags", tagPostObject);
       const resJson = await res.json();
@@ -314,7 +322,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         const p = document.getElementById("p-add-errors");
         console.log(resJson.errors);
         p.innerText = resJson.errors.join("/br");
-        return false;
+        return tagId;
       }
       let { tags } = resJson;
       const tagHtml = [];
@@ -325,6 +333,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         tagHtml.push(html);
       });
       tagContainer.innerHTML = tagHtml.join("");
+      tagId = tags[tags.length - 1].id;
 
       tags.forEach((tag) => {
         document
@@ -339,6 +348,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
               });
               let { id } = await res.json();
               console.log("json back", id);
+              tagSelector.remove(id);
               const li = document.getElementById(`li-${id}`);
               tagContainer.removeChild(li);
             } catch (e) {
@@ -356,7 +366,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     } catch (e) {
       console.error(e);
     }
-    return true;
+    return tagId;
   }
 
   populateTags();
@@ -374,11 +384,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     const inputName = document.getElementById("inputName");
     const value = inputName.value;
     const nameToSend = { name: value };
-    if(await populateTags({
+    const tagId = await populateTags({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nameToSend),
-    })) {
+    });
+    console.log('tagId', tagId);
+    if(tagId > 0) {
+      // add this new tag to the select tagSelector
+      const newTagOption = document.createElement('option');
+      newTagOption.value = tagId;
+      newTagOption.text = inputName.value;
+      tagSelector.add(newTagOption);
       inputName.value = "";
       modal.style.display = "none";
     }
@@ -467,4 +484,35 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       console.error(e);
     }
   }
+
+  // tagSelector.addEventListener('click', event => {
+  //   // console.log('click', event);
+  // });
+  tagSelector.addEventListener('change', async event => {
+    const tagId = tagSelector.value;
+    console.log('change', tagId);
+    try {
+      const res = await fetch(`/api/tasks/${currentTask.id}/edit`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tagId }),
+      });
+      let html = "";
+      const { task } = await res.json();
+      currentTask = task;
+      currentTask.TasksWithTags.forEach((tag) => {
+        html += `<span class="tag-class remove-tag">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+      });
+      tagsList.innerHTML = html;
+      const xTagButtons = document.querySelectorAll(".x-button");
+      xTagButtons.forEach((button) => {
+        button.addEventListener("click", (event) => {
+          removeTag(button);
+        });
+      });
+      populateTasks();
+    } catch (e) {
+
+    }
+  });
 });

@@ -89,6 +89,9 @@ block content
               div(id="tags-div")
                 span(id="tags-header-text") tags
                 div(id="tags-list")
+                select(id='tag-selector')
+                  each tag in tags
+                    option(value=tag.id) #{tag.name}
             div(id="notes")
               div(id="notes-header") Notes
               div(id="add-a-note")

@@ -22,14 +22,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const taskNameInput = document.getElementById("name-panel-text");
   const noteList = document.getElementById("note-list");
   const tagsList = document.getElementById("tags-list");
-<<<<<<< HEAD
   const tagSelector = document.getElementById('tag-selector');
-=======
   const dueDatePicker = document.getElementById("due-input");
   const dueDateHead = document.getElementById("due-text-enter");
   const addTaskOptions = document.getElementById("task-add-options");
   const dueInput = document.getElementById("due-input");
->>>>>>> c533ad14a19506e41243b96799a4c863295ae3df
 
   let currentTask;
   let currentUser;
@@ -364,14 +361,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
                 body: JSON.stringify({ id: tag.id }),
               });
               let { id } = await res.json();
-<<<<<<< HEAD
-              console.log("json back", id);
-              tagSelector.remove(id);
-=======
-
->>>>>>> c533ad14a19506e41243b96799a4c863295ae3df
+              // console.log("json back", id);
               const li = document.getElementById(`li-${id}`);
+              const option = document.getElementById(`option-${id}`);
+              // console.log(option);
               tagContainer.removeChild(li);
+              tagSelector.removeChild(option);
             } catch (e) {
               console.error(e);
             }
@@ -396,12 +391,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // Get the button that opens the modal
   const addTagBtn = document.getElementById("addTagBtn");
   const addListBtn = document.getElementById("addListBtn");
+  const inputName = document.getElementById("inputName");
 
   const popupAddTagBtn = document.getElementById("addTag");
 
   popupAddTagBtn.addEventListener("click", async (event) => {
     event.preventDefault();
-    const inputName = document.getElementById("inputName");
     const value = inputName.value;
     const nameToSend = { name: value };
     const tagId = await populateTags({
@@ -410,12 +405,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       body: JSON.stringify(nameToSend),
     });
     console.log('tagId', tagId);
-    if(tagId > 0) {
+    if (tagId > 0) {
       // add this new tag to the select tagSelector
       const newTagOption = document.createElement('option');
       newTagOption.value = tagId;
+      newTagOption.id = `option-${tagId}`;
       newTagOption.text = inputName.value;
       tagSelector.add(newTagOption);
+      // console.log(newTagOption);
       inputName.value = "";
       modal.style.display = "none";
     }
@@ -428,10 +425,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   addTagBtn.onclick = function () {
     modal.style.display = "block";
     popupAddTagBtn.innerText = "Add Tag";
+    inputName.focus();
   };
   addListBtn.onclick = function () {
     modal.style.display = "block";
     popupAddTagBtn.innerText = "Add List";
+    inputName.focus();
   };
 
   // When the user clicks on <span> (x), close the modal

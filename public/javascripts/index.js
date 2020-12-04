@@ -22,6 +22,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const taskNameInput = document.getElementById("name-panel-text");
   const noteList = document.getElementById("note-list");
   const tagsList = document.getElementById("tags-list");
+  const dueDatePicker = document.getElementById("due-input");
+  const dueDateHead = document.getElementById("due-text-enter");
+  const addTaskOptions = document.getElementById("task-add-options");
+  const dueInput = document.getElementById("due-input");
 
   let currentTask;
   let currentUser;
@@ -173,8 +177,16 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   }
   const clickHandler = async (event) => {
     addTaskButton.classList.remove("shown");
+    dueDatePicker.classList.remove("shown");
+    dueDateHead.classList.remove("shown");
     const value = taskField.value;
-    const nameToSend = { name: value };
+    let dueInputValue = dueInput.value;
+    console.log(`-${dueInput.value.length}-`);
+    if (dueInputValue.length === 0) {
+      dueInputValue = null;
+    }
+    console.log(`-${dueInput.value}-`);
+    const nameToSend = { name: value, due: dueInputValue };
     try {
       const res = await fetch("/api/tasks", {
         method: "POST",
@@ -286,6 +298,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     event.preventDefault();
   });
 
+  addTaskOptions.addEventListener("mousedown", (event) => {
+    event.preventDefault();
+  });
+
   addTaskButton.addEventListener("click", clickHandler);
   taskField.addEventListener("keyup", (event) => {
     if (!taskField.value.length) {
@@ -297,9 +313,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   taskField.addEventListener("focus", (event) => {
     addTaskButton.removeEventListener("click", clickHandler);
     addTaskButton.classList.add("shown");
+    dueDateHead.classList.add("shown");
+    dueDatePicker.classList.add("shown");
   });
   taskField.addEventListener("blur", (event) => {
     addTaskButton.classList.remove("shown");
+    dueDateHead.classList.remove("shown");
+    dueDatePicker.classList.remove("shown");
   });
 
   addTaskButton.addEventListener("mousedown", (event) => {

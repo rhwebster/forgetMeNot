@@ -46,7 +46,7 @@ router.get(
 router.get('/:id(\\d+)', requireAuth, csrfProtection, listValidator, asyncHandler(async (req, res, next) => {
   const userId = req.session.auth.userId;
   const listId = parseInt(req.params.id, 10);
-  const list = await db.List.findOne({ where: { name: 'Groceries', userId } });
+  const list = await db.List.findOne({ where: { id: listId, userId } });
   const tasks = await db.Task.findAll({
     where: {
       userId,

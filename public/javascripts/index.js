@@ -22,7 +22,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const completeButton = document.getElementById("checkmark");
   const completedTab = document.getElementById("complete");
   const incompletedTab = document.getElementById("incomplete");
+  const currentListHeader = document.getElementById("current-list-header");
   const textComplete = document.getElementById("mark-complete");
+  const sidePanel = document.getElementById("side-panel");
+  const numTasksContainer = document.getElementById("num-tasks-container");
+
   let currentClicked;
   let completedFlag = false;
   let completeTasks = {};
@@ -30,6 +34,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   let timesClicked = 0;
   let numTotalTasks = 0;
   let numDueToday = 0;
+  let numDueTomorrow = 0;
   let numOverdue = 0;
   let numCompleted = 0;
 
@@ -38,7 +43,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   let currentTask;
   let currentUser;
-  let currentList;
+  let currentListForHeader;
 
   async function populateTasks(link = "/api/tasks", taskObject = {}) {
     numChecked = 0;
@@ -47,6 +52,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     try {
       const res = await fetch(link, taskObject);
       let { tasks } = await res.json();
+
       const completedList = [];
       const incompleteList = [];
       tasks.forEach((task) => {
@@ -65,10 +71,15 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         } else {
           incompleteList.push(task);
         }
+        numTotalTasks = incompleteList.length;
+        numCompleted = completedList.length;
       });
       const taskHtml = [];
       let html;
       if (!completedFlag) {
+        numDueTomorrow = 0;
+        numDueToday = 0;
+        numOverdue = 0;
         incompleteList.forEach((task) => {
           let tags = task.TasksWithTags;
           if (tags) {
@@ -91,18 +102,21 @@ window.addEventListener("DOMContentLoaded", async (event) => {
             const day = date.getDate();
             const year = date.getYear();
             if (day < todayDate) {
+              numOverdue++;
               html += `<span class="overdue date-text">${monthText} ${day}</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate &&
               year === todayYear
             ) {
+              numDueToday++;
               html += `<span class="today date-text">Today</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate + 1 &&
               year === todayYear
             ) {
+              numDueTomorrow++;
               html += `<span class="date-text">Tomorrow</span>`;
             } else {
               html += `<span class="date-text">${monthText} ${day}</span>`;
@@ -122,6 +136,20 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           taskHtml.push(html);
         });
       }
+      let numTasksHtml = `<div class="tasks-num-div" id="total-tasks-div"><span id="total-tasks-span">${numTotalTasks}</span><span class="num-tasks-label">tasks</span></div>`;
+      if (numDueToday > 0) {
+        numTasksHtml += `<div class="tasks-num-div" id="today-tasks-div"><span id="today-tasks-span">${numDueToday}</span><span class="num-tasks-label">due today</span></div>`;
+      }
+      if (numDueTomorrow > 0) {
+        numTasksHtml += `<div class="tasks-num-div" id="tomorrow-tasks-div"><span id="tomorrow-tasks-span">${numDueTomorrow}</span><span class="num-tasks-label">due tomorrow</span></div>`;
+      }
+      if (numOverdue > 0) {
+        numTasksHtml += `<div class="tasks-num-div" id="overdue-tasks-div"><span id="overdue-tasks-span">${numOverdue}</span><span class="num-tasks-label">overdue</span></div>`;
+      }
+      if (numCompleted > 0) {
+        numTasksHtml += `<div class="tasks-num-div" id="completed-tasks-div"><span id="completed-tasks-span">${numCompleted}</span><span class="completed-tasks-label">completed</span></div>`;
+      }
+      numTasksContainer.innerHTML = numTasksHtml;
       for (let i = 0; i < 100 - tasks.length; i++) {
         taskHtml.push(`<li><span></span></li>`);
       }
@@ -214,6 +242,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           }
 
           currentList.innerHTML = task.List.name;
+          currentListForHeader = currentTask.List.name;
+          currentListHeader.innerHTML = currentListForHeader;
           populateNotes();
 
           let html = "";
@@ -249,6 +279,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   }
 
   populateTasks();
+  currentListForHeader = "Inbox";
+  currentListHeader.innerHTML = currentListForHeader;
   completeButton.addEventListener("click", (event) => {
     console.log(completeTasks);
     markComplete(completeTasks);
@@ -301,6 +333,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     addTaskButton.classList.remove("shown");
     dueDatePicker.classList.remove("shown");
     dueDateHead.classList.remove("shown");
+    addTaskOptions.classList.remove("shown");
     const value = taskField.value;
     let dueInputValue = dueInput.value;
 

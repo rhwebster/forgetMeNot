@@ -52,6 +52,14 @@ body {
   margin-right: 15px;
   border-bottom: 1px solid rgb(191, 217, 241);
 }
+
+.side-navbar.hidden {
+  margin: 6px;
+  width: 0px;
+  min-width: 0px;
+  visibility: hidden;
+}
+
 .main-panel {
   background-color: white;
   width: 50%;
@@ -355,7 +363,6 @@ body {
   border-radius: 2px;
 }
 
-
 .tag-button:hover {
   background-color: rgb(122, 178, 224);
   color: rgb(215, 231, 245);
@@ -419,6 +426,9 @@ body {
 
 #incomplete {
   border-bottom: 1px solid white;
+}
+
+#complete {
 }
 
 #task-action-bar {
@@ -487,6 +497,14 @@ body {
   background-color: rgb(255, 255, 214);
 }
 
+.num-checked-pos {
+  color: black !important;
+}
+
+.checked-list {
+  background-color: rgb(255, 255, 214);
+}
+
 .left-border {
   width: 3px;
   height: 26px;
@@ -529,11 +547,20 @@ body {
 }
 
 #task-add-options {
+  height: 0px;
+  visibility: hidden;
+  transition: height 0.4s ease-out;
+  /* display: flex; */
+}
+#task-add-options.shown {
+  visibility: visible;
   display: flex;
+  height: 50px;
   width: 100%;
   flex-direction: row;
   align-items: center;
   align-self: center;
+  transition: height 0.4s ease-in;
   justify-content: space-between;
 }
 
@@ -659,7 +686,6 @@ body {
   border-radius: 3px;
 }
 
-
 /* The Modal (background) */
 .modal {
   display: none; /* Hidden by default */
@@ -710,7 +736,7 @@ body {
 
   .side-panel {
     left: 6px;
-    /* transition-duration: 0.75s; */
+    transition-duration: 0.5s;
     border-top-left-radius: 6px;
     height: 100px;
     max-width: 100%;
@@ -730,11 +756,14 @@ body {
   .main-panel {
     transition-duration: 0.75s;
   }
+  .side-panel {
+    transition-duration: 0.5s;
+  }
 }
 
-input[type='checkbox'] {
+/* input[type='checkbox'] {
   display: none;
-}
+} */
 .lbl-toggle {
   display: block;
 
@@ -753,7 +782,7 @@ input[type='checkbox'] {
   background-color: rgb(191, 215, 239);
 }
 .lbl-toggle::before {
-  content: ' ';
+  content: " ";
   display: inline-block;
 
   border-top: 5px solid transparent;
@@ -761,24 +790,24 @@ input[type='checkbox'] {
   border-left: 5px solid currentColor;
 
   vertical-align: middle;
-  margin-right: .7rem;
+  margin-right: 0.7rem;
   transform: translateY(-2px);
 
-  transition: transform .2s ease-out;
+  transition: transform 0.2s ease-out;
 }
 .collapsible-content .content-inner {
   background-color: rgb(215, 231, 245);
-  border-bottom: 1px solid  rgb(215, 231, 245);
+  border-bottom: 1px solid rgb(215, 231, 245);
 
   border-bottom-left-radius: 7px;
   border-bottom-right-radius: 7px;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
 }
 .collapsible-content {
   max-height: 0px;
   overflow: hidden;
 
-  transition: max-height .25s ease-in-out;
+  transition: max-height 0.25s ease-in-out;
 }
 .toggle:checked + .lbl-toggle + .collapsible-content {
   max-height: 100vh;

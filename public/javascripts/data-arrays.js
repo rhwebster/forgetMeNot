@@ -1,3 +1,23 @@
+export const days3OfTheWeek = {
+  "Mon": 0,
+  "Tue": 1,
+  'Wed': 2,
+  'Thu': 3,
+  'Fri': 4,
+  'Sat': 5,
+  'Sun': 6
+};
+
+export const daysFullOfTheWeek = {
+  "Monday": 0,
+  "Tuesday": 1,
+  'Wednesday': 2,
+  'Thursday': 3,
+  'Friday': 4,
+  'Saturday': 5,
+  'Sunday': 6
+};
+
 export const months = [
   "Jan",
   "Feb",
@@ -14,7 +34,7 @@ export const months = [
 ];
 
 export const tagColors = [
-  'Red', 'Green', 'Yellow', 'Blue',
+  'Red', 'Green', 'Blue',
   'Orange', 'Purple','Cyan', 'Magenta',
   'Lime', 'Pink', 'Teal', 'Lavender', 'Brown',
   'Beige', 'Maroon', 'Mint', 'Olive', 'Apricot', 'Navy',

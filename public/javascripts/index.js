@@ -17,6 +17,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const tagSelector = document.getElementById("tag-selector");
   const dueDatePicker = document.getElementById("due-input");
   const dueDateHead = document.getElementById("due-text-enter");
+  const addTaskDiv = document.getElementById("add-a-task-div");
   const addTaskOptions = document.getElementById("task-add-options");
   const dueInput = document.getElementById("due-input");
   const completeButton = document.getElementById("checkmark");
@@ -29,6 +30,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   let currentClicked;
   let completedFlag = false;
+  let orderFlag = "createdAt";
   let completeTasks = {};
   let numChecked = 0;
   let timesClicked = 0;
@@ -130,7 +132,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           if (tags) {
             html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text complete-task">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="tag-class">${tag.name}</span>`;
+              html += `<span class="no-color-tag-class" style="background-color:${
+                tagColors[tag.id % 17]
+              };">${tag.name}</span>`;
             });
           }
           taskHtml.push(html);
@@ -289,12 +293,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     completedFlag = true;
     textComplete.innerHTML = "Uncomplete";
     completeButton.innerHTML = "&#8634";
+    incompletedTab.classList.remove("selected");
+    completedTab.classList.add("selected");
+    addTaskDiv.classList.add("hidden");
     populateTasks();
   });
   incompletedTab.addEventListener("click", (event) => {
     completedFlag = false;
     textComplete.innerHTML = "Complete";
     completeButton.innerHTML = "&#10003";
+    incompletedTab.classList.add("selected");
+    completedTab.classList.remove("selected");
+    addTaskDiv.classList.remove("hidden");
     populateTasks();
   });
   const closeButton = document.getElementById("close-button-panel");
@@ -416,7 +426,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           if (tags) {
             html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text complete-task">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="tag-class">${tag.name}</span>`;
+              html += `<span class="no-color-tag-class" style="background-color:${
+                tagColors[tag.id % 17]
+              };">${tag.name}</span>`;
             });
           }
           taskHtml.push(html);
@@ -547,7 +559,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           tag.id
         }"><span class="tag-button-text">-</span></button></li>`;
         tagHtml.push(html);
-        document.getElementById(`option-${tag.id}`).style = `background-color:${tagColors[tag.id % 17]}`;
+        document.getElementById(`option-${tag.id}`).style = `background-color:${
+          tagColors[tag.id % 17]
+        }`;
       });
       tagContainer.innerHTML = tagHtml.join("");
       tagId = tags[tags.length - 1].id;

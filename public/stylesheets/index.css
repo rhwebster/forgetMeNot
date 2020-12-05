@@ -491,10 +491,44 @@ body {
 }
 
 #incomplete {
-  border-bottom: 1px solid white;
+  position: relative;
+  top: 1px;
+  margin-right: 6px;
+  padding: 8px 8px 3px 8px;
+  color: rgb(0 96 191);
 }
 
 #complete {
+  position: relative;
+  top: 1px;
+  padding: 8px 8px 3px 8px;
+  color: rgb(0 96 191);
+}
+
+#incomplete.selected {
+  border-left: 1px dotted rgb(229, 229, 229);
+  border-right: 1px dotted rgb(229, 229, 229);
+  border-top: 1px dotted rgb(229, 229, 229);
+  background-color: white;
+  padding: 8px 8px 3px 8px;
+  color: black;
+}
+
+#incomplete.selected span {
+  font-weight: bold;
+}
+
+#complete.selected {
+  border-left: 1px dotted rgb(229, 229, 229);
+  border-right: 1px dotted rgb(229, 229, 229);
+  border-top: 1px dotted rgb(229, 229, 229);
+  background-color: white;
+  padding: 8px 8px 3px 8px;
+  color: black;
+}
+
+#complete.selected span {
+  font-weight: bold;
 }
 
 #task-action-bar {
@@ -506,6 +540,7 @@ body {
 
 .complete-task {
   text-decoration: line-through;
+  color: #888;
 }
 
 #checkmark:hover {
@@ -598,6 +633,10 @@ body {
 
 .today.date-text {
   color: rgb(0 96 191);
+}
+
+#add-a-task-div.hidden {
+  display: none;
 }
 
 #add-a-task-div {

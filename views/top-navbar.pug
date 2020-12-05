@@ -3,9 +3,9 @@ append head
   link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")  
 div(id='top-navbar' class='top-navbar')
   span(class='top-navbar-left-space') 
-  span(class="search-container")
-    input(type="text" id="searchText" class="searchText-class" placeholder="Search.." name="search")
+  div(class="search-container")
     button(type="submit" id='searchButton'): i(class="fa fa-search")
+    input(type="text" id="searchText" class="searchText-class" name="search")
   span(class="top-navbar-link-group")
     span(class='top-navbar-link') Welcome #{user.firstName}!
     span(class='top-navbar-link')

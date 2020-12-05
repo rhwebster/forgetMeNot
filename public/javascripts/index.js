@@ -1,4 +1,4 @@
-import {months, tagColors} from './data-arrays.js';
+import { months, tagColors } from './data-arrays.js';
 
 window.addEventListener("DOMContentLoaded", async (event) => {
   const taskContainer = document.getElementById("list-of-tasks");
@@ -14,6 +14,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const dueDateHead = document.getElementById("due-text-enter");
   const addTaskOptions = document.getElementById("task-add-options");
   const dueInput = document.getElementById("due-input");
+  const sideDueInput = document.getElementById("side-due-input");
+  const taskDueDateSpan = document.getElementById("due-date-input");  
 
   let currentTask;
   let currentUser;
@@ -30,7 +32,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         if (tags) {
           html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
           tags.forEach((tag) => {
-            html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id%20]};">${tag.name}</span>`;
+            html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 20]};">${tag.name}</span>`;
           });
         }
 
@@ -83,9 +85,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     // const taskNameDetail = document.getElementById("task-name-detail");
     tasksClickable.forEach((taskEle) => {
       taskEle.addEventListener("click", async (event) => {
-        const taskDueDate = document.getElementById("due-date-input");
         const currentList = document.getElementById("current-list");
-        taskDueDate.innerHTML = "";
+        taskDueDateSpan.innerHTML = "";
         currentList.innerHTML = "";
         noteList.innerHTML = "";
         //   const taskNameInput = document.getElementById("name-panel-text");
@@ -97,7 +98,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           taskNameInput.value = task.name;
           if (task.due) {
             let dateHtml = new Date(task.due).toDateString();
-            taskDueDate.innerHTML = dateHtml;
+            taskDueDateSpan.innerHTML = dateHtml;
           }
 
           currentList.innerHTML = task.List.name;
@@ -105,7 +106,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
           let html = "";
           currentTask.TasksWithTags.forEach((tag) => {
-            html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id%20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+            html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
           });
 
           tagsList.innerHTML = html;
@@ -183,7 +184,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         if (tags) {
           html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
           tags.forEach((tag) => {
-            html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id%20]};>${tag.name}</span>`;
+            html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 20]};>${tag.name}</span>`;
           });
         }
         if (task.due) {
@@ -329,7 +330,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const tagHtml = [];
 
       tags.forEach((tag) => {
-        let html = `<li id="li-${tag.id}"><div class="left-tag-div"><div class="color-tag" style="background-color:${tagColors[tag.id%20]};"></div><span>${tag.name}</span></div><button class="tag-button" id="btn-${tag.id}"><span class="tag-button-text">-</span></button></li>`;        
+        let html = `<li id="li-${tag.id}"><div class="left-tag-div"><div class="color-tag" style="background-color:${tagColors[tag.id % 20]};"></div><span>${tag.name}</span></div><button class="tag-button" id="btn-${tag.id}"><span class="tag-button-text">-</span></button></li>`;
 
         tagHtml.push(html);
       });
@@ -375,6 +376,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // Get the modal
   const modal = document.getElementById("myModal");
 
+  let addFunction;
   // Get the button that opens the modal
   const addTagBtn = document.getElementById("addTagBtn");
   const addListBtn = document.getElementById("addListBtn");
@@ -387,22 +389,26 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     event.preventDefault();
     const value = inputName.value;
     const nameToSend = { name: value };
-    const tagId = await populateTags({
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(nameToSend),
-    });
-    console.log('tagId', tagId);
-    if (tagId > 0) {
-      // add this new tag to the select tagSelector
-      const newTagOption = document.createElement('option');
-      newTagOption.value = tagId;
-      newTagOption.id = `option-${tagId}`;
-      newTagOption.text = inputName.value;
-      tagSelector.add(newTagOption);
-      // console.log(newTagOption);
-      inputName.value = "";
-      modal.style.display = "none";
+    if (addFunction === "addTag") {
+      const tagId = await populateTags({
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nameToSend),
+      });
+      console.log('tagId', tagId);
+      if (tagId > 0) {
+        // add this new tag to the select tagSelector
+        const newTagOption = document.createElement('option');
+        newTagOption.value = tagId;
+        newTagOption.id = `option-${tagId}`;
+        newTagOption.text = inputName.value;
+        tagSelector.add(newTagOption);
+        // console.log(newTagOption);
+        inputName.value = "";
+        modal.style.display = "none";
+      }
+    } else if (addFunction === "addList") {
+
     }
   });
 
@@ -414,11 +420,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     modal.style.display = "block";
     popupAddTagBtn.innerText = "Add Tag";
     inputName.focus();
+    addFunction = "addTag";
   };
   addListBtn.onclick = function () {
     modal.style.display = "block";
     popupAddTagBtn.innerText = "Add List";
     inputName.focus();
+    addFunction = "addList";
   };
   // addListBtn.onclick = function () {
   //   modal.style.display = "block";
@@ -478,7 +486,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const { task } = await res.json();
       currentTask = task;
       currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id%20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
       });
       tagsList.innerHTML = html;
       const xTagButtons = document.querySelectorAll(".x-button");
@@ -510,7 +518,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const { task } = await res.json();
       currentTask = task;
       currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id%20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
       });
       tagsList.innerHTML = html;
       const xTagButtons = document.querySelectorAll(".x-button");
@@ -524,4 +532,24 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
     }
   });
+  sideDueInput.addEventListener('change', async event => {
+    const newDueDate = new Date(sideDueInput.value);
+    try {
+      const res = await fetch(`/api/tasks/${currentTask.id}/edit`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ due: newDueDate }),
+      });
+      let { task } = await res.json();
+      populateTasks();
+      const taskDueDate = new Date(task.due);
+      const newDate = new Date(taskDueDate.getTime() + Math.abs(taskDueDate.getTimezoneOffset() * 60000)).toDateString();
+      let dateHtml = newDate;
+      taskDueDateSpan.innerHTML = dateHtml;
+      currentTask.due = task.due;
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
 });

@@ -1,17 +1,4 @@
-const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-];
+import {months, tagColors} from './data-arrays.js';
 
 window.addEventListener("DOMContentLoaded", async (event) => {
     const taskContainer = document.getElementById("list-of-tasks");

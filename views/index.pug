@@ -60,7 +60,7 @@ block content
                 span(class="close") X
                 include add-tag-or-list-pop-up.pug
           div(id='side-panel' class='side-panel')
-            p rightside panel
+            p 
           div(id="task-detail-panel" class="panel-hidden")
             div(id="task-info")
               div(id="close-button-panel")
@@ -69,7 +69,8 @@ block content
                 input(id="name-panel-text")
               div(id="due-elements" class="panel-elements")
                 span(id="due-text-panel" class="panel-text") due
-                span(id="due-date-input")
+                span(id="due-date-input" style="padding:0px 5px 5px 0px;")
+                input(type="date" id="side-due-input" placeholder="due date optional")
               div(id="list-info-panel" class="panel-elements") 
                 span(id="list-header-text" class="panel-text") list
                 div(id="current-list")

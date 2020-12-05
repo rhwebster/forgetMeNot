@@ -1,4 +1,4 @@
-import { months, tagColors } from './data-arrays.js';
+import { months, tagColors, daysFullOfTheWeek, days3OfTheWeek } from './data-arrays.js';
 
 window.addEventListener("DOMContentLoaded", async (event) => {
   const taskContainer = document.getElementById("list-of-tasks");
@@ -36,6 +36,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const completedList = [];
       const incompleteList = [];
       tasks.forEach((task) => {
+        let tags = task.TasksWithTags;
+        if (tags) {
+          let html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
+          tags.forEach((tag) => {
+            html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 17]};">${tag.name}</span>`;
+          });
+        }
         console.log(task.completed);
         if (task.completed) {
           completedList.push(task);
@@ -51,7 +58,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           if (tags) {
             html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 20]};">${tag.name}</span>`;
+              html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 17]};">${tag.name}</span>`;
             });
           }
 
@@ -170,7 +177,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
           let html = "";
           currentTask.TasksWithTags.forEach((tag) => {
-            html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+            html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 17]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
           });
 
           tagsList.innerHTML = html;
@@ -260,6 +267,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const incompleteList = [];
       let { tasks } = await res.json();
       tasks.forEach((task) => {
+        let tags = task.TasksWithTags;
+        if (tags) {
+          let html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
+          tags.forEach((tag) => {
+            html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 17]};>${tag.name}</span>`;
+          });
+        }
         if (task.completed) {
           completedList.push(task);
         } else {
@@ -274,7 +288,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           if (tags) {
             html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 20]};>${tag.name}</span>`
+              html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 17]};>${tag.name}</span>`
             });
           }
           if (task.due) {
@@ -432,7 +446,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const tagHtml = [];
 
       tags.forEach((tag) => {
-        let html = `<li id="li-${tag.id}"><div class="left-tag-div"><div class="color-tag" style="background-color:${tagColors[tag.id % 20]};"></div><span>${tag.name}</span></div><button class="tag-button" id="btn-${tag.id}"><span class="tag-button-text">-</span></button></li>`;
+        let html = `<li id="li-${tag.id}"><div class="left-tag-div"><div class="color-tag" style="background-color:${tagColors[tag.id % 17]};"></div><span>${tag.name}</span></div><button class="tag-button" id="btn-${tag.id}"><span class="tag-button-text">-</span></button></li>`;
 
         tagHtml.push(html);
       });
@@ -589,7 +603,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const { task } = await res.json();
       currentTask = task;
       currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 17]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
       });
       tagsList.innerHTML = html;
       const xTagButtons = document.querySelectorAll(".x-button");
@@ -636,7 +650,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const { task } = await res.json();
       currentTask = task;
       currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 20]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 17]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
       });
       tagsList.innerHTML = html;
       const xTagButtons = document.querySelectorAll(".x-button");
@@ -667,5 +681,43 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       console.log(e);
     }
   });
+
+  const todayLink = document.getElementById('today');
+  const tomorrowLink = document.getElementById('tomorrow');
+  const thisWeekLink = document.getElementById('this-week');
+  const nextWeekLink = document.getElementById('next-week');
+
+  todayLink.addEventListener('click', event => {
+    fetchDateLink(new Date());
+  });
+  tomorrowLink.addEventListener('click', event => {
+    const tomorrowDate = new Date();
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+    fetchDateLink(tomorrowDate);
+  });
+  thisWeekLink.addEventListener('click', event => {
+    fetchDateLink(new Date(), true);
+  });
+  nextWeekLink.addEventListener('click', event => {
+    fetchDateLink(new Date(), false, true);
+  });  
+  function fetchDateLink(date, thisweek = false, nextWeek = false){
+    let due = new Date(date.toLocaleDateString()).toISOString().slice(0, 10);
+    if(thisweek || nextWeek) {
+      let days = 0;
+      if(nextWeek) days = 7;
+      const sundayOfTheWeek = date;
+      sundayOfTheWeek.setDate(date.getDate() + days - date.getDay());
+      due = new Date(sundayOfTheWeek.toLocaleDateString()).toISOString().slice(0, 10);
+      const saturdayOfTheWeek = date;
+      saturdayOfTheWeek.setDate(date.getDate() + 6 + days - date.getDay());
+      due += "to" + new Date(saturdayOfTheWeek.toLocaleDateString()).toISOString().slice(0, 10);
+    }
+    populateTasks(`/api/tasks/search/all`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ due}), 
+    });
+  }
 
 });

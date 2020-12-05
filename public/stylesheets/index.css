@@ -43,8 +43,6 @@ body {
 }
 
 .side-navbar {
-  /* position: absolute; */
-
   background-color: rgb(215, 231, 245);
   box-sizing: border-box;
   height: auto;
@@ -54,6 +52,14 @@ body {
   margin-right: 15px;
   border-bottom: 1px solid rgb(191, 217, 241);
 }
+
+.side-navbar.hidden {
+  margin: 6px;
+  width: 0px;
+  min-width: 0px;
+  visibility: hidden;
+}
+
 .main-panel {
   background-color: white;
   width: 50%;
@@ -422,6 +428,9 @@ body {
   border-bottom: 1px solid white;
 }
 
+#complete {
+}
+
 #task-action-bar {
   border-bottom: 1px dotted rgb(229, 229, 229);
   height: 50px;
@@ -727,7 +736,7 @@ body {
 
   .side-panel {
     left: 6px;
-    /* transition-duration: 0.75s; */
+    transition-duration: 0.5s;
     border-top-left-radius: 6px;
     height: 100px;
     max-width: 100%;
@@ -746,6 +755,9 @@ body {
 @media screen and (min-width: 1001px) {
   .main-panel {
     transition-duration: 0.75s;
+  }
+  .side-panel {
+    transition-duration: 0.5s;
   }
 }
 

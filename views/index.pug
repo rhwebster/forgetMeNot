@@ -43,8 +43,9 @@ block content
             label(for="collapsible" class="lbl-toggle") Lists
             div(class="collapsible-content")
               div(class="content-inner")
-                button(id='addListBtn' class="tag-button") +
-                button(href='/lists') All
+                button(id="addListBtn" class="tag-button") +
+              div(class="content-inner")
+                a(href='/lists/' id="allListsBtn" class="tag-button") All
           div(class='tags nav-ele' id='tags')
             div(class="tags-header")
               span(id="tag-span") Tags

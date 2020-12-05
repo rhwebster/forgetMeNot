@@ -55,6 +55,7 @@ body {
 .main-panel {
   background-color: white;
   width: 50%;
+  box-shadow: 1px 0px 1px #e6e6e6;
   position: absolute;
   left: 0;
   top: 0;
@@ -66,6 +67,7 @@ body {
 .side-panel {
   background-color: rgb(228, 238, 248);
   position: absolute;
+  box-shadow: 1px -1px 1px rgb(208, 218, 228);
   width: auto;
   max-width: 51%;
   height: 100%;
@@ -93,6 +95,7 @@ body {
 #task-detail-panel {
   background-color: white;
   box-sizing: border-box;
+  box-shadow: 1px 0px 1px #dadada;
   position: absolute;
   width: auto;
   max-width: 50%;
@@ -212,6 +215,8 @@ body {
   display: flex;
   flex-direction: column;
   margin-top: 10px;
+  padding-right: 15px;
+  padding-left: 15px;
   padding-bottom: 10px;
   border-bottom: 1px dotted rgb(229, 229, 229);
 }
@@ -219,7 +224,7 @@ body {
 #notes-input {
   align-self: center;
   box-sizing: border-box;
-  width: 96%;
+  width: 100%;
   margin-left: 10px;
   margin-right: 10px;
   height: 30px;
@@ -369,7 +374,7 @@ body {
   cursor: pointer;
 }
 
-.inbox {
+#inbox {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -402,6 +407,53 @@ body {
 
 .timed-list {
   color: rgba(0, 0, 0, 0.4);
+}
+
+#task-top-navbar {
+  border-bottom: 1px dotted rgb(229, 229, 229);
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 25px;
+  padding-right: 30px;
+}
+
+#incomplete {
+  border-bottom: 1px solid white;
+}
+
+#task-action-bar {
+  border-bottom: 1px dotted rgb(229, 229, 229);
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.complete-task {
+  text-decoration: line-through;
+}
+
+#checkmark:hover {
+  color: black;
+  border: 1px solid rgb(190, 190, 190);
+}
+
+#checkmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  color: rgb(204, 204, 204);
+  width: 60px;
+  height: 30px;
+  border: 1px solid rgb(204, 204, 204);
+  margin-left: 80px;
+  border-radius: 2px;
+}
+
+#mark-complete {
+  padding-left: 10px;
+  color: rgb(190, 190, 190);
 }
 
 .list-of-tasks-class {
@@ -470,7 +522,7 @@ body {
 }
 
 #add-a-task-div {
-  margin: 5px 0px;
+  margin: 15px 10px 15px 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -478,11 +530,11 @@ body {
 
 #task-add-options {
   display: flex;
+  width: 100%;
   flex-direction: row;
   align-items: center;
   align-self: center;
   justify-content: space-between;
-  width: 96%;
 }
 
 #group-date {
@@ -538,7 +590,7 @@ body {
 
 #task-name {
   align-self: center;
-  width: 96%;
+  width: 100%;
   height: 30px;
   border: 1px solid rgb(229, 229, 229);
   border-radius: 2px;

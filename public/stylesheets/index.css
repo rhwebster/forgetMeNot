@@ -40,6 +40,7 @@ body {
   height: 40px;
   background-color: rgb(0, 96, 191);
   padding: 5px;
+  z-index: 2;
 }
 
 .side-navbar {
@@ -51,13 +52,16 @@ body {
   margin-left: 15px;
   margin-right: 15px;
   border-bottom: 1px solid rgb(191, 217, 241);
+  transition-duration: 0.6s;
 }
 
 .side-navbar.hidden {
   margin: 6px;
   width: 0px;
   min-width: 0px;
-  visibility: hidden;
+  transform: translateY(-900px);
+  transition-duration: 0.6s;
+  z-index: 0;
 }
 
 .main-panel {
@@ -858,6 +862,9 @@ body {
     padding: 4px 10px 4px 10px;
     margin-top: 10px;
   }
+  .button-checked {
+    display: none !important;
+  }
 }
 
 @media screen and (min-width: 1001px) {
@@ -933,4 +940,8 @@ body {
 .toggle:checked + .lbl-toggle {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
+}
+
+#collapsible {
+  display: none;
 }

@@ -2,18 +2,49 @@ append head
   link(rel="stylesheet" href="/stylesheets/top-navbar.css")
   link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")  
 div(id='top-navbar' class='top-navbar')
-  span(class='top-navbar-left-space') 
+  span(class='top-navbar-left-space top-navbar-link' id="bars")
+    i(style="font-size:20px" class="fa fa-bars" id="bars-text") 
   div(class="search-container")
     button(type="submit" id='searchButton'): i(class="fa fa-search")
     input(type="text" id="searchText" class="searchText-class" name="search")
   span(class="top-navbar-link-group")
     span(class='top-navbar-link') Welcome #{user.firstName}!
     span(class='top-navbar-link')
-      a(href='/about' class='cool-link') My-Cool-Link
-    span(class='top-navbar-link')
-      button(method='post' class="log-out-button")
-        a(href='/users/logout') Logout
-    span(class='top-navbar-link')
-      i(style="font-size:20px" class="fa fa-gear")
+      a(href="https://github.com/rhwebster/forgetMeNot" target="_blank")
+        i(style="font-size:22px" class="fa fa-github" aria-hidden="true" id="github")
+    span(id="settings" class='top-navbar-link')
+      i(style="font-size:22px" class="fa fa-gear")
+    div(class="settings-menu menu-hidden")
+      div(class="settings-section" id="userinfodiv")
+        div(id="profilepic")
+        div(id="userinfo")
+          span(id="user-name") #{user.firstName} #{user.lastName}
+          span(id="user-email") #{user.email}
+      div(class="settings-section")
+        div(class="settings-header") Project Info
+        ul
+          li(class="settings-link")
+            a(href="https://github.com/rhwebster/forgetMeNot/wiki") GitHub - Wiki
+      div(class="settings-section")
+        div(class="settings-header") A Look at Our Team
+        ul
+          li(class="settings-link")
+            a(href="https://github.com/rhwebster/" target="_blank") Ryan Webster
+          li(class="settings-link")
+            a(href="https://github.com/lanesmit88" target="_blank") Lane Smit
+          li(class="settings-link")
+            a(href="https://github.com/suasllc" target="_blank") Tony Ngo
+          li(class="settings-link")
+            a(href="https://github.com/dbmille2" target="_blank") Daniel Miller
+      div(class="settings-section")
+        div(class="settings-header") Account
+        ul
+          li(class="settings-link")
+            button(method='post' class="log-out-button")
+              a(href='/users/logout') Logout
+            
+
+
+        
 
       

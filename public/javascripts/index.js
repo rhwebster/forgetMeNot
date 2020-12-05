@@ -26,7 +26,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const currentListHeader = document.getElementById("current-list-header");
   const textComplete = document.getElementById("mark-complete");
   const sidePanel = document.getElementById("side-panel");
+  const sideNavBar = document.getElementById("side-navbar");
+  const topBars = document.getElementById("bars");
   const numTasksContainer = document.getElementById("num-tasks-container");
+  const settingsButton = document.getElementById("settings");
+  const settingsMenu = document.querySelector(".settings-menu");
 
   let currentClicked;
   let completedFlag = false;
@@ -46,6 +50,19 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   let currentTask;
   let currentUser;
   let currentListForHeader;
+
+  settingsButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (settingsMenu.classList.contains("menu-hidden")) {
+      settingsMenu.classList.remove("menu-hidden");
+    } else {
+      settingsMenu.classList.add("menu-hidden");
+    }
+  });
+
+  window.addEventListener("click", () => {
+    settingsMenu.classList.add("menu-hidden");
+  });
 
   async function populateTasks(link = "/api/tasks", taskObject = {}) {
     numChecked = 0;
@@ -203,6 +220,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           }
         }
         if (numChecked > 0) {
+          detailPanel.classList.add("button-checked");
           completeButton.classList.add("num-checked-pos");
           textComplete.classList.add("num-checked-pos");
         } else {
@@ -220,7 +238,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       taskEle.addEventListener("click", async (event) => {
         const id = event.target.id.slice(4);
         timesClicked++;
-        console.log(id);
+        if (event.target.type !== "checkbox") {
+          detailPanel.classList.remove("button-checked");
+        }
+
         const currentList = document.getElementById("current-list");
         const cb = document.getElementById(`cb-${id}`);
         // if (cb.checked) {
@@ -289,6 +310,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     console.log(completeTasks);
     markComplete(completeTasks);
   });
+  topBars.addEventListener("click", (event) => {
+    if (sideNavBar.classList.contains("hidden")) {
+      sideNavBar.classList.remove("hidden");
+    } else {
+      sideNavBar.classList.add("hidden");
+    }
+  });
   completedTab.addEventListener("click", (event) => {
     completedFlag = true;
     textComplete.innerHTML = "Uncomplete";
@@ -296,6 +324,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     incompletedTab.classList.remove("selected");
     completedTab.classList.add("selected");
     addTaskDiv.classList.add("hidden");
+    detailPanel.classList.remove("panel-shown");
+    detailPanel.classList.add("panel-hidden");
     populateTasks();
   });
   incompletedTab.addEventListener("click", (event) => {
@@ -305,6 +335,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     incompletedTab.classList.add("selected");
     completedTab.classList.remove("selected");
     addTaskDiv.classList.remove("hidden");
+    detailPanel.classList.remove("panel-shown");
+    detailPanel.classList.add("panel-hidden");
     populateTasks();
   });
   const closeButton = document.getElementById("close-button-panel");

@@ -80,13 +80,15 @@ body {
   max-width: 51%;
   height: 100%;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
   right: 12px;
   top: 12px;
   left: 50%;
+  padding-left: 35px;
   margin-left: -5px;
   /* justify-self: flex-end;
   width: auto; */
-
   z-index: 0;
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
@@ -498,7 +500,7 @@ body {
 }
 
 .num-checked-pos {
-  color: black !important;
+  color: rgb(50, 50, 50) !important;
 }
 
 .checked-list {
@@ -511,11 +513,6 @@ body {
   background-color: rgb(204, 204, 204);
   margin-left: 12px;
   margin-right: 6px;
-}
-
-.task-check-box:before {
-  border-left: 3px solid gray;
-  border-right: 3px solid violet;
 }
 
 .task-text {

@@ -172,10 +172,9 @@ router.post(
   })
 );
 
-router.all('/logout', (req, res) => {
+router.all("/logout", (req, res) => {
   logoutUser(req, res);
-  res.redirect('/users/login');
+  res.redirect("/users/login");
 });
-
 
 module.exports = router;

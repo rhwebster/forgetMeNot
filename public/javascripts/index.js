@@ -1,4 +1,9 @@
-import { months, tagColors, daysFullOfTheWeek, days3OfTheWeek } from './data-arrays.js';
+import {
+  months,
+  tagColors,
+  daysFullOfTheWeek,
+  days3OfTheWeek,
+} from "./data-arrays.js";
 
 window.addEventListener("DOMContentLoaded", async (event) => {
   const taskContainer = document.getElementById("list-of-tasks");
@@ -14,25 +19,40 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const dueDateHead = document.getElementById("due-text-enter");
   const addTaskOptions = document.getElementById("task-add-options");
   const dueInput = document.getElementById("due-input");
-
   const completeButton = document.getElementById("checkmark");
   const completedTab = document.getElementById("complete");
   const incompletedTab = document.getElementById("incomplete");
+  const currentListHeader = document.getElementById("current-list-header");
   const textComplete = document.getElementById("mark-complete");
+  const sidePanel = document.getElementById("side-panel");
+  const numTasksContainer = document.getElementById("num-tasks-container");
+
+  let currentClicked;
   let completedFlag = false;
   let completeTasks = {};
+  let numChecked = 0;
+  let timesClicked = 0;
+  let numTotalTasks = 0;
+  let numDueToday = 0;
+  let numDueTomorrow = 0;
+  let numOverdue = 0;
+  let numCompleted = 0;
 
   const sideDueInput = document.getElementById("side-due-input");
-  const taskDueDateSpan = document.getElementById("due-date-input");  
+  const taskDueDateSpan = document.getElementById("due-date-input");
 
   let currentTask;
   let currentUser;
-  let currentList;
+  let currentListForHeader;
 
   async function populateTasks(link = "/api/tasks", taskObject = {}) {
+    numChecked = 0;
+    completeButton.classList.remove("num-checked-pos");
+    textComplete.classList.remove("num-checked-pos");
     try {
       const res = await fetch(link, taskObject);
       let { tasks } = await res.json();
+
       const completedList = [];
       const incompleteList = [];
       tasks.forEach((task) => {
@@ -40,7 +60,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         if (tags) {
           let html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
           tags.forEach((tag) => {
-            html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 17]};">${tag.name}</span>`;
+            html += `<span class="no-color-tag-class" style="background-color:${
+              tagColors[tag.id % 17]
+            };">${tag.name}</span>`;
           });
         }
         console.log(task.completed);
@@ -49,16 +71,23 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         } else {
           incompleteList.push(task);
         }
+        numTotalTasks = incompleteList.length;
+        numCompleted = completedList.length;
       });
       const taskHtml = [];
       let html;
       if (!completedFlag) {
+        numDueTomorrow = 0;
+        numDueToday = 0;
+        numOverdue = 0;
         incompleteList.forEach((task) => {
           let tags = task.TasksWithTags;
           if (tags) {
             html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 17]};">${tag.name}</span>`;
+              html += `<span class="no-color-tag-class" style="background-color:${
+                tagColors[tag.id % 17]
+              };">${tag.name}</span>`;
             });
           }
 
@@ -73,18 +102,21 @@ window.addEventListener("DOMContentLoaded", async (event) => {
             const day = date.getDate();
             const year = date.getYear();
             if (day < todayDate) {
+              numOverdue++;
               html += `<span class="overdue date-text">${monthText} ${day}</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate &&
               year === todayYear
             ) {
+              numDueToday++;
               html += `<span class="today date-text">Today</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate + 1 &&
               year === todayYear
             ) {
+              numDueTomorrow++;
               html += `<span class="date-text">Tomorrow</span>`;
             } else {
               html += `<span class="date-text">${monthText} ${day}</span>`;
@@ -104,6 +136,20 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           taskHtml.push(html);
         });
       }
+      let numTasksHtml = `<div class="tasks-num-div" id="total-tasks-div"><span id="total-tasks-span">${numTotalTasks}</span><span class="num-tasks-label">tasks</span></div>`;
+      if (numDueToday > 0) {
+        numTasksHtml += `<div class="tasks-num-div" id="today-tasks-div"><span id="today-tasks-span">${numDueToday}</span><span class="num-tasks-label">due today</span></div>`;
+      }
+      if (numDueTomorrow > 0) {
+        numTasksHtml += `<div class="tasks-num-div" id="tomorrow-tasks-div"><span id="tomorrow-tasks-span">${numDueTomorrow}</span><span class="num-tasks-label">due tomorrow</span></div>`;
+      }
+      if (numOverdue > 0) {
+        numTasksHtml += `<div class="tasks-num-div" id="overdue-tasks-div"><span id="overdue-tasks-span">${numOverdue}</span><span class="num-tasks-label">overdue</span></div>`;
+      }
+      if (numCompleted > 0) {
+        numTasksHtml += `<div class="tasks-num-div" id="completed-tasks-div"><span id="completed-tasks-span">${numCompleted}</span><span class="completed-tasks-label">completed</span></div>`;
+      }
+      numTasksContainer.innerHTML = numTasksHtml;
       for (let i = 0; i < 100 - tasks.length; i++) {
         taskHtml.push(`<li><span></span></li>`);
       }
@@ -134,21 +180,33 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     checkboxes.forEach((checkbox) => {
       checkbox.addEventListener("click", (event) => {
         let id = event.target.id.slice(3);
+        const ele = document.getElementById(`ele-${id}`);
         if (checkbox.checked) {
+          numChecked++;
+          ele.classList.add("checked-list");
           if (completedFlag === false) {
             completeTasks[id] = true;
           } else {
             completeTasks[id] = false;
           }
         } else {
+          numChecked--;
+          ele.classList.remove("checked-list");
           if (completedFlag === false) {
             completeTasks[id] = false;
           } else {
             completeTasks[id] = true;
           }
         }
+        if (numChecked > 0) {
+          completeButton.classList.add("num-checked-pos");
+          textComplete.classList.add("num-checked-pos");
+        } else {
+          completeButton.classList.remove("num-checked-pos");
+          textComplete.classList.remove("num-checked-pos");
+        }
 
-        console.log(completeTasks);
+        console.log(numChecked);
       });
     });
 
@@ -156,7 +214,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     // const taskNameDetail = document.getElementById("task-name-detail");
     tasksClickable.forEach((taskEle) => {
       taskEle.addEventListener("click", async (event) => {
+        const id = event.target.id.slice(4);
+        timesClicked++;
+        console.log(id);
         const currentList = document.getElementById("current-list");
+        const cb = document.getElementById(`cb-${id}`);
+        // if (cb.checked) {
+        //   taskEle.classList.remove("checked-list");
+        //   cb.checked = false;
+        // } else {
+        //   taskEle.classList.add("checked-list");
+        //   cb.checked = true;
+        // }
         taskDueDateSpan.innerHTML = "";
         currentList.innerHTML = "";
         noteList.innerHTML = "";
@@ -173,11 +242,17 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           }
 
           currentList.innerHTML = task.List.name;
+          currentListForHeader = currentTask.List.name;
+          currentListHeader.innerHTML = currentListForHeader;
           populateNotes();
 
           let html = "";
           currentTask.TasksWithTags.forEach((tag) => {
-            html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 17]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+            html += `<span class="no-color-tag-class remove-tag" style="background-color:${
+              tagColors[tag.id % 17]
+            };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
+              tag.id
+            }">  x</span></span>`;
           });
 
           tagsList.innerHTML = html;
@@ -190,26 +265,35 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         } catch (e) {
           console.error(e);
         }
-        detailPanel.classList.remove("panel-hidden");
-        detailPanel.classList.add("panel-shown");
+        if (currentClicked === id && timesClicked % 2 === 0) {
+          detailPanel.classList.add("panel-hidden");
+          detailPanel.classList.remove("panel-shown");
+          timesClicked = 0;
+        } else {
+          detailPanel.classList.remove("panel-hidden");
+          detailPanel.classList.add("panel-shown");
+        }
+        currentClicked = id;
       });
     });
   }
 
   populateTasks();
+  currentListForHeader = "Inbox";
+  currentListHeader.innerHTML = currentListForHeader;
   completeButton.addEventListener("click", (event) => {
     console.log(completeTasks);
     markComplete(completeTasks);
   });
   completedTab.addEventListener("click", (event) => {
     completedFlag = true;
-    textComplete.innerHTML = "Mark incomplete";
-    completeButton.innerHTML = "&#10008";
+    textComplete.innerHTML = "Uncomplete";
+    completeButton.innerHTML = "&#8634";
     populateTasks();
   });
   incompletedTab.addEventListener("click", (event) => {
     completedFlag = false;
-    textComplete.innerHTML = "Mark complete";
+    textComplete.innerHTML = "Complete";
     completeButton.innerHTML = "&#10003";
     populateTasks();
   });
@@ -249,6 +333,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     addTaskButton.classList.remove("shown");
     dueDatePicker.classList.remove("shown");
     dueDateHead.classList.remove("shown");
+    addTaskOptions.classList.remove("shown");
     const value = taskField.value;
     let dueInputValue = dueInput.value;
 
@@ -271,7 +356,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         if (tags) {
           let html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
           tags.forEach((tag) => {
-            html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 17]};>${tag.name}</span>`;
+            html += `<span class="no-color-tag-class" style="background-color:${
+              tagColors[tag.id % 17]
+            };>${tag.name}</span>`;
           });
         }
         if (task.completed) {
@@ -288,7 +375,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           if (tags) {
             html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${tagColors[tag.id % 17]};>${tag.name}</span>`
+              html += `<span class="no-color-tag-class" style="background-color:${
+                tagColors[tag.id % 17]
+              };>${tag.name}</span>`;
             });
           }
           if (task.due) {
@@ -412,10 +501,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   taskField.addEventListener("focus", (event) => {
     addTaskButton.removeEventListener("click", clickHandler);
     addTaskButton.classList.add("shown");
+    addTaskOptions.classList.add("shown");
     dueDateHead.classList.add("shown");
     dueDatePicker.classList.add("shown");
   });
   taskField.addEventListener("blur", (event) => {
+    addTaskOptions.classList.remove("shown");
     addTaskButton.classList.remove("shown");
     dueDateHead.classList.remove("shown");
     dueDatePicker.classList.remove("shown");
@@ -446,7 +537,15 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const tagHtml = [];
 
       tags.forEach((tag) => {
-        let html = `<li id="li-${tag.id}"><div class="left-tag-div"><div class="color-tag" style="background-color:${tagColors[tag.id % 17]};"></div><span>${tag.name}</span></div><button class="tag-button" id="btn-${tag.id}"><span class="tag-button-text">-</span></button></li>`;
+        let html = `<li id="li-${
+          tag.id
+        }"><div class="left-tag-div"><div class="color-tag" style="background-color:${
+          tagColors[tag.id % 17]
+        };"></div><span>${
+          tag.name
+        }</span></div><button class="tag-button" id="btn-${
+          tag.id
+        }"><span class="tag-button-text">-</span></button></li>`;
         tagHtml.push(html);
         document.getElementById(`option-${tag.id}`).style = `background-color:${tagColors[tag.id % 17]}`;
       });
@@ -499,7 +598,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const inputName = document.getElementById("inputName");
 
   const popupAddTagBtn = document.getElementById("addTag");
-  const popupAddListBtn = document.getElementById('addList')
+  const popupAddListBtn = document.getElementById("addList");
 
   popupAddTagBtn.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -512,10 +611,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nameToSend),
       });
-      console.log('tagId', tagId);
+      console.log("tagId", tagId);
       if (tagId > 0) {
         // add this new tag to the select tagSelector
-        const newTagOption = document.createElement('option');
+        const newTagOption = document.createElement("option");
         newTagOption.value = tagId;
         newTagOption.id = `option-${tagId}`;
         newTagOption.text = inputName.value;
@@ -526,7 +625,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         modal.style.display = "none";
       }
     } else if (addFunction === "addList") {
-      
     }
   });
 
@@ -558,6 +656,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   };
 
   const searchButton = document.getElementById("searchButton");
+
   const searchText = document.getElementById("searchText");
   function searchAndDisplay(tagName = "") {
     event.preventDefault();
@@ -568,6 +667,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   }
   searchButton.addEventListener("click", (event) => {
     searchAndDisplay();
+  });
+  searchText.addEventListener("focus", (event) => {
+    searchButton.classList.add("focused");
+  });
+  searchText.addEventListener("blur", (event) => {
+    searchButton.classList.remove("focused");
   });
   searchText.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
@@ -604,7 +709,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const { task } = await res.json();
       currentTask = task;
       currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 17]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${
+          tagColors[tag.id % 17]
+        };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
+          tag.id
+        }">  x</span></span>`;
       });
       tagsList.innerHTML = html;
       const xTagButtons = document.querySelectorAll(".x-button");
@@ -632,6 +741,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         console.error(e);
       }
     }
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     populateTasks();
   }
 
@@ -651,7 +762,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const { task } = await res.json();
       currentTask = task;
       currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 17]};">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id}">  x</span></span>`;
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${
+          tagColors[tag.id % 17]
+        };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
+          tag.id
+        }">  x</span></span>`;
       });
       tagsList.innerHTML = html;
       const xTagButtons = document.querySelectorAll(".x-button");
@@ -663,7 +778,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       populateTasks();
     } catch (e) {}
   });
-  sideDueInput.addEventListener('change', async event => {
+  sideDueInput.addEventListener("change", async (event) => {
     const newDueDate = new Date(sideDueInput.value);
     try {
       const res = await fetch(`/api/tasks/${currentTask.id}/edit`, {
@@ -674,7 +789,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let { task } = await res.json();
       populateTasks();
       const taskDueDate = new Date(task.due);
-      const newDate = new Date(taskDueDate.getTime() + Math.abs(taskDueDate.getTimezoneOffset() * 60000)).toDateString();
+      const newDate = new Date(
+        taskDueDate.getTime() +
+          Math.abs(taskDueDate.getTimezoneOffset() * 60000)
+      ).toDateString();
       let dateHtml = newDate;
       taskDueDateSpan.innerHTML = dateHtml;
       currentTask.due = task.due;
@@ -683,42 +801,47 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     }
   });
 
-  const todayLink = document.getElementById('today');
-  const tomorrowLink = document.getElementById('tomorrow');
-  const thisWeekLink = document.getElementById('this-week');
-  const nextWeekLink = document.getElementById('next-week');
+  const todayLink = document.getElementById("today");
+  const tomorrowLink = document.getElementById("tomorrow");
+  const thisWeekLink = document.getElementById("this-week");
+  const nextWeekLink = document.getElementById("next-week");
 
-  todayLink.addEventListener('click', event => {
+  todayLink.addEventListener("click", (event) => {
     fetchDateLink(new Date());
   });
-  tomorrowLink.addEventListener('click', event => {
+  tomorrowLink.addEventListener("click", (event) => {
     const tomorrowDate = new Date();
     tomorrowDate.setDate(tomorrowDate.getDate() + 1);
     fetchDateLink(tomorrowDate);
   });
-  thisWeekLink.addEventListener('click', event => {
+  thisWeekLink.addEventListener("click", (event) => {
     fetchDateLink(new Date(), true);
   });
-  nextWeekLink.addEventListener('click', event => {
+  nextWeekLink.addEventListener("click", (event) => {
     fetchDateLink(new Date(), false, true);
-  });  
-  function fetchDateLink(date, thisweek = false, nextWeek = false){
+  });
+  function fetchDateLink(date, thisweek = false, nextWeek = false) {
     let due = new Date(date.toLocaleDateString()).toISOString().slice(0, 10);
-    if(thisweek || nextWeek) {
+    if (thisweek || nextWeek) {
       let days = 0;
-      if(nextWeek) days = 7;
+      if (nextWeek) days = 7;
       const sundayOfTheWeek = date;
       sundayOfTheWeek.setDate(date.getDate() + days - date.getDay());
-      due = new Date(sundayOfTheWeek.toLocaleDateString()).toISOString().slice(0, 10);
+      due = new Date(sundayOfTheWeek.toLocaleDateString())
+        .toISOString()
+        .slice(0, 10);
       const saturdayOfTheWeek = date;
       saturdayOfTheWeek.setDate(date.getDate() + 6 + days - date.getDay());
-      due += "to" + new Date(saturdayOfTheWeek.toLocaleDateString()).toISOString().slice(0, 10);
+      due +=
+        "to" +
+        new Date(saturdayOfTheWeek.toLocaleDateString())
+          .toISOString()
+          .slice(0, 10);
     }
     populateTasks(`/api/tasks/search/all`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ due}), 
+      body: JSON.stringify({ due }),
     });
   }
-
 });

@@ -348,6 +348,14 @@ body {
   border-radius: 2px;
 }
 
+.color-tag {
+  height: 12px;
+  width: 12px;
+  margin-right: 4px;
+  border-radius: 2px;
+}
+
+
 .tag-button:hover {
   background-color: rgb(122, 178, 224);
   color: rgb(215, 231, 245);
@@ -641,6 +649,17 @@ body {
   border-radius: 3px;
 }
 
+.no-color-tag-class {
+  display: inline-block;
+  box-sizing: border-box;
+  color: white;
+  font-size: 0.6rem;
+  margin-left: 4px;
+  padding: 3px 4px 3px;
+  border-radius: 3px;
+}
+
+
 /* The Modal (background) */
 .modal {
   display: none; /* Hidden by default */
@@ -711,4 +730,64 @@ body {
   .main-panel {
     transition-duration: 0.75s;
   }
+}
+
+input[type='checkbox'] {
+  display: none;
+}
+.lbl-toggle {
+  display: block;
+
+  padding: 10px;
+
+  color: black;
+  background-color: rgb(215, 231, 245);
+
+  cursor: pointer;
+
+  border-radius: 7px;
+  transition: all 0.25s ease-out;
+}
+
+.lbl-toggle:hover {
+  background-color: rgb(191, 215, 239);
+}
+.lbl-toggle::before {
+  content: ' ';
+  display: inline-block;
+
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid currentColor;
+
+  vertical-align: middle;
+  margin-right: .7rem;
+  transform: translateY(-2px);
+
+  transition: transform .2s ease-out;
+}
+.collapsible-content .content-inner {
+  background-color: rgb(215, 231, 245);
+  border-bottom: 1px solid  rgb(215, 231, 245);
+
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+  padding: .5rem 1rem;
+}
+.collapsible-content {
+  max-height: 0px;
+  overflow: hidden;
+
+  transition: max-height .25s ease-in-out;
+}
+.toggle:checked + .lbl-toggle + .collapsible-content {
+  max-height: 100vh;
+}
+.toggle:checked + .lbl-toggle::before {
+  transform: rotate(90deg) translateX(-3px);
+}
+
+.toggle:checked + .lbl-toggle {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }

@@ -9,9 +9,11 @@ div(id='top-navbar' class='top-navbar')
   span(class="top-navbar-link-group")
     span(class='top-navbar-link') Welcome #{user.firstName}!
     span(class='top-navbar-link')
-      a(href='/about') My-Cool-Link
+      a(href='/about' class='cool-link') My-Cool-Link
     span(class='top-navbar-link')
-      button(method='post')
+      button(method='post' class="log-out-button")
         a(href='/users/logout') Logout
     span(class='top-navbar-link')
       i(style="font-size:20px" class="fa fa-gear")
+
+      

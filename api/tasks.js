@@ -168,6 +168,9 @@ router.put(
         ],
       });
       res.json({ task });
+    } else if (due) {
+      await task.update({ due });
+      res.json({ task });
     }
   })
 );

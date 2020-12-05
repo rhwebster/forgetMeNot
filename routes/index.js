@@ -20,9 +20,11 @@ router.get(
         },
       });
       const tags = await Tag.findAll();
-      res.render("index", { title: "Forget Me Not Home", tasks, tags });
+      let pageName = 'index'
+      res.render("index", { title: "Forget Me Not Home", tasks, tags, pageName });
     } else {
-      res.render("index", { title: "Forget Me Not Home"});
+      res.redirect('/users/login');
+      // res.render("index", { title: "Forget Me Not Home"});
     }
   })
 );

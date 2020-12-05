@@ -5,7 +5,7 @@ append head
   link(rel="stylesheet" href="/stylesheets/index.css")
   
   //- add page specific js
-  script(src="/javascripts/index.js" type="module" defer)
+  script(src=`/javascripts/index.js` type="module" defer)
 
 block content 
   div(id='wholepage' class="wholepage")
@@ -37,31 +37,19 @@ block content
               a(class='timed-list' id='tomorrow' href='/lists/tomorrow') Tomorrow
             div(class="inbox-link")
               a(class='timed-list' id='this-week' href='/lists/') This Week
-            div(class="inbox-link")
-              a(class='timed-list' id='this-month' href='/lists') This Month
-          div(class='tasks nav-ele' id='tasks')
-            span Tasks
-            span
-              button(method='post') +
-                a(href='')
-            div(class='tasks' id='all-tasks')
-              button
-                a(href='/') All
-          div(class='lists nav-ele' id='lists')
-            span Lists
-            span
-              button(method='post' id='addListBtn')
-                a(href='/lists') +
-            div(class='lists' id='list-names')
-              span
-                button
-                  a(href='/lists') All
+          div(class="wrap-collabsible")
+            input(id="collapsible" class="toggle" type="checkbox" checked)
+            label(for="collapsible" class="lbl-toggle") Lists
+            div(class="collapsible-content")
+              div(class="content-inner")
+                button(id="addListBtn" class="tag-button") +
+              div(class="content-inner")
+                a(href='/lists/' id="allListsBtn" class="tag-button") All
           div(class='tags nav-ele' id='tags')
             div(class="tags-header")
               span(id="tag-span") Tags
               span 
                 button(id='addTagBtn' class="tag-button") +
-                  a(href='')
             div(id='list-of-tags-div' class='list-of-tags-class')
         div(id="right-body" class="right-body")
           div(id='main-panel' class='main-panel')
@@ -72,7 +60,7 @@ block content
                 span(class="close") X
                 include add-tag-or-list-pop-up.pug
           div(id='side-panel' class='side-panel')
-            p rightside panel
+            p 
           div(id="task-detail-panel" class="panel-hidden")
             div(id="task-info")
               div(id="close-button-panel")
@@ -81,7 +69,8 @@ block content
                 input(id="name-panel-text")
               div(id="due-elements" class="panel-elements")
                 span(id="due-text-panel" class="panel-text") due
-                span(id="due-date-input")
+                span(id="due-date-input" style="padding:0px 5px 5px 0px;")
+                input(type="date" id="side-due-input" placeholder="due date optional")
               div(id="list-info-panel" class="panel-elements") 
                 span(id="list-header-text" class="panel-text") list
                 div(id="current-list")

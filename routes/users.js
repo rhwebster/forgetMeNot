@@ -108,6 +108,7 @@ router.post(
         name: "Inbox",
         userId: user.id,
       });
+      loginUser(req, res, user);
       res.redirect("/");
     } else {
       const errors = validatorErrors.array().map((error) => error.msg);

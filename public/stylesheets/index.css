@@ -94,6 +94,70 @@ body {
   border-bottom-right-radius: 6px;
 }
 
+#current-list-header {
+  margin-top: 35px;
+  font-size: larger;
+}
+
+#num-tasks-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.tasks-num-div {
+  box-sizing: border-box;
+  padding: 10px 13px 8px 10px;
+  max-width: 100%;
+  margin-top: 15px;
+  margin-right: 6px;
+  background-color: rgb(219, 232, 246);
+  border-radius: 5px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.completed-tasks-label {
+  font-size: 12px;
+  color: rgb(131, 139, 148);
+}
+
+.num-tasks-label {
+  font-size: 12px;
+}
+
+#total-tasks-span {
+  font-size: 20px;
+  font-weight: bold;
+  color: rgb(0, 96, 191);
+  margin-bottom: 2px;
+}
+
+#today-tasks-span {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+#tomorrow-tasks-span {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+#overdue-tasks-span {
+  font-size: 20px;
+  font-weight: bold;
+  color: rgb(215, 74, 0);
+  margin-bottom: 2px;
+}
+
+#completed-tasks-span {
+  font-size: 20px;
+  font-weight: bold;
+  color: rgb(131, 139, 148);
+  margin-bottom: 2px;
+}
 .panel-hidden {
   transform: translateX(1500px);
   transition-duration: 1s;
@@ -738,6 +802,7 @@ body {
     height: 100px;
     max-width: 100%;
     width: auto;
+    padding-left: 14px;
   }
   #task-detail-panel.panel-shown {
     position: fixed;
@@ -747,6 +812,13 @@ body {
     right: 12px;
     transition-duration: 0s;
   }
+  #current-list-header {
+    margin-top: 12px;
+  }
+  .tasks-num-div {
+    padding: 4px 10px 4px 10px;
+    margin-top: 10px;
+  }
 }
 
 @media screen and (min-width: 1001px) {
@@ -755,6 +827,12 @@ body {
   }
   .side-panel {
     transition-duration: 0.5s;
+  }
+}
+
+@media screen and (max-width: 1100px) and (min-width: 1001px) {
+  #completed-tasks-div {
+    display: none;
   }
 }
 

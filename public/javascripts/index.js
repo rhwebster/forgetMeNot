@@ -22,6 +22,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const completeButton = document.getElementById("checkmark");
   const completedTab = document.getElementById("complete");
   const incompletedTab = document.getElementById("incomplete");
+  const currentListHeader = document.getElementById("current-list-header");
   const textComplete = document.getElementById("mark-complete");
   const sidePanel = document.getElementById("side-panel");
   const numTasksContainer = document.getElementById("num-tasks-container");
@@ -42,7 +43,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   let currentTask;
   let currentUser;
-  let currentList;
+  let currentListForHeader;
 
   async function populateTasks(link = "/api/tasks", taskObject = {}) {
     numChecked = 0;
@@ -135,18 +136,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           taskHtml.push(html);
         });
       }
-      let numTasksHtml = `<div id="total-tasks-div"><span id="total-tasks-span">${numTotalTasks}</span><span class="num-tasks-label">tasks</span></div>`;
+      let numTasksHtml = `<div class="tasks-num-div" id="total-tasks-div"><span id="total-tasks-span">${numTotalTasks}</span><span class="num-tasks-label">tasks</span></div>`;
       if (numDueToday > 0) {
-        numTasksHtml += `<div id="today-tasks-div"><span id="today-tasks-span">${numDueToday}</span><span class="num-tasks-label">due today</span></div>`;
+        numTasksHtml += `<div class="tasks-num-div" id="today-tasks-div"><span id="today-tasks-span">${numDueToday}</span><span class="num-tasks-label">due today</span></div>`;
       }
       if (numDueTomorrow > 0) {
-        numTasksHtml += `<div id="tomorrow-tasks-div"><span id="tomorrow-tasks-span">${numDueTomorrow}</span><span class="num-tasks-label">due tomorrow</span></div>`;
+        numTasksHtml += `<div class="tasks-num-div" id="tomorrow-tasks-div"><span id="tomorrow-tasks-span">${numDueTomorrow}</span><span class="num-tasks-label">due tomorrow</span></div>`;
       }
       if (numOverdue > 0) {
-        numTasksHtml += `<div id="overdue-tasks-div"><span id="overdue-tasks-span">${numOverdue}</span><span class="num-tasks-label">overdue</span></div>`;
+        numTasksHtml += `<div class="tasks-num-div" id="overdue-tasks-div"><span id="overdue-tasks-span">${numOverdue}</span><span class="num-tasks-label">overdue</span></div>`;
       }
       if (numCompleted > 0) {
-        numTasksHtml += `<div id="completed-tasks-div"><span id="completed-tasks-span">${numCompleted}</span><span class="completed-tasks-label">completed</span></div>`;
+        numTasksHtml += `<div class="tasks-num-div" id="completed-tasks-div"><span id="completed-tasks-span">${numCompleted}</span><span class="completed-tasks-label">completed</span></div>`;
       }
       numTasksContainer.innerHTML = numTasksHtml;
       for (let i = 0; i < 100 - tasks.length; i++) {
@@ -241,6 +242,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           }
 
           currentList.innerHTML = task.List.name;
+          currentListForHeader = currentTask.List.name;
+          currentListHeader.innerHTML = currentListForHeader;
           populateNotes();
 
           let html = "";
@@ -276,6 +279,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   }
 
   populateTasks();
+  currentListForHeader = "Inbox";
+  currentListHeader.innerHTML = currentListForHeader;
   completeButton.addEventListener("click", (event) => {
     console.log(completeTasks);
     markComplete(completeTasks);

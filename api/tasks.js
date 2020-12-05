@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Task, User, List, Tag, TaggedTask } = require("../db/models");
 const { asyncHandler } = require("../routes/utils");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 router.get(
   "/tasks",
@@ -69,17 +69,30 @@ router.get(
   })
 );
 
-router.get(
+router.all(
   "/tasks/search/:taskName/?",
   asyncHandler(async (req, res) => {
     const taskNameToSearch = req.params.taskName;
     const userId = req.session.auth.userId;
     const whereObject = { userId };
+    const { due } = req.body;
     if (taskNameToSearch !== "all") {
       whereObject.name = {
         [Op.iLike]: `%${taskNameToSearch}%`,
       };
     }
+    if(due){
+      if(!due.includes("to"))
+        whereObject.due = new Date(due);
+      else {
+        const sunday = new Date(due.split("to")[0]);
+        const saturday = new Date(due.split("to")[1]);
+        whereObject.due = {
+          [Op.between]: [sunday, saturday]
+        }
+      }
+    }
+    console.table(whereObject);
     const tasks = await Task.findAll({
       where: whereObject,
       include: [

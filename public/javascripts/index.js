@@ -447,8 +447,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
       tags.forEach((tag) => {
         let html = `<li id="li-${tag.id}"><div class="left-tag-div"><div class="color-tag" style="background-color:${tagColors[tag.id % 17]};"></div><span>${tag.name}</span></div><button class="tag-button" id="btn-${tag.id}"><span class="tag-button-text">-</span></button></li>`;
-
         tagHtml.push(html);
+        document.getElementById(`option-${tag.id}`).style = `background-color:${tagColors[tag.id % 17]}`;
       });
       tagContainer.innerHTML = tagHtml.join("");
       tagId = tags[tags.length - 1].id;
@@ -519,6 +519,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         newTagOption.value = tagId;
         newTagOption.id = `option-${tagId}`;
         newTagOption.text = inputName.value;
+        newTagOption.style = `background-color:${tagColors[tagId % 17]}`;
         tagSelector.add(newTagOption);
         // console.log(newTagOption);
         inputName.value = "";

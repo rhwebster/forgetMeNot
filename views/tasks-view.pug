@@ -1,6 +1,10 @@
 div(id='main-task-view-div' class='main-task-view-div')
-  div(id='task-top-navbar' class='task-top-navbar') Top navbar
-  div(id='task-action-bar' class='task-action-bar') action bar
+  div(id='task-top-navbar' class='task-top-navbar')
+    div(id="incomplete") Incomplete
+    div(id="complete") Completed
+  div(id='task-action-bar' class='task-action-bar')
+    div(id="checkmark") &#10003
+    span(id="mark-complete") Complete
   div(id='list-of-tasks-div' class='list-of-tasks-class')
     div(id='add-a-task-div')
       input(type="text" id='task-name' placeholder="Add a task...")

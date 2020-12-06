@@ -5,8 +5,33 @@ div(id='main-task-view-div' class='main-task-view-div')
     div(id="complete") 
       span Completed
   div(id='task-action-bar' class='task-action-bar')
-    div(id="checkmark") &#10003
-    span(id="mark-complete") Mark complete
+    div(id="action-first-group")
+      div(id="checkmark") &#10003
+      span(id="mark-complete") Mark complete
+    div(id="sort-menu")
+      i(id="sort-cog" style="font-size:23px" class="fa fa-gear")  &#9662
+      div(id="sort-box" class="hidden")
+        ul
+          li(id="due-soonest" class="1 sort-option")
+            i(class="1 fa fa-check sort-check")
+            span(class="1 sort-span") Sort by due soonest
+          li(id="due-last" class="2 sort-option")   
+            i(class="2 fa fa-check sort-check hidden")
+            span(class="2 sort-span") Sort by due latest
+          li(id="name-asc" class="3 sort-option")
+            i(class="3 fa fa-check sort-check hidden")
+            span(class="3 sort-span") Sort by name (A-Z)
+          li(id="name-desc" class="4 sort-option")
+            i(class="4 fa fa-check sort-check hidden")
+            span(class="4 sort-span") Sort by name (Z-A)
+          li(id="created-first" class="5 sort-option") 
+            i(class="5 fa fa-check sort-check hidden")
+            span(class="5 sort-span") Sort by created first
+          li(id="created-last" class="6 sort-option") 
+            i(class="6 fa fa-check sort-check hidden")
+            span(class="6 sort-span") Sort by created last
+
+
   div(id='list-of-tasks-div' class='list-of-tasks-class')
     div(id='add-a-task-div')
       input(type="text" id='task-name' placeholder="Add a task...")

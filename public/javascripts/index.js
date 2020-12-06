@@ -385,7 +385,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         body: JSON.stringify(nameToSend),
       });
       taskNameInput.addEventListener("keypress", keyPressEvent);
-      populateTasks(globalLink);
+      populateTasks(globalLink, globalObject);
     } catch (e) {
       console.error(e);
     }
@@ -740,6 +740,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const searchText = document.getElementById("searchText");
   function searchAndDisplay(tagName = "") {
     event.preventDefault();
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     let textToSearch = searchText.value;
     if (!textToSearch.length) textToSearch = "all";
     globalLink = `/api/tasks/search/${textToSearch}/${tagName}`;
@@ -803,7 +805,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           removeTag(button);
         });
       });
-      populateTasks(globalLink);
+      populateTasks(globalLink, globalObject);
       //   currentTask.notes = await res.json().notes;
     } catch (e) {
       console.error(e);
@@ -824,7 +826,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     }
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
-    populateTasks(globalLink);
+    populateTasks(globalLink, globalObject);
   }
 
   // tagSelector.addEventListener('click', event => {
@@ -856,7 +858,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           removeTag(button);
         });
       });
-      populateTasks(globalLink);
+      populateTasks(globalLink, globalObject);
     } catch (e) {}
   });
   sideDueInput.addEventListener("change", async (event) => {
@@ -868,7 +870,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         body: JSON.stringify({ due: newDueDate }),
       });
       let { task } = await res.json();
-      populateTasks(globalLink);
+      populateTasks(globalLink, globalObject);
       const taskDueDate = new Date(task.due);
       const newDate = new Date(
         taskDueDate.getTime() +
@@ -888,17 +890,29 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const nextWeekLink = document.getElementById("next-week");
 
   todayLink.addEventListener("click", (event) => {
+    timesClicked = 0;
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     fetchDateLink(new Date());
   });
   tomorrowLink.addEventListener("click", (event) => {
+    timesClicked = 0;
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     const tomorrowDate = new Date();
     tomorrowDate.setDate(tomorrowDate.getDate() + 1);
     fetchDateLink(tomorrowDate);
   });
   thisWeekLink.addEventListener("click", (event) => {
+    timesClicked = 0;
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     fetchDateLink(new Date(), true);
   });
   nextWeekLink.addEventListener("click", (event) => {
+    timesClicked = 0;
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     fetchDateLink(new Date(), false, true);
   });
   function fetchDateLink(date, thisweek = false, nextWeek = false) {

@@ -1,3 +1,4 @@
+import { body } from "express-validator";
 import {
   months,
   tagColors,
@@ -10,11 +11,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const addTaskButton = document.getElementById("add-task-button");
   const taskField = document.getElementById("task-name");
   const tagContainer = document.getElementById("list-of-tags-div");
+  const listContainer = document.getElementById("list-of-lists-div");
   const detailPanel = document.getElementById("task-detail-panel");
   const taskNameInput = document.getElementById("name-panel-text");
   const noteList = document.getElementById("note-list");
   const tagsList = document.getElementById("tags-list");
   const tagSelector = document.getElementById("tag-selector");
+  const listSelector = document.getElementById("list-selector");
   const dueDatePicker = document.getElementById("due-input");
   const dueDateHead = document.getElementById("due-text-enter");
   const addTaskDiv = document.getElementById("add-a-task-div");
@@ -176,12 +179,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       }
       taskContainer.innerHTML = taskHtml.join("");
       const inboxLink = document.getElementById("inbox");
-      inboxLink.innerHTML = "<span>Inbox</span>";
+      inboxLink.innerHTML = '<span style="font-weight:bold;">Inbox</span>';
       const numTasksElement = document.createElement("span");
       numTasksElement.classList.add("num-tasks");
       numTasksElement.innerHTML = incompleteList.length;
       inboxLink.innerHTML =
-        "<a class='timed-list' id='inbox-link' href='/'>Inbox</a>";
+        "<a class='timed-list' id='inbox-link' href='/'  style='font-weight:bold;'>Inbox</a>";
       inboxLink.appendChild(numTasksElement);
     } catch (e) {
       console.error(e);
@@ -591,7 +594,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           tag.id
         }"><span class="tag-button-text">-</span></button></li>`;
         tagHtml.push(html);
-        document.getElementById(`option-${tag.id}`).style = `background-color:${
+        const option = document.getElementById(`option-${tag.id}`);
+        if(option) option.style = `background-color:${
           tagColors[tag.id % 17]
         }`;
       });
@@ -643,8 +647,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const addListBtn = document.getElementById("addListBtn");
   const inputName = document.getElementById("inputName");
 
-  const popupAddTagBtn = document.getElementById("addTag");
-  const popupAddListBtn = document.getElementById("addList");
+  const popupAddTagBtn = document.getElementById("addTagOrList");
 
   popupAddTagBtn.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -847,11 +850,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     }
   });
 
+  const allTaskLink = document.getElementById("all-tasks");
   const todayLink = document.getElementById("today");
   const tomorrowLink = document.getElementById("tomorrow");
   const thisWeekLink = document.getElementById("this-week");
   const nextWeekLink = document.getElementById("next-week");
 
+  allTaskLink.addEventListener('click', () => populateTasks());
   todayLink.addEventListener("click", (event) => {
     fetchDateLink(new Date());
   });
@@ -890,4 +895,70 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       body: JSON.stringify({ due }),
     });
   }
+
+  async function populateLists(listPostObject = {method: "POST"}) {
+    let listId = undefined;
+    let userId = currentUser.id;
+    listPostObject[headers] = { "Content-Type": "application/json" };
+    listPostObject[body] = JSON.stringify({ userId });
+    try {
+      const res = await fetch("/api/lists", listPostObject);
+      const resJson = await res.json();
+      if (!res.ok) {
+        const p = document.getElementById("p-add-errors");
+        console.log(resJson.errors);
+        p.innerText = resJson.errors.join("/br");
+        return listId;
+      }
+      let { lists } = resJson;
+      const listHtml = [];
+
+      lists.forEach((list) => {
+        let html = `<li id="li-${
+          list.id
+        }"><div class="left-tag-div"><div class="color-tag"></div><span>${
+          list.name
+        }</span></div><button class="tag-button" id="btn-${
+          list.id
+        }"><span class="tag-button-text">-</span></button></li>`;
+        listHtml.push(html);
+      });
+      listContainer.innerHTML = listHtml.join("");
+      listId = lists[lists.length - 1].id;
+
+      lists.forEach((list) => {
+        document
+          .getElementById(`btn-${list.id}`)
+          .addEventListener("click", async (event) => {
+            event.preventDefault();
+            try {
+              const res = await fetch(`/api/tags/${list.id}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: list.id, userId }),
+              });
+              let { id } = await res.json();
+              // console.log("json back", id);
+              const li = document.getElementById(`li-list-${id}`);
+              const option = document.getElementById(`option-list-${id}`);
+              // console.log(option);
+              listContainer.removeChild(li);
+              listSelector.removeChild(option);
+            } catch (e) {
+              console.error(e);
+            }
+          });
+        document
+          .getElementById(`li-list-${list.id}`)
+          .addEventListener("click", (event) => {
+            event.preventDefault();
+            searchAndDisplay(list.id);
+          });
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    return listId;
+  }
+
 });

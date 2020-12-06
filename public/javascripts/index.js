@@ -121,7 +121,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       numTotalTasks = incompleteList.length;
       numCompleted = completedList.length;
 
-      console.log(incompleteList);
       const taskHtml = [];
       let html;
       if (!completedFlag) {
@@ -225,7 +224,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         completeTasks[id] = true;
       }
     });
-    console.log(completeTasks);
 
     checkboxes.forEach((checkbox) => {
       checkbox.addEventListener("click", (event) => {
@@ -257,7 +255,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           textComplete.classList.remove("num-checked-pos");
         }
 
-        console.log(numChecked);
       });
     });
 
@@ -336,7 +333,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   currentListForHeader = "Inbox";
   currentListHeader.innerHTML = currentListForHeader;
   completeButton.addEventListener("click", (event) => {
-    console.log(completeTasks);
     markComplete(completeTasks);
   });
   topBars.addEventListener("click", (event) => {
@@ -605,7 +601,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const resJson = await res.json();
       if (!res.ok) {
         const p = document.getElementById("p-add-errors");
-        console.log(resJson.errors);
         p.innerText = resJson.errors.join("/br");
         return tagId;
       }
@@ -689,7 +684,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nameToSend),
       });
-      console.log("tagId", tagId);
       if (tagId > 0) {
         // add this new tag to the select tagSelector
         const newTagOption = document.createElement("option");
@@ -829,7 +823,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // });
   tagSelector.addEventListener("change", async (event) => {
     const tagId = tagSelector.value;
-    console.log("change", tagId);
+    // console.log("change", tagId);
     try {
       const res = await fetch(`/api/tasks/${currentTask.id}/edit`, {
         method: "PUT",

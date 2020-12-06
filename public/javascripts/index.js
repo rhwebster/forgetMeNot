@@ -105,16 +105,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
       let incompleteList = [];
       tasks.forEach((task) => {
-        let tags = task.TasksWithTags;
-        if (tags) {
-          let html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
-          tags.forEach((tag) => {
-            html += `<span class="no-color-tag-class" style="background-color:${
-              tagColors[tag.id % 17]
-            };">${tag.name}</span>`;
-          });
-        }
-        console.log(task.completed);
         if (task.completed) {
           completedList.push(task);
         } else {
@@ -136,43 +126,47 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         incompleteList.forEach((task) => {
           let tags = task.TasksWithTags;
           if (tags) {
-            html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text">${task.name}</span>`;
+            html = `<li id="ele-${task.id}" class="li-${task.id} filled"><div class="li-${task.id} left-border"></div><input class="li-${task.id} task-check-box" id="cb-${task.id}" type="checkbox"><span class="li-${task.id} task-text">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${
+              html += `<span class="li-${
+                task.id
+              } no-color-tag-class" style="background-color:${
                 tagColors[tag.id % 17]
               };">${tag.name}</span>`;
             });
           }
 
           if (task.due) {
+            const date = new Date(task.due);
             const today = new Date();
+            today.setHours(0, 0, 0);
+            date.setHours(0, 0, 1);
             const todayMonth = today.getMonth();
             const todayDate = today.getDate();
             const todayYear = today.getYear();
-            const date = new Date(task.due);
             const month = date.getMonth();
             const monthText = months[month];
             const day = date.getDate();
             const year = date.getYear();
-            if (day < todayDate) {
+            if (date < today) {
               numOverdue++;
-              html += `<span class="overdue date-text">${monthText} ${day}</span>`;
+              html += `<span class="li-${task.id} overdue date-text">${monthText} ${day}</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate &&
               year === todayYear
             ) {
               numDueToday++;
-              html += `<span class="today date-text">Today</span>`;
+              html += `<span class="li-${task.id} today date-text">Today</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate + 1 &&
               year === todayYear
             ) {
               numDueTomorrow++;
-              html += `<span class="date-text">Tomorrow</span>`;
+              html += `<span class="li-${task.id} date-text">Tomorrow</span>`;
             } else {
-              html += `<span class="date-text">${monthText} ${day}</span>`;
+              html += `<span class="li-${task.id} date-text">${monthText} ${day}</span>`;
             }
           }
           taskHtml.push(html);
@@ -181,9 +175,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         completedList.forEach((task) => {
           let tags = task.TasksWithTags;
           if (tags) {
-            html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text complete-task">${task.name}</span>`;
+            html = `<li id="ele-${task.id}" class="li-${task.id} filled"><div class="li-${task.id} left-border"></div><input class="li-${task.id} task-check-box" id="cb-${task.id}" type="checkbox"><span class="li-${task.id} task-text complete-task">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${
+              html += `<span class="li-${
+                task.id
+              } no-color-tag-class" style="background-color:${
                 tagColors[tag.id % 17]
               };">${tag.name}</span>`;
             });
@@ -270,7 +266,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     // const taskNameDetail = document.getElementById("task-name-detail");
     tasksClickable.forEach((taskEle) => {
       taskEle.addEventListener("click", async (event) => {
-        const id = event.target.id.slice(4);
+        console.log(event.target);
+        const id = event.target.classList[0].slice(3);
         timesClicked++;
         if (event.target.type !== "checkbox") {
           detailPanel.classList.remove("button-checked");
@@ -289,7 +286,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         noteList.innerHTML = "";
         //   const taskNameInput = document.getElementById("name-panel-text");
         try {
-          const id = taskEle.id.slice(4);
           const res = await fetch(`/api/tasks/${id}`);
           let { task } = await res.json();
           currentTask = task;
@@ -332,6 +328,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           detailPanel.classList.add("panel-shown");
         }
         currentClicked = id;
+        console.log(currentTask.List);
+        listSelector.value = currentTask.List.id;
       });
     });
   }
@@ -428,15 +426,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let incompleteList = [];
       let { tasks } = await res.json();
       tasks.forEach((task) => {
-        let tags = task.TasksWithTags;
-        if (tags) {
-          let html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
-          tags.forEach((tag) => {
-            html += `<span class="no-color-tag-class" style="background-color:${
-              tagColors[tag.id % 17]
-            };>${tag.name}</span>`;
-          });
-        }
         if (task.completed) {
           completedList.push(task);
         } else {
@@ -451,15 +440,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           let tags = task.TasksWithTags;
           let html;
           if (tags) {
-            html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text">${task.name}</span>`;
+            html = `<li id="ele-${task.id}" class="li-${task.id} filled"><div class="li-${task.id} left-border"></div><input class="li-${task.id} task-check-box" id="cb-${task.id}" type="checkbox"><span class="li-${task.id} task-text">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${
+              html += `<span class="li-${
+                task.id
+              } no-color-tag-class" style="background-color:${
                 tagColors[tag.id % 17]
               };>${tag.name}</span>`;
             });
           }
           if (task.due) {
             const today = new Date();
+            today.setHours(0, 0, 0);
             const todayMonth = today.getMonth();
             const todayDate = today.getDate();
             const todayYear = today.getYear();
@@ -468,22 +460,22 @@ window.addEventListener("DOMContentLoaded", async (event) => {
             const monthText = months[month];
             const day = date.getDate();
             const year = date.getYear();
-            if (day < todayDate) {
-              html += `<span class="overdue date-text">${monthText} ${day}</span>`;
+            if (date < today) {
+              html += `<span class="li-${task.id} overdue date-text">${monthText} ${day}</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate &&
               year === todayYear
             ) {
-              html += `<span class="today date-text">Today</span>`;
+              html += `<span class="li-${task.id} today date-text">Today</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate + 1 &&
               year === todayYear
             ) {
-              html += `<span class="date-text">Tomorrow</span>`;
+              html += `<span class="li-${task.id} date-text">Tomorrow</span>`;
             } else {
-              html += `<span class="date-text">${monthText} ${day}</span>`;
+              html += `<span class="li-${task.id} date-text">${monthText} ${day}</span>`;
             }
           }
           taskHtml.push(html);
@@ -492,9 +484,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         completedList.forEach((task) => {
           let tags = task.TasksWithTags;
           if (tags) {
-            html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text complete-task">${task.name}</span>`;
+            html = `<li id="ele-${task.id}" class="li-${task.id} filled"><div class="li-${task.id} left-border"></div><input class="li-${task.id} task-check-box" id="cb-${task.id}" type="checkbox"><span class="li-${task.id} task-text complete-task">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${
+              html += `<span class="li-${
+                task.id
+              } no-color-tag-class" style="background-color:${
                 tagColors[tag.id % 17]
               };">${tag.name}</span>`;
             });
@@ -628,9 +622,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         }"><span class="tag-button-text">-</span></button></li>`;
         tagHtml.push(html);
         const option = document.getElementById(`option-${tag.id}`);
-        if(option) option.style = `background-color:${
-          tagColors[tag.id % 17]
-        }`;
+        if (option) option.style = `background-color:${tagColors[tag.id % 17]}`;
       });
       tagContainer.innerHTML = tagHtml.join("");
       tagId = tags[tags.length - 1].id;
@@ -724,7 +716,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         // console.log(newTagOption);
         inputName.value = "";
         modal.style.display = "none";
-      }      
+      }
     }
   });
 
@@ -910,8 +902,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const thisWeekLink = document.getElementById("this-week");
   const nextWeekLink = document.getElementById("next-week");
 
-  allTaskLink.addEventListener('click', () => populateTasks());
+  allTaskLink.addEventListener("click", () =>
+    populateTasks("/api/tasks/all", {})
+  );
   todayLink.addEventListener("click", (event) => {
+    currentListHeader.innerHTML = "Today";
     timesClicked = 0;
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
@@ -919,6 +914,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   });
   tomorrowLink.addEventListener("click", (event) => {
     timesClicked = 0;
+    currentListHeader.innerHTML = "Tomorrow";
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
     const tomorrowDate = new Date();
@@ -927,12 +923,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   });
   thisWeekLink.addEventListener("click", (event) => {
     timesClicked = 0;
+    currentListHeader.innerHTML = "This Week";
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
     fetchDateLink(new Date(), true);
   });
   nextWeekLink.addEventListener("click", (event) => {
     timesClicked = 0;
+    currentListHeader.innerHTML = "Next Week";
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
     fetchDateLink(new Date(), false, true);
@@ -1024,13 +1022,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const listHtml = [];
 
       lists.forEach((list) => {
-        let html = `<li id="li-list-${
-          list.id
-        }"><div class="left-list-div"><div class="color-list"></div><span>${
-          list.name
-        }</span></div><button class="tag-button" id="btn-list-${
-          list.id
-        }"><span class="tag-button-text">-</span></button></li>`;
+        let html = `<li id="li-list-${list.id}"><div class="left-list-div"><div class="color-list"></div><span>${list.name}</span></div><button class="tag-button" id="btn-list-${list.id}"><span class="tag-button-text">-</span></button></li>`;
         listHtml.push(html);
       });
       listContainer.innerHTML = listHtml.join("");
@@ -1062,11 +1054,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           .getElementById(`li-list-${list.id}`)
           .addEventListener("click", (event) => {
             event.preventDefault();
+            globalLink = `/api/tasks/search/all`;
+            globalObject = {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ listId: list.id }),
+            };
             populateTasks(`/api/tasks/search/all`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ listId: list.id }),
             });
+            currentListHeader.innerHTML = list.name;
           });
       });
     } catch (e) {
@@ -1087,23 +1086,23 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let html = "";
       const { task, listName } = await res.json();
       currentTask = task;
-      currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="no-color-tag-class remove-tag" style="background-color:${
-          tagColors[tag.id % 17]
-        };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
-          tag.id
-        }">  x</span></span>`;
-      });
-      tagsList.innerHTML = html;
-      const xTagButtons = document.querySelectorAll(".x-button");
-      xTagButtons.forEach((button) => {
-        button.addEventListener("click", (event) => {
-          removeTag(button);
-        });
-      });
+      //   currentTask.TasksWithTags.forEach((tag) => {
+      //     html += `<span class="no-color-tag-class remove-tag" style="background-color:${
+      //       tagColors[tag.id % 17]
+      //     };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
+      //       tag.id
+      //     }">  x</span></span>`;
+      //   });
+      //   tagsList.innerHTML = html;
+      //   const xTagButtons = document.querySelectorAll(".x-button");
+      //   xTagButtons.forEach((button) => {
+      //     button.addEventListener("click", (event) => {
+      //       removeTag(button);
+      //     });
+      //   });
+      console.log("I'm here");
       currentList.innerText = listName;
-      populateTasks();
+      populateTasks(globalLink, globalObject);
     } catch (e) {}
-  });  
-
+  });
 });

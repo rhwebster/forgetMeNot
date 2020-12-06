@@ -73,15 +73,19 @@ router.delete(
   // tagValidator,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { userId } = req.body;
+    const { userId } = req.session.auth;
     const list = await db.List.findOne({
       where: {
         id,
         userId
       },
     });
-    await list.destroy();
-    res.json({ id, userId });
+    try{
+      await list.destroy();
+      res.json({ id});
+    } catch(e){
+      res.status(400).json(e);
+    }
   })
 );
 

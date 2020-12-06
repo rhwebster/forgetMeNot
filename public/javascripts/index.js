@@ -15,6 +15,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const taskNameInput = document.getElementById("name-panel-text");
   const noteList = document.getElementById("note-list");
   const tagsList = document.getElementById("tags-list");
+  const currentList = document.getElementById("current-list");
   const tagSelector = document.getElementById("tag-selector");
   const listSelector = document.getElementById("list-selector");
   const dueDatePicker = document.getElementById("due-input");
@@ -244,7 +245,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           detailPanel.classList.remove("button-checked");
         }
 
-        const currentList = document.getElementById("current-list");
         const cb = document.getElementById(`cb-${id}`);
         // if (cb.checked) {
         //   taskEle.classList.remove("checked-list");
@@ -947,7 +947,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           .addEventListener("click", async (event) => {
             event.preventDefault();
             try {
-              const res = await fetch(`/api/tags/${list.id}`, {
+              const res = await fetch(`/api/lists/${list.id}`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: list.id }),
@@ -967,7 +967,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           .getElementById(`li-list-${list.id}`)
           .addEventListener("click", (event) => {
             event.preventDefault();
-            searchAndDisplay(list.id);
+            populateTasks(`/api/tasks/search/all`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ listId: list.id }),
+            });
           });
       });
     } catch (e) {
@@ -975,5 +979,36 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     }
     return listId;
   }
+
+  listSelector.addEventListener("change", async (event) => {
+    const listId = listSelector.value;
+    console.log("change", listId);
+    try {
+      const res = await fetch(`/api/tasks/${currentTask.id}/edit`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listId }),
+      });
+      let html = "";
+      const { task, listName } = await res.json();
+      currentTask = task;
+      currentTask.TasksWithTags.forEach((tag) => {
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${
+          tagColors[tag.id % 17]
+        };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
+          tag.id
+        }">  x</span></span>`;
+      });
+      tagsList.innerHTML = html;
+      const xTagButtons = document.querySelectorAll(".x-button");
+      xTagButtons.forEach((button) => {
+        button.addEventListener("click", (event) => {
+          removeTag(button);
+        });
+      });
+      currentList.innerText = listName;
+      populateTasks();
+    } catch (e) {}
+  });  
 
 });

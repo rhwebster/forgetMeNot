@@ -66,8 +66,12 @@ router.delete(
         id,
       },
     });
-    await tag.destroy();
-    res.json({ id });
+    try{
+      await tag.destroy();
+      res.json({ id });
+    } catch (e) {
+      res.status(400).json(e);
+    }
   })
 );
 

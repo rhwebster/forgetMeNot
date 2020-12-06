@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Task, User, List, Tag, TaggedTask } = require("../db/models");
 const { asyncHandler } = require("../routes/utils");
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 
 router.get(
   "/tasks",
@@ -44,19 +44,23 @@ router.get(
 router.post(
   "/tasks",
   asyncHandler(async (req, res) => {
-    const { name, due } = req.body;
-
+    console.log(req.body);
+    let { name, due, listId } = req.body;
     const userId = req.session.auth.userId;
-    const list = await List.findOne({ where: { userId, name: "Inbox" } });
+    console.log(listId === null);
+    if (listId === null) {
+      const list = await List.findOne({ where: { userId, name: "Inbox" } });
+      listId = list.id;
+    }
     const task = await Task.create({
       name,
       due,
       userId,
-      listId: list.id,
+      listId,
       completed: false,
     });
     const tasks = await Task.findAll({
-      where: { userId, listId: list.id },
+      where: { userId, listId },
       include: [
         {
           model: Tag,

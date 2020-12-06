@@ -3,6 +3,7 @@ var express = require("express");
 var router = express.Router();
 const bcrypt = require("bcryptjs");
 const db = require("../db/models");
+const { List, Tag } = require("../db/models");
 const { check, validationResult } = require("express-validator");
 const { csrfProtection, asyncHandler } = require("../routes/utils");
 const { loginUser, logoutUser, requireAuth } = require("../auth");
@@ -15,8 +16,8 @@ router.get(
     const { userId } = req.session.auth;
     const lists = await db.List.findAll({
       where: {
-        userId
-      }
+        userId,
+      },
     });
     res.json({ lists });
   })
@@ -44,7 +45,7 @@ router.post(
     if (!listFoundInDB) {
       list = db.List.build({
         name,
-        userId
+        userId,
       });
     }
 
@@ -54,18 +55,39 @@ router.post(
       await list.save();
       const lists = await db.List.findAll({
         where: {
-          userId
-        }
+          userId,
+        },
       });
       res.json({ lists });
-    } else {      
+    } else {
       let errors = validatorErrors.array().map((error) => error.msg);
-      if(listFoundInDB)
-        errors.push(`List already exists for ${req.session.auth.userFirstName}`);
+      if (listFoundInDB)
+        errors.push(
+          `List already exists for ${req.session.auth.userFirstName}`
+        );
       res.status(400).json({ errors });
     }
   })
 );
+
+router.get(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const listId = req.params.id;
+    const tasks = await db.Task.findAll({
+      where: { listId },
+      include: [
+        List,
+        {
+          model: Tag,
+          as: "TasksWithTags",
+        },
+      ],
+    });
+    res.json({ tasks });
+  })
+);
+
 router.delete(
   "/:id",
   requireAuth,
@@ -77,13 +99,13 @@ router.delete(
     const list = await db.List.findOne({
       where: {
         id,
-        userId
+        userId,
       },
     });
-    try{
+    try {
       await list.destroy();
-      res.json({ id});
-    } catch(e){
+      res.json({ id });
+    } catch (e) {
       res.status(400).json(e);
     }
   })

@@ -621,9 +621,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         }"><span class="tag-button-text">-</span></button></li>`;
         tagHtml.push(html);
         const option = document.getElementById(`option-${tag.id}`);
-        if(option) option.style = `background-color:${
-          tagColors[tag.id % 17]
-        }`;
+        if (option) option.style = `background-color:${tagColors[tag.id % 17]}`;
       });
       tagContainer.innerHTML = tagHtml.join("");
       tagId = tags[tags.length - 1].id;
@@ -717,7 +715,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         // console.log(newTagOption);
         inputName.value = "";
         modal.style.display = "none";
-      }      
+      }
     }
   });
 
@@ -903,7 +901,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const thisWeekLink = document.getElementById("this-week");
   const nextWeekLink = document.getElementById("next-week");
 
-  allTaskLink.addEventListener('click', () => populateTasks());
+  allTaskLink.addEventListener("click", () => populateTasks());
   todayLink.addEventListener("click", (event) => {
     timesClicked = 0;
     detailPanel.classList.add("panel-hidden");
@@ -1017,13 +1015,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const listHtml = [];
 
       lists.forEach((list) => {
-        let html = `<li id="li-list-${
-          list.id
-        }"><div class="left-list-div"><div class="color-list"></div><span>${
-          list.name
-        }</span></div><button class="tag-button" id="btn-list-${
-          list.id
-        }"><span class="tag-button-text">-</span></button></li>`;
+        let html = `<li id="li-list-${list.id}"><div class="left-list-div"><div class="color-list"></div><span>${list.name}</span></div><button class="tag-button" id="btn-list-${list.id}"><span class="tag-button-text">-</span></button></li>`;
         listHtml.push(html);
       });
       listContainer.innerHTML = listHtml.join("");
@@ -1055,6 +1047,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           .getElementById(`li-list-${list.id}`)
           .addEventListener("click", (event) => {
             event.preventDefault();
+            globalLink = `/api/tasks/search/all`;
+            globalObject = {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ listId: list.id }),
+            };
             populateTasks(`/api/tasks/search/all`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -1097,6 +1095,5 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       currentList.innerText = listName;
       populateTasks();
     } catch (e) {}
-  });  
-
+  });
 });

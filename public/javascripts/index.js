@@ -902,8 +902,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const thisWeekLink = document.getElementById("this-week");
   const nextWeekLink = document.getElementById("next-week");
 
-  allTaskLink.addEventListener("click", () => populateTasks());
+  allTaskLink.addEventListener("click", () =>
+    populateTasks("/api/tasks/all", {})
+  );
   todayLink.addEventListener("click", (event) => {
+    currentListHeader.innerHTML = "Today";
     timesClicked = 0;
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
@@ -911,6 +914,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   });
   tomorrowLink.addEventListener("click", (event) => {
     timesClicked = 0;
+    currentListHeader.innerHTML = "Tomorrow";
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
     const tomorrowDate = new Date();
@@ -919,12 +923,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   });
   thisWeekLink.addEventListener("click", (event) => {
     timesClicked = 0;
+    currentListHeader.innerHTML = "This Week";
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
     fetchDateLink(new Date(), true);
   });
   nextWeekLink.addEventListener("click", (event) => {
     timesClicked = 0;
+    currentListHeader.innerHTML = "Next Week";
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
     fetchDateLink(new Date(), false, true);
@@ -1059,6 +1065,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ listId: list.id }),
             });
+            currentListHeader.innerHTML = list.name;
           });
       });
     } catch (e) {

@@ -23,6 +23,24 @@ router.get(
   })
 );
 
+router.get(
+  "/tasks/all",
+  asyncHandler(async (req, res) => {
+    const userId = req.session.auth.userId;
+    const tasks = await Task.findAll({
+      where: { userId },
+      include: [
+        {
+          model: Tag,
+          as: "TasksWithTags",
+        },
+      ],
+      order: [["createdAt", "ASC"]],
+    });
+    res.json({ tasks });
+  })
+);
+
 router.post(
   "/tasks",
   asyncHandler(async (req, res) => {
@@ -81,17 +99,16 @@ router.all(
         [Op.iLike]: `%${taskNameToSearch}%`,
       };
     }
-    if(due){
-      if(!due.includes("to"))
-        whereObject.due = new Date(due);
+    if (due) {
+      if (!due.includes("to")) whereObject.due = new Date(due);
       else {
         const sunday = new Date(due.split("to")[0]);
         const saturday = new Date(due.split("to")[1]);
         whereObject.due = {
-          [Op.between]: [sunday, saturday]
-        }
+          [Op.between]: [sunday, saturday],
+        };
       }
-    } else if (listId){
+    } else if (listId) {
       whereObject.listId = listId;
     }
     console.table(whereObject);
@@ -186,10 +203,10 @@ router.put(
     } else if (due) {
       await task.update({ due });
       res.json({ task });
-    } else if(listId){
+    } else if (listId) {
       await task.update({ listId });
       const list = await List.findByPk(listId);
-      res.json({ task, listName: list.name });      
+      res.json({ task, listName: list.name });
     }
   })
 );

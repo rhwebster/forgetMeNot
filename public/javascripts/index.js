@@ -55,6 +55,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   let numCompleted = 0;
   let numDueThisWeek = 0;
   let numDueNextWeek = 0;
+  let inboxId;
+  try {
+    const res = await fetch("api/lists/inbox");
+    const { list } = await res.json();
+    inboxId = list.id;
+  } catch (e) {
+    console.error(e);
+  }
 
   const sideDueInput = document.getElementById("side-due-input");
   const taskDueDateSpan = document.getElementById("due-date-input");
@@ -465,11 +473,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     try {
       taskField.value = "";
       taskField.blur();
-      populateTasks("/api/tasks", {
+      const res = await fetch("/api/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nameToSend),
       });
+      let { task } = await res.json();
+
+      alertWindow.innerHTML = `Task "${task.name}" added to "${task.List.name}"<span id="alert-close" class="fa">&#xf00d</span>`;
+      alertWindow.classList.remove("hidden");
+      closeWindow();
+
+      populateTasks(globalLink, globalObject);
     } catch (e) {
       console.error(e);
     }
@@ -620,6 +635,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           .getElementById(`li-${tag.id}`)
           .addEventListener("click", (event) => {
             event.preventDefault();
+            listForBody = inboxId;
             searchAndDisplay(tag.id);
           });
       });
@@ -861,6 +877,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let dateHtml = newDate;
       taskDueDateSpan.innerHTML = dateHtml;
       currentTask.due = task.due;
+      alertWindow.innerHTML = `Due date for "${task.name}" changed to ${dateHtml}<span id="alert-close" class="fa">&#xf00d</span>`;
+      alertWindow.classList.remove("hidden");
+      closeWindow();
     } catch (e) {
       console.log(e);
     }
@@ -873,6 +892,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const nextWeekLink = document.getElementById("next-week");
 
   allTaskLink.addEventListener("click", () => {
+    listForBody = inboxId;
     currentListHeader.innerHTML = "All Tasks";
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
@@ -882,6 +902,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     populateTasks("/api/tasks/all");
   });
   todayLink.addEventListener("click", (event) => {
+    listForBody = inboxId;
     currentListHeader.innerHTML = "Today";
     timesClicked = 0;
     detailPanel.classList.add("panel-hidden");
@@ -889,6 +910,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     fetchDateLink(new Date());
   });
   tomorrowLink.addEventListener("click", (event) => {
+    listForBody = inboxId;
     timesClicked = 0;
     currentListHeader.innerHTML = "Tomorrow";
     detailPanel.classList.add("panel-hidden");
@@ -898,6 +920,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     fetchDateLink(tomorrowDate);
   });
   thisWeekLink.addEventListener("click", (event) => {
+    listForBody = inboxId;
     timesClicked = 0;
     currentListHeader.innerHTML = "This Week";
     detailPanel.classList.add("panel-hidden");
@@ -905,6 +928,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     fetchDateLink(new Date(), true);
   });
   nextWeekLink.addEventListener("click", (event) => {
+    listForBody = inboxId;
     timesClicked = 0;
     currentListHeader.innerHTML = "Next Week";
     detailPanel.classList.add("panel-hidden");
@@ -1052,6 +1076,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   listSelector.addEventListener("change", async (event) => {
     const listId = listSelector.value;
     console.log("change", listId);
+    let oldList = currentTask.List.name;
     try {
       const res = await fetch(`/api/tasks/${currentTask.id}/edit`, {
         method: "PUT",
@@ -1077,6 +1102,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       //   });
       console.log("I'm here");
       currentList.innerText = listName;
+      alertWindow.innerHTML = `Task "${task.name}" moved from "${oldList}" to "${listName}"<span id="alert-close" class="fa">&#xf00d</span>`;
+      alertWindow.classList.remove("hidden");
+      closeWindow();
       timesClicked = 0;
       detailPanel.classList.add("panel-hidden");
       detailPanel.classList.remove("panel-shown");

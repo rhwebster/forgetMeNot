@@ -53,24 +53,25 @@ router.post(
       const list = await List.findOne({ where: { userId, name: "Inbox" } });
       listId = list.id;
     }
-    const task = await Task.create({
+    const newTask = await Task.create({
       name,
       due,
       userId,
       listId,
       completed: false,
     });
-    const tasks = await Task.findAll({
-      where: { userId, listId },
+    const task = await Task.findOne({
+      where: { id: newTask.id },
       include: [
+        List,
         {
           model: Tag,
           as: "TasksWithTags",
         },
       ],
-      order: [["createdAt", "ASC"]],
     });
-    res.json({ tasks });
+
+    res.json({ task });
   })
 );
 

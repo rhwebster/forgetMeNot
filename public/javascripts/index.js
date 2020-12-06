@@ -102,16 +102,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
       let incompleteList = [];
       tasks.forEach((task) => {
-        let tags = task.TasksWithTags;
-        if (tags) {
-          let html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
-          tags.forEach((tag) => {
-            html += `<span class="no-color-tag-class" style="background-color:${
-              tagColors[tag.id % 17]
-            };">${tag.name}</span>`;
-          });
-        }
-        console.log(task.completed);
         if (task.completed) {
           completedList.push(task);
         } else {
@@ -133,9 +123,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         incompleteList.forEach((task) => {
           let tags = task.TasksWithTags;
           if (tags) {
-            html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text">${task.name}</span>`;
+            html = `<li id="ele-${task.id}" class="li-${task.id} filled"><div class="li-${task.id} left-border"></div><input class="li-${task.id} task-check-box" id="cb-${task.id}" type="checkbox"><span class="li-${task.id} task-text">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${
+              html += `<span class="li-${
+                task.id
+              } no-color-tag-class" style="background-color:${
                 tagColors[tag.id % 17]
               };">${tag.name}</span>`;
             });
@@ -155,23 +147,23 @@ window.addEventListener("DOMContentLoaded", async (event) => {
             const year = date.getYear();
             if (date < today) {
               numOverdue++;
-              html += `<span class="overdue date-text">${monthText} ${day}</span>`;
+              html += `<span class="li-${task.id} overdue date-text">${monthText} ${day}</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate &&
               year === todayYear
             ) {
               numDueToday++;
-              html += `<span class="today date-text">Today</span>`;
+              html += `<span class="li-${task.id} today date-text">Today</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate + 1 &&
               year === todayYear
             ) {
               numDueTomorrow++;
-              html += `<span class="date-text">Tomorrow</span>`;
+              html += `<span class="li-${task.id} date-text">Tomorrow</span>`;
             } else {
-              html += `<span class="date-text">${monthText} ${day}</span>`;
+              html += `<span class="li-${task.id} date-text">${monthText} ${day}</span>`;
             }
           }
           taskHtml.push(html);
@@ -180,9 +172,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         completedList.forEach((task) => {
           let tags = task.TasksWithTags;
           if (tags) {
-            html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text complete-task">${task.name}</span>`;
+            html = `<li id="ele-${task.id}" class="li-${task.id} filled"><div class="li-${task.id} left-border"></div><input class="li-${task.id} task-check-box" id="cb-${task.id}" type="checkbox"><span class="li-${task.id} task-text complete-task">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${
+              html += `<span class="li-${
+                task.id
+              } no-color-tag-class" style="background-color:${
                 tagColors[tag.id % 17]
               };">${tag.name}</span>`;
             });
@@ -269,7 +263,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     // const taskNameDetail = document.getElementById("task-name-detail");
     tasksClickable.forEach((taskEle) => {
       taskEle.addEventListener("click", async (event) => {
-        const id = event.target.id.slice(4);
+        console.log(event.target);
+        const id = event.target.classList[0].slice(3);
         timesClicked++;
         if (event.target.type !== "checkbox") {
           detailPanel.classList.remove("button-checked");
@@ -428,15 +423,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let incompleteList = [];
       let { tasks } = await res.json();
       tasks.forEach((task) => {
-        let tags = task.TasksWithTags;
-        if (tags) {
-          let html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" type="checkbox"><span class="task-text">${task.name}</span>`;
-          tags.forEach((tag) => {
-            html += `<span class="no-color-tag-class" style="background-color:${
-              tagColors[tag.id % 17]
-            };>${tag.name}</span>`;
-          });
-        }
         if (task.completed) {
           completedList.push(task);
         } else {
@@ -451,9 +437,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           let tags = task.TasksWithTags;
           let html;
           if (tags) {
-            html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text">${task.name}</span>`;
+            html = `<li id="ele-${task.id}" class="li-${task.id} filled"><div class="li-${task.id} left-border"></div><input class="li-${task.id} task-check-box" id="cb-${task.id}" type="checkbox"><span class="li-${task.id} task-text">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${
+              html += `<span class="li-${
+                task.id
+              } no-color-tag-class" style="background-color:${
                 tagColors[tag.id % 17]
               };>${tag.name}</span>`;
             });
@@ -470,21 +458,21 @@ window.addEventListener("DOMContentLoaded", async (event) => {
             const day = date.getDate();
             const year = date.getYear();
             if (date < today) {
-              html += `<span class="overdue date-text">${monthText} ${day}</span>`;
+              html += `<span class="li-${task.id} overdue date-text">${monthText} ${day}</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate &&
               year === todayYear
             ) {
-              html += `<span class="today date-text">Today</span>`;
+              html += `<span class="li-${task.id} today date-text">Today</span>`;
             } else if (
               month === todayMonth &&
               day === todayDate + 1 &&
               year === todayYear
             ) {
-              html += `<span class="date-text">Tomorrow</span>`;
+              html += `<span class="li-${task.id} date-text">Tomorrow</span>`;
             } else {
-              html += `<span class="date-text">${monthText} ${day}</span>`;
+              html += `<span class="li-${task.id} date-text">${monthText} ${day}</span>`;
             }
           }
           taskHtml.push(html);
@@ -493,9 +481,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         completedList.forEach((task) => {
           let tags = task.TasksWithTags;
           if (tags) {
-            html = `<li id="ele-${task.id}" class="filled"><div class="left-border"></div><input class="task-check-box" id="cb-${task.id}" type="checkbox"><span class="task-text complete-task">${task.name}</span>`;
+            html = `<li id="ele-${task.id}" class="li-${task.id} filled"><div class="li-${task.id} left-border"></div><input class="li-${task.id} task-check-box" id="cb-${task.id}" type="checkbox"><span class="li-${task.id} task-text complete-task">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="no-color-tag-class" style="background-color:${
+              html += `<span class="li-${
+                task.id
+              } no-color-tag-class" style="background-color:${
                 tagColors[tag.id % 17]
               };">${tag.name}</span>`;
             });

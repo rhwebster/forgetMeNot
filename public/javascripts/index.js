@@ -842,11 +842,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const nextWeekLink = document.getElementById("next-week");
 
   allTaskLink.addEventListener("click", () => {
+    currentListHeader.innerHTML = "All Tasks";
     globalLink = "/api/tasks/all";
     populateTasks("/api/tasks/all");
   });
   todayLink.addEventListener("click", (event) => {
-    numTasksContainer.innerHTML = "";
     currentListHeader.innerHTML = "Today";
     timesClicked = 0;
     detailPanel.classList.add("panel-hidden");
@@ -855,7 +855,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   });
   tomorrowLink.addEventListener("click", (event) => {
     timesClicked = 0;
-    numTasksContainer.innerHTML = "";
     currentListHeader.innerHTML = "Tomorrow";
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
@@ -865,7 +864,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   });
   thisWeekLink.addEventListener("click", (event) => {
     timesClicked = 0;
-    numTasksContainer.innerHTML = "";
     currentListHeader.innerHTML = "This Week";
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
@@ -873,7 +871,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   });
   nextWeekLink.addEventListener("click", (event) => {
     timesClicked = 0;
-    numTasksContainer.innerHTML = "";
     currentListHeader.innerHTML = "Next Week";
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
@@ -954,7 +951,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   populateLists();
   async function populateLists(listPostObject = {}) {
-    globalObject = {};
     let listId = undefined;
     try {
       const res = await fetch("/api/lists", listPostObject);
@@ -1000,6 +996,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         document
           .getElementById(`li-list-${list.id}`)
           .addEventListener("click", (event) => {
+            globalObject = {};
             event.preventDefault();
             globalLink = `/api/lists/${list.id}`;
             populateTasks(globalLink);

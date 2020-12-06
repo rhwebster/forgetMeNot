@@ -30,6 +30,7 @@ router.get(
     const tasks = await Task.findAll({
       where: { userId },
       include: [
+        List,
         {
           model: Tag,
           as: "TasksWithTags",

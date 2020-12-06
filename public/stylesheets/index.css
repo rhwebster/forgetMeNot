@@ -108,6 +108,14 @@ body {
   flex-direction: row;
 }
 
+#left-link {
+  display: block;
+}
+
+.highlighted {
+  background-color: rgb(191, 215, 239);
+}
+
 .tasks-num-div {
   box-sizing: border-box;
   padding: 10px 13px 8px 10px;

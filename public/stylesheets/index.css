@@ -535,11 +535,78 @@ body {
   font-weight: bold;
 }
 
+#action-first-group {
+  display: flex;
+  align-items: center;
+}
+
 #task-action-bar {
   border-bottom: 1px dotted rgb(229, 229, 229);
   height: 50px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  margin: 0px 30px;
+}
+
+#sort-menu {
+  position: relative;
+  font-size: 22px;
+  color: rgb(50, 50, 50);
+  width: 60px;
+  height: 30px;
+  border-radius: 2px;
+  z-index: 1;
+  padding-top: 4px;
+}
+
+#sort-menu > i {
+  cursor: pointer;
+}
+
+#sort-box {
+  background-color: white;
+  border-radius: 2px;
+  box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.15);
+  font-size: 10px;
+  cursor: pointer;
+  text-align: left;
+  padding: 0px 0px;
+  position: absolute;
+  right: 12px;
+  top: 36px;
+  width: 180px;
+}
+
+#sort-box.hidden {
+  display: none;
+}
+
+.sort-option {
+  display: flex;
+  justify-content: left;
+  list-style: none;
+}
+
+.sort-check {
+  width: 20px;
+}
+
+.sort-span {
+  font-size: 14px;
+}
+
+.sort-check.hidden {
+  visibility: hidden;
+}
+
+#sort-box li {
+  padding: 3px 6px;
+  display: block;
+}
+
+#sort-box li:hover {
+  background-color: rgb(209, 227, 245);
 }
 
 .complete-task {
@@ -548,7 +615,7 @@ body {
 }
 
 #checkmark:hover {
-  color: black;
+  color: rgb(155, 155, 155);
   border: 1px solid rgb(190, 190, 190);
 }
 
@@ -562,7 +629,6 @@ body {
   width: 60px;
   height: 30px;
   border: 1px solid rgb(204, 204, 204);
-  margin-left: 80px;
   border-radius: 2px;
 }
 

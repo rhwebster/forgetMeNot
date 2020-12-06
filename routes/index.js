@@ -13,6 +13,11 @@ router.get(
     if (req.session.auth) {
       const userId = req.session.auth.userId;
       const list = await List.findOne({ where: { name: "Inbox", userId } });
+      const lists = await List.findAll({
+        where:{
+          userId
+        }
+      });
       const tasks = await Task.findAll({
         where: {
           userId,
@@ -21,7 +26,7 @@ router.get(
       });
       const tags = await Tag.findAll();
       let pageName = 'index'
-      res.render("index", { title: "Forget Me Not Home", tasks, tags, pageName });
+      res.render("index", { title: "Forget Me Not Home", tasks, tags, lists, pageName });
     } else {
       res.redirect('/users/login');
       // res.render("index", { title: "Forget Me Not Home"});

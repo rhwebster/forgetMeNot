@@ -1,11 +1,13 @@
 include utils.pug
 +validationErrorSummary(errors)
-form
+form(id="modal-form")
   //- (action="/tags", method="post")
   if locals.authenticated
+    h1(id="modal-header")
     input(type='hidden' name='_csrf' value=csrfToken)
     p(id='p-add-errors' style="color:red;")
     +field("", 'inputName')
-    div(class='py-4')
-      button(type='submit' class='btn btn-primary' id="addTagOrList") Add a #{name}
+    div(class='py-4 modal-buttons')
+      button(type='submit' id="addTagOrList") Add
+      button(id="close-modal-cancel") Cancel
   else

@@ -71,6 +71,19 @@ router.post(
 );
 
 router.get(
+  "/inbox",
+  asyncHandler(async (req, res) => {
+    const list = await db.List.findOne({
+      where: {
+        userId: req.session.auth.userId,
+        name: "Inbox",
+      },
+    });
+    res.json({ list });
+  })
+);
+
+router.get(
   "/:id",
   asyncHandler(async (req, res) => {
     const listId = req.params.id;

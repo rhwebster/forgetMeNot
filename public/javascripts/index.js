@@ -35,6 +35,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const sortBox = document.getElementById("sort-box");
   const sortOptions = document.querySelectorAll(".sort-option");
   const sortChecks = document.querySelectorAll(".sort-check");
+  let globalLink = "/api/tasks";
+  let globalObject = {};
 
   let currentClicked;
   let completedFlag = false;
@@ -84,7 +86,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   sortOptions.forEach((option) => {
     option.addEventListener("click", (event) => {
       orderFlag = event.target.classList[0];
-      populateTasks();
+      populateTasks(globalLink, globalObject);
     });
   });
 
@@ -332,7 +334,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     });
   }
 
-  populateTasks();
+  populateTasks(globalLink);
   currentListForHeader = "Inbox";
   currentListHeader.innerHTML = currentListForHeader;
   completeButton.addEventListener("click", (event) => {
@@ -383,7 +385,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         body: JSON.stringify(nameToSend),
       });
       taskNameInput.addEventListener("keypress", keyPressEvent);
-      populateTasks();
+      populateTasks(globalLink, globalObject);
     } catch (e) {
       console.error(e);
     }
@@ -738,8 +740,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const searchText = document.getElementById("searchText");
   function searchAndDisplay(tagName = "") {
     event.preventDefault();
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     let textToSearch = searchText.value;
     if (!textToSearch.length) textToSearch = "all";
+    globalLink = `/api/tasks/search/${textToSearch}/${tagName}`;
     populateTasks(`/api/tasks/search/${textToSearch}/${tagName}`);
     searchText.value = "";
   }
@@ -800,7 +805,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           removeTag(button);
         });
       });
-      populateTasks();
+      populateTasks(globalLink, globalObject);
       //   currentTask.notes = await res.json().notes;
     } catch (e) {
       console.error(e);
@@ -821,7 +826,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     }
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
-    populateTasks();
+    populateTasks(globalLink, globalObject);
   }
 
   // tagSelector.addEventListener('click', event => {
@@ -853,7 +858,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           removeTag(button);
         });
       });
-      populateTasks();
+      populateTasks(globalLink, globalObject);
     } catch (e) {}
   });
   sideDueInput.addEventListener("change", async (event) => {
@@ -865,7 +870,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         body: JSON.stringify({ due: newDueDate }),
       });
       let { task } = await res.json();
-      populateTasks();
+      populateTasks(globalLink, globalObject);
       const taskDueDate = new Date(task.due);
       const newDate = new Date(
         taskDueDate.getTime() +
@@ -885,17 +890,29 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const nextWeekLink = document.getElementById("next-week");
 
   todayLink.addEventListener("click", (event) => {
+    timesClicked = 0;
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     fetchDateLink(new Date());
   });
   tomorrowLink.addEventListener("click", (event) => {
+    timesClicked = 0;
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     const tomorrowDate = new Date();
     tomorrowDate.setDate(tomorrowDate.getDate() + 1);
     fetchDateLink(tomorrowDate);
   });
   thisWeekLink.addEventListener("click", (event) => {
+    timesClicked = 0;
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     fetchDateLink(new Date(), true);
   });
   nextWeekLink.addEventListener("click", (event) => {
+    timesClicked = 0;
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     fetchDateLink(new Date(), false, true);
   });
   function fetchDateLink(date, thisweek = false, nextWeek = false) {
@@ -916,6 +933,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           .toISOString()
           .slice(0, 10);
     }
+    globalLink = `/api/tasks/search/all`;
+    globalObject = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ due }),
+    };
     populateTasks(`/api/tasks/search/all`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

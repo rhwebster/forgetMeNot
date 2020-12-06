@@ -286,7 +286,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         noteList.innerHTML = "";
         //   const taskNameInput = document.getElementById("name-panel-text");
         try {
-          const id = taskEle.id.slice(4);
           const res = await fetch(`/api/tasks/${id}`);
           let { task } = await res.json();
           currentTask = task;
@@ -329,6 +328,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           detailPanel.classList.add("panel-shown");
         }
         currentClicked = id;
+        console.log(currentTask.List);
+        listSelector.value = currentTask.List.id;
       });
     });
   }
@@ -1078,22 +1079,23 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       let html = "";
       const { task, listName } = await res.json();
       currentTask = task;
-      currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="no-color-tag-class remove-tag" style="background-color:${
-          tagColors[tag.id % 17]
-        };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
-          tag.id
-        }">  x</span></span>`;
-      });
-      tagsList.innerHTML = html;
-      const xTagButtons = document.querySelectorAll(".x-button");
-      xTagButtons.forEach((button) => {
-        button.addEventListener("click", (event) => {
-          removeTag(button);
-        });
-      });
+      //   currentTask.TasksWithTags.forEach((tag) => {
+      //     html += `<span class="no-color-tag-class remove-tag" style="background-color:${
+      //       tagColors[tag.id % 17]
+      //     };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
+      //       tag.id
+      //     }">  x</span></span>`;
+      //   });
+      //   tagsList.innerHTML = html;
+      //   const xTagButtons = document.querySelectorAll(".x-button");
+      //   xTagButtons.forEach((button) => {
+      //     button.addEventListener("click", (event) => {
+      //       removeTag(button);
+      //     });
+      //   });
+      console.log("I'm here");
       currentList.innerText = listName;
-      populateTasks();
+      populateTasks(globalLink, globalObject);
     } catch (e) {}
   });
 });

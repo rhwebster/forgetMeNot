@@ -156,6 +156,10 @@ body {
   margin-bottom: 2px;
 }
 
+.text-bold {
+  font-weight: bold;
+}
+
 #completed-tasks-span {
   font-size: 20px;
   font-weight: bold;

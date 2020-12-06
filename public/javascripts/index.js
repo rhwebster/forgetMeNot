@@ -38,6 +38,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const sortBox = document.getElementById("sort-box");
   const sortOptions = document.querySelectorAll(".sort-option");
   const sortChecks = document.querySelectorAll(".sort-check");
+  const alertWindow = document.getElementById("alert-window");
   let globalLink = "/api/tasks";
   let globalObject = {};
   let listForBody = null;
@@ -52,6 +53,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   let numDueTomorrow = 0;
   let numOverdue = 0;
   let numCompleted = 0;
+  let numDueThisWeek = 0;
+  let numDueNextWeek = 0;
 
   const sideDueInput = document.getElementById("side-due-input");
   const taskDueDateSpan = document.getElementById("due-date-input");
@@ -216,6 +219,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       for (let i = 0; i < 100 - tasks.length; i++) {
         taskHtml.push(`<li><span></span></li>`);
       }
+
       taskContainer.innerHTML = taskHtml.join("");
       const inboxLink = document.getElementById("inbox");
       inboxLink.innerHTML = '<span style="font-weight:bold;">Inbox</span>';
@@ -275,8 +279,20 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     });
 
     const tasksClickable = document.querySelectorAll(".filled");
+
     // const taskNameDetail = document.getElementById("task-name-detail");
     tasksClickable.forEach((taskEle) => {
+      if (!completedFlag) {
+        let children = taskEle.childNodes;
+        if (children[3]) {
+          if (
+            children[3].classList.contains("today") ||
+            children[3].classList.contains("overdue")
+          ) {
+            children[2].classList.add("text-bold");
+          }
+        }
+      }
       taskEle.addEventListener("click", async (event) => {
         console.log(event.target);
         const id = event.target.classList[0].slice(3);
@@ -309,7 +325,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
           currentList.innerHTML = task.List.name;
           currentListForHeader = currentTask.List.name;
-          currentListHeader.innerHTML = currentListForHeader;
+          if (globalLink === "/api/tasks/all") {
+            currentListHeader.innerHTML = "All Tasks";
+          } else {
+            currentListHeader.innerHTML = currentListForHeader;
+          }
+
           populateNotes();
 
           let html = "";
@@ -369,6 +390,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     addTaskDiv.classList.add("hidden");
     detailPanel.classList.remove("panel-shown");
     detailPanel.classList.add("panel-hidden");
+    timesClicked = 0;
     if (globalLink == "/api/tasks/all") {
       globalObject = {};
     }
@@ -383,6 +405,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     addTaskDiv.classList.remove("hidden");
     detailPanel.classList.remove("panel-shown");
     detailPanel.classList.add("panel-hidden");
+    timesClicked = 0;
     if (globalLink == "/api/tasks/all") {
       globalObject = {};
     }
@@ -392,6 +415,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   closeButton.addEventListener("click", (event) => {
     detailPanel.classList.remove("panel-shown");
     detailPanel.classList.add("panel-hidden");
+    timesClicked = 0;
   });
 
   const updateTaskName = async (updatedName, taskId) => {
@@ -402,8 +426,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nameToSend),
       });
+      let { task } = await res.json();
       taskNameInput.addEventListener("keypress", keyPressEvent);
       populateTasks(globalLink, globalObject);
+      let newTaskName = task.name;
+      alertWindow.innerHTML = `Task renamed to ${newTaskName}<span id="alert-close" class="fa">&#xf00d</span>`;
+      alertWindow.classList.remove("hidden");
+      closeWindow();
     } catch (e) {
       console.error(e);
     }
@@ -690,6 +719,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const searchText = document.getElementById("searchText");
   function searchAndDisplay(tagName = "") {
     event.preventDefault();
+    timesClicked = 0;
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
     let textToSearch = searchText.value;
@@ -775,6 +805,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         console.error(e);
       }
     }
+    timesClicked = 0;
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
     populateTasks(globalLink, globalObject);
@@ -843,7 +874,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   allTaskLink.addEventListener("click", () => {
     currentListHeader.innerHTML = "All Tasks";
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
+    timesClicked = 0;
     globalLink = "/api/tasks/all";
+    globalObject = {};
     populateTasks("/api/tasks/all");
   });
   todayLink.addEventListener("click", (event) => {
@@ -902,6 +937,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     };
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
+    timesClicked = 0;
     populateTasks(`/api/tasks/search/all`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -999,6 +1035,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
             globalObject = {};
             event.preventDefault();
             globalLink = `/api/lists/${list.id}`;
+            detailPanel.classList.add("panel-hidden");
+            detailPanel.classList.remove("panel-shown");
+            timesClicked = 0;
             populateTasks(globalLink);
             listForBody = list.id;
             currentListHeader.innerHTML = list.name;
@@ -1038,12 +1077,20 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       //   });
       console.log("I'm here");
       currentList.innerText = listName;
+      timesClicked = 0;
       detailPanel.classList.add("panel-hidden");
       detailPanel.classList.remove("panel-shown");
       populateTasks(globalLink, globalObject);
     } catch (e) {}
   });
-  window.addEventListener("click", () => {
-    console.log(globalLink, globalObject);
-  });
+  function closeWindow() {
+    document
+      .getElementById("alert-close")
+      .addEventListener("click", (event) => {
+        alertWindow.classList.add("hidden");
+      });
+    setTimeout(() => {
+      alertWindow.classList.add("hidden");
+    }, 6000);
+  }
 });

@@ -10,15 +10,9 @@ const { Op } = require("sequelize");
 
 router.get(
   "/",
+  requireAuth,
   asyncHandler(async (req, res) => {
-    const lists = [];
-    res.json({ lists });
-  })
-);
-router.post(
-  "/",
-  asyncHandler(async (req, res) => {
-    const { userId } = req.body;
+    const { userId } = req.session.auth;
     const lists = await db.List.findAll({
       where: {
         userId
@@ -32,16 +26,9 @@ const listValidator = [
     .exists({ checkFalsy: true })
     .withMessage("Please provide a value for list name")
     .isLength({ max: 20 })
-    .withMessage("List name must not be more than 20 characters long")
-    // .custom((value) => !/\s/.test(value))
-    // .withMessage("No spaces are allowed in the list name")
-    .custom((value) => {
-      return db.List.findOne({ where: { name: value, userId } }).then((list) => {
-        if (list) {
-          return Promise.reject("The provided list name already exists");
-        }
-      });
-    }),
+    .withMessage("List name must not be more than 20 characters long"),
+  // .custom((value) => !/\s/.test(value))
+  // .withMessage("No spaces are allowed in the list name")
 ];
 router.post(
   "/",
@@ -49,15 +36,21 @@ router.post(
   // csrfProtection,
   listValidator,
   asyncHandler(async (req, res) => {
-    const { name, userId } = req.body;
-    const list = db.List.build({
-      name,
-      userId
-    });
+    const { name } = req.body;
+    const { userId } = req.session.auth;
+    console.log("\n\n\n", name, userId);
+    const listFoundInDB = await db.List.findOne({ where: { name, userId } });
+    let list;
+    if (!listFoundInDB) {
+      list = db.List.build({
+        name,
+        userId
+      });
+    }
 
     const validatorErrors = validationResult(req);
 
-    if (validatorErrors.isEmpty()) {
+    if (validatorErrors.isEmpty() && !listFoundInDB) {
       await list.save();
       const lists = await db.List.findAll({
         where: {
@@ -65,8 +58,10 @@ router.post(
         }
       });
       res.json({ lists });
-    } else {
-      const errors = validatorErrors.array().map((error) => error.msg);
+    } else {      
+      let errors = validatorErrors.array().map((error) => error.msg);
+      if(listFoundInDB)
+        errors.push(`List already exists for ${req.session.auth.userFirstName}`);
       res.status(400).json({ errors });
     }
   })

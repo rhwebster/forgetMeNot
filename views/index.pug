@@ -41,15 +41,20 @@ block content
               a(class='timed-list' id='this-week') This Week
             div(class="inbox-link")
               a(class='timed-list' id='next-week') Next Week
-          div(class="wrap-collabsible nav-ele")
-            input(id="collapsible" class="toggle" type="checkbox" checked) 
-            label(for="collapsible" class="lbl-toggle") Lists
-            div(class="collapsible-content")
-              div(class="content-inner")
-                button(id="addListBtn" class="tag-button") +
-              div(class="content-inner")
-                div(id='list-of-lists-div' class='list-of-lists-class')
-                //- a(href='/lists/' id="allListsBtn" class="tag-button") All
+          //- div(class="wrap-collabsible nav-ele")
+          //-   div(class="tags-header")
+          //-     input(id="collapsible" class="toggle" type="checkbox" checked) 
+          //-     label(for="collapsible" class="lbl-toggle") Lists
+          //-     button(id="addListBtn" class="tag-button") +
+          //-   div(class="collapsible-content")
+          //-     div(class="content-inner")
+          //-       div(id='list-of-lists-div' class='list-of-lists-class')
+          div(class='tags nav-ele' id='lists')
+            div(class="tags-header")
+              span(id="tag-span") Lists
+              span 
+                button(id='addListBtn' class="tag-button") +
+            div(id='list-of-lists-div' class='list-of-tags-class')
           div(class='tags nav-ele' id='tags')
             div(class="tags-header")
               span(id="tag-span") Tags
@@ -81,8 +86,8 @@ block content
                 span(id="list-header-text" class="panel-text") list
                 div(id="current-list")
                 select(id='list-selector')
-                  //- each list in lists
-                  //-   option(value=list.id id=`option-list-${list.id}`) #{list.name}
+                  each list in lists
+                    option(value=list.id id=`option-list-${list.id}`) #{list.name}
               div(id="tags-div")
                 span(id="tags-header-text") tags
                 div(id="tags-list")

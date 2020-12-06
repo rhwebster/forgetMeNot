@@ -673,6 +673,24 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         modal.style.display = "none";
       }
     } else if (addFunction === "addList") {
+      const listId = await populateLists({
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nameToSend),
+      });
+      console.log("listId", listId);
+      if (listId > 0) {
+        // add this new tag to the select tagSelector
+        const newListOption = document.createElement("option");
+        newListOption.value = listId;
+        newListOption.id = `option-list-${listId}`;
+        newListOption.text = inputName.value;
+        // newListOption.style = `background-color:${tagColors[tagId % 17]}`;
+        listSelector.add(newListOption);
+        // console.log(newTagOption);
+        inputName.value = "";
+        modal.style.display = "none";
+      }      
     }
   });
 
@@ -895,11 +913,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     });
   }
 
-  async function populateLists(listPostObject = {method: "POST"}) {
+  populateLists();
+  async function populateLists(listPostObject = {}) {
     let listId = undefined;
-    let userId = currentUser.id;
-    listPostObject[headers] = { "Content-Type": "application/json" };
-    listPostObject.body = JSON.stringify({ userId});
     try {
       const res = await fetch("/api/lists", listPostObject);
       const resJson = await res.json();
@@ -913,11 +929,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const listHtml = [];
 
       lists.forEach((list) => {
-        let html = `<li id="li-${
+        let html = `<li id="li-list-${
           list.id
-        }"><div class="left-tag-div"><div class="color-tag"></div><span>${
+        }"><div class="left-list-div"><div class="color-list"></div><span>${
           list.name
-        }</span></div><button class="tag-button" id="btn-${
+        }</span></div><button class="tag-button" id="btn-list-${
           list.id
         }"><span class="tag-button-text">-</span></button></li>`;
         listHtml.push(html);
@@ -927,14 +943,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
       lists.forEach((list) => {
         document
-          .getElementById(`btn-${list.id}`)
+          .getElementById(`btn-list-${list.id}`)
           .addEventListener("click", async (event) => {
             event.preventDefault();
             try {
               const res = await fetch(`/api/tags/${list.id}`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: list.id, userId }),
+                body: JSON.stringify({ id: list.id }),
               });
               let { id } = await res.json();
               // console.log("json back", id);

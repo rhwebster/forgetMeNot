@@ -34,10 +34,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const numTasksContainer = document.getElementById("num-tasks-container");
   const settingsButton = document.getElementById("settings");
   const settingsMenu = document.querySelector(".settings-menu");
+  const sortCog = document.getElementById("sort-cog");
+  const sortBox = document.getElementById("sort-box");
+  const sortOptions = document.querySelectorAll(".sort-option");
+  const sortChecks = document.querySelectorAll(".sort-check");
 
   let currentClicked;
   let completedFlag = false;
-  let orderFlag = "createdAt";
+  let orderFlag = "1";
   let completeTasks = {};
   let numChecked = 0;
   let timesClicked = 0;
@@ -67,6 +71,26 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     settingsMenu.classList.add("menu-hidden");
   });
 
+  sortCog.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (sortBox.classList.contains("hidden")) {
+      sortBox.classList.remove("hidden");
+    } else {
+      sortBox.classList.add("hidden");
+    }
+  });
+
+  window.addEventListener("click", () => {
+    sortBox.classList.add("hidden");
+  });
+
+  sortOptions.forEach((option) => {
+    option.addEventListener("click", (event) => {
+      orderFlag = event.target.classList[0];
+      populateTasks();
+    });
+  });
+
   async function populateTasks(link = "/api/tasks", taskObject = {}) {
     numChecked = 0;
     completeButton.classList.remove("num-checked-pos");
@@ -75,8 +99,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const res = await fetch(link, taskObject);
       let { tasks } = await res.json();
 
-      const completedList = [];
-      const incompleteList = [];
+      let completedList = [];
+
+      let incompleteList = [];
       tasks.forEach((task) => {
         let tags = task.TasksWithTags;
         if (tags) {
@@ -93,9 +118,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         } else {
           incompleteList.push(task);
         }
-        numTotalTasks = incompleteList.length;
-        numCompleted = completedList.length;
       });
+      incompleteList = sortTasks(incompleteList);
+      completedList.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
+      numTotalTasks = incompleteList.length;
+      numCompleted = completedList.length;
+
+      console.log(incompleteList);
       const taskHtml = [];
       let html;
       if (!completedFlag) {
@@ -384,6 +413,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     if (dueInputValue.length === 0) {
       dueInputValue = null;
     }
+    dueInput.value = "";
 
     const nameToSend = { name: value, due: dueInputValue };
     try {
@@ -392,8 +422,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nameToSend),
       });
-      const completedList = [];
-      const incompleteList = [];
+      let completedList = [];
+      let incompleteList = [];
       let { tasks } = await res.json();
       tasks.forEach((task) => {
         let tags = task.TasksWithTags;
@@ -411,6 +441,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           incompleteList.push(task);
         }
       });
+      incompleteList = sortTasks(incompleteList);
+      completedList.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
       const taskHtml = [];
       if (!completedFlag) {
         incompleteList.forEach((task) => {
@@ -912,7 +944,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       body: JSON.stringify({ due }),
     });
   }
-
   populateLists();
   async function populateLists(listPostObject = {}) {
     let listId = undefined;
@@ -1010,5 +1041,46 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       populateTasks();
     } catch (e) {}
   });  
+
+  function sortTasks(tasks) {
+    switch (orderFlag) {
+      case "1":
+        tasks.sort(
+          (a, b) =>
+            (a.due === null) - (b.due === null) ||
+            +(a.due > b.due) ||
+            -(a.due < b.due)
+        );
+        break;
+      case "2":
+        tasks.sort(
+          (a, b) =>
+            (b.due === null) - (a.due === null) ||
+            -(a.due > b.due) ||
+            +(a.due < b.due)
+        );
+        break;
+      case "3":
+        tasks.sort((a, b) => (a.name > b.name ? 1 : -1));
+        break;
+      case "4":
+        tasks.sort((a, b) => (a.name > b.name ? -1 : 1));
+        break;
+      case "5":
+        tasks.sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1));
+        break;
+      case "6":
+        tasks.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+        break;
+    }
+    sortChecks.forEach((check) => {
+      if (check.classList.contains(orderFlag)) {
+        check.classList.remove("hidden");
+      } else {
+        check.classList.add("hidden");
+      }
+    });
+    return tasks;
+  }
 
 });

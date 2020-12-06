@@ -216,7 +216,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     const addTagBtn = document.getElementById("addTagBtn");
     const addListBtn = document.getElementById("addListBtn");
 
-    const popupAddTagBtn = document.getElementById("addTag");
+    const popupAddTagBtn = document.getElementById("addTagOrList");
 
     popupAddTagBtn.addEventListener("click", async (event) => {
         event.preventDefault();

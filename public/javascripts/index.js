@@ -10,11 +10,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const addTaskButton = document.getElementById("add-task-button");
   const taskField = document.getElementById("task-name");
   const tagContainer = document.getElementById("list-of-tags-div");
+  const listContainer = document.getElementById("list-of-lists-div");
   const detailPanel = document.getElementById("task-detail-panel");
   const taskNameInput = document.getElementById("name-panel-text");
   const noteList = document.getElementById("note-list");
   const tagsList = document.getElementById("tags-list");
   const tagSelector = document.getElementById("tag-selector");
+  const listSelector = document.getElementById("list-selector");
   const dueDatePicker = document.getElementById("due-input");
   const dueDateHead = document.getElementById("due-text-enter");
   const addTaskDiv = document.getElementById("add-a-task-div");
@@ -955,7 +957,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     } catch (e) {
       console.error(e);
     }
-    return tagId;
+    return listId;
   }
 
 });

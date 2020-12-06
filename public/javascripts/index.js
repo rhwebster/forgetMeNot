@@ -294,8 +294,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         let children = taskEle.childNodes;
         if (children[3]) {
           if (
-            children[3].classList.contains("today") ||
-            children[3].classList.contains("overdue")
+            children[children.length - 1].classList.contains("today") ||
+            children[children.length - 1].classList.contains("overdue")
           ) {
             children[2].classList.add("text-bold");
           }

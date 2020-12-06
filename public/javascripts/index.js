@@ -142,16 +142,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           }
 
           if (task.due) {
+            const date = new Date(task.due);
             const today = new Date();
+            today.setHours(0, 0, 0);
+            date.setHours(0, 0, 1);
             const todayMonth = today.getMonth();
             const todayDate = today.getDate();
             const todayYear = today.getYear();
-            const date = new Date(task.due);
             const month = date.getMonth();
             const monthText = months[month];
             const day = date.getDate();
             const year = date.getYear();
-            if (day < todayDate) {
+            if (date < today) {
               numOverdue++;
               html += `<span class="overdue date-text">${monthText} ${day}</span>`;
             } else if (
@@ -458,6 +460,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           }
           if (task.due) {
             const today = new Date();
+            today.setHours(0, 0, 0);
             const todayMonth = today.getMonth();
             const todayDate = today.getDate();
             const todayYear = today.getYear();
@@ -466,7 +469,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
             const monthText = months[month];
             const day = date.getDate();
             const year = date.getYear();
-            if (day < todayDate) {
+            if (date < today) {
               html += `<span class="overdue date-text">${monthText} ${day}</span>`;
             } else if (
               month === todayMonth &&

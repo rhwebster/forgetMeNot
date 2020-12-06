@@ -67,7 +67,7 @@ block content
             div(id="myModal" class="modal")
               //- Modal content
               div(class="modal-content")
-                span(class="close") X
+                span(class="close fa" id="modal-x") &#xf00d
                 include add-tag-or-list-pop-up.pug
           div(id='side-panel' class='side-panel')
             div(id="current-list-header") Placeholder
@@ -80,8 +80,8 @@ block content
                 input(id="name-panel-text")
               div(id="due-elements" class="panel-elements")
                 span(id="due-text-panel" class="panel-text") due
-                span(id="due-date-input" style="padding:0px 5px 5px 0px;")
-                input(type="date" id="side-due-input" placeholder="due date optional")
+                span(id="due-date-input")
+                input(type="date" id="side-due-input")
               div(id="list-info-panel" class="panel-elements") 
                 span(id="list-header-text" class="panel-text") list
                 div(id="current-list")
@@ -92,6 +92,7 @@ block content
                 span(id="tags-header-text") tags
                 div(id="tags-list")
                 select(id='tag-selector')
+                  option(value="" id="default-option" selected disabled) Add tag
                   each tag in tags
                     option(value=tag.id id=`option-${tag.id}`) #{tag.name}
             div(id="notes")

@@ -39,6 +39,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const sortOptions = document.querySelectorAll(".sort-option");
   const sortChecks = document.querySelectorAll(".sort-check");
   const alertWindow = document.getElementById("alert-window");
+  const modalHeader = document.getElementById("modal-header");
+  const modalCancel = document.getElementById("close-modal-cancel");
   let globalLink = "/api/tasks";
   let globalObject = {};
   let listForBody = null;
@@ -317,9 +319,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         //   taskEle.classList.add("checked-list");
         //   cb.checked = true;
         // }
-        taskDueDateSpan.innerHTML = "";
-        currentList.innerHTML = "";
-        noteList.innerHTML = "";
+        // taskDueDateSpan.innerHTML = "";
+        // currentList.innerHTML = "";
+        // noteList.innerHTML = "";
         //   const taskNameInput = document.getElementById("name-panel-text");
         try {
           const res = await fetch(`/api/tasks/${id}`);
@@ -708,16 +710,22 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   // When the user clicks the button, open the modal
   addTagBtn.onclick = function () {
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     modal.style.display = "block";
-    popupAddTagBtn.innerText = "Add Tag";
+    modalHeader.innerText = "Add a tag";
     inputName.focus();
     addFunction = "addTag";
+    timesClicked = 0;
   };
   addListBtn.onclick = function () {
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
     modal.style.display = "block";
-    popupAddTagBtn.innerText = "Add List";
+    modalHeader.innerText = "Add a list";
     inputName.focus();
     addFunction = "addList";
+    timesClicked = 0;
   };
   // addListBtn.onclick = function () {
   //   modal.style.display = "block";
@@ -727,6 +735,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   // When the user clicks on <span> (x), close the modal
   span.onclick = function () {
+    modal.style.display = "none";
+  };
+
+  modalCancel.onclick = function (event) {
+    event.preventDefault();
     modal.style.display = "none";
   };
 
@@ -856,6 +869,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           removeTag(button);
         });
       });
+      tagSelector.value = "";
       populateTasks(globalLink, globalObject);
     } catch (e) {}
   });

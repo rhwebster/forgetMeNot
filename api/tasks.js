@@ -75,7 +75,7 @@ router.all(
     const taskNameToSearch = req.params.taskName;
     const userId = req.session.auth.userId;
     const whereObject = { userId };
-    const { due } = req.body;
+    const { due, listId } = req.body;
     if (taskNameToSearch !== "all") {
       whereObject.name = {
         [Op.iLike]: `%${taskNameToSearch}%`,
@@ -91,6 +91,8 @@ router.all(
           [Op.between]: [sunday, saturday]
         }
       }
+    } else if (listId){
+      whereObject.listId = listId;
     }
     console.table(whereObject);
     const tasks = await Task.findAll({
@@ -144,7 +146,7 @@ router.get(
 router.put(
   "/tasks/:id/edit",
   asyncHandler(async (req, res) => {
-    const { name, due, notes, list, tagId, completed } = req.body;
+    const { name, due, notes, listId, tagId, completed } = req.body;
     const task = await Task.findByPk(req.params.id);
     if (name !== undefined) {
       await task.update({ name });
@@ -184,6 +186,10 @@ router.put(
     } else if (due) {
       await task.update({ due });
       res.json({ task });
+    } else if(listId){
+      await task.update({ listId });
+      const list = await List.findByPk(listId);
+      res.json({ task, listName: list.name });      
     }
   })
 );

@@ -10,11 +10,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const addTaskButton = document.getElementById("add-task-button");
   const taskField = document.getElementById("task-name");
   const tagContainer = document.getElementById("list-of-tags-div");
+  const listContainer = document.getElementById("list-of-lists-div");
   const detailPanel = document.getElementById("task-detail-panel");
   const taskNameInput = document.getElementById("name-panel-text");
   const noteList = document.getElementById("note-list");
   const tagsList = document.getElementById("tags-list");
+  const currentList = document.getElementById("current-list");
   const tagSelector = document.getElementById("tag-selector");
+  const listSelector = document.getElementById("list-selector");
   const dueDatePicker = document.getElementById("due-input");
   const dueDateHead = document.getElementById("due-text-enter");
   const addTaskDiv = document.getElementById("add-a-task-div");
@@ -203,12 +206,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       }
       taskContainer.innerHTML = taskHtml.join("");
       const inboxLink = document.getElementById("inbox");
-      inboxLink.innerHTML = "<span>Inbox</span>";
+      inboxLink.innerHTML = '<span style="font-weight:bold;">Inbox</span>';
       const numTasksElement = document.createElement("span");
       numTasksElement.classList.add("num-tasks");
       numTasksElement.innerHTML = incompleteList.length;
       inboxLink.innerHTML =
-        "<a class='timed-list' id='inbox-link' href='/'>Inbox</a>";
+        "<a class='timed-list' id='inbox-link' href='/'  style='font-weight:bold;'>Inbox</a>";
       inboxLink.appendChild(numTasksElement);
     } catch (e) {
       console.error(e);
@@ -270,7 +273,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           detailPanel.classList.remove("button-checked");
         }
 
-        const currentList = document.getElementById("current-list");
         const cb = document.getElementById(`cb-${id}`);
         // if (cb.checked) {
         //   taskEle.classList.remove("checked-list");
@@ -618,7 +620,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           tag.id
         }"><span class="tag-button-text">-</span></button></li>`;
         tagHtml.push(html);
-        document.getElementById(`option-${tag.id}`).style = `background-color:${
+        const option = document.getElementById(`option-${tag.id}`);
+        if(option) option.style = `background-color:${
           tagColors[tag.id % 17]
         }`;
       });
@@ -670,8 +673,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const addListBtn = document.getElementById("addListBtn");
   const inputName = document.getElementById("inputName");
 
-  const popupAddTagBtn = document.getElementById("addTag");
-  const popupAddListBtn = document.getElementById("addList");
+  const popupAddTagBtn = document.getElementById("addTagOrList");
 
   popupAddTagBtn.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -698,6 +700,24 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         modal.style.display = "none";
       }
     } else if (addFunction === "addList") {
+      const listId = await populateLists({
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nameToSend),
+      });
+      console.log("listId", listId);
+      if (listId > 0) {
+        // add this new tag to the select tagSelector
+        const newListOption = document.createElement("option");
+        newListOption.value = listId;
+        newListOption.id = `option-list-${listId}`;
+        newListOption.text = inputName.value;
+        // newListOption.style = `background-color:${tagColors[tagId % 17]}`;
+        listSelector.add(newListOption);
+        // console.log(newTagOption);
+        inputName.value = "";
+        modal.style.display = "none";
+      }      
     }
   });
 
@@ -877,11 +897,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     }
   });
 
+  const allTaskLink = document.getElementById("all-tasks");
   const todayLink = document.getElementById("today");
   const tomorrowLink = document.getElementById("tomorrow");
   const thisWeekLink = document.getElementById("this-week");
   const nextWeekLink = document.getElementById("next-week");
 
+  allTaskLink.addEventListener('click', () => populateTasks());
   todayLink.addEventListener("click", (event) => {
     timesClicked = 0;
     detailPanel.classList.add("panel-hidden");
@@ -978,4 +1000,103 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     });
     return tasks;
   }
+
+  populateLists();
+  async function populateLists(listPostObject = {}) {
+    let listId = undefined;
+    try {
+      const res = await fetch("/api/lists", listPostObject);
+      const resJson = await res.json();
+      if (!res.ok) {
+        const p = document.getElementById("p-add-errors");
+        console.log(resJson.errors);
+        p.innerText = resJson.errors.join("/br");
+        return listId;
+      }
+      let { lists } = resJson;
+      const listHtml = [];
+
+      lists.forEach((list) => {
+        let html = `<li id="li-list-${
+          list.id
+        }"><div class="left-list-div"><div class="color-list"></div><span>${
+          list.name
+        }</span></div><button class="tag-button" id="btn-list-${
+          list.id
+        }"><span class="tag-button-text">-</span></button></li>`;
+        listHtml.push(html);
+      });
+      listContainer.innerHTML = listHtml.join("");
+      listId = lists[lists.length - 1].id;
+
+      lists.forEach((list) => {
+        document
+          .getElementById(`btn-list-${list.id}`)
+          .addEventListener("click", async (event) => {
+            event.preventDefault();
+            try {
+              const res = await fetch(`/api/lists/${list.id}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: list.id }),
+              });
+              let { id } = await res.json();
+              // console.log("json back", id);
+              const li = document.getElementById(`li-list-${id}`);
+              const option = document.getElementById(`option-list-${id}`);
+              // console.log(option);
+              listContainer.removeChild(li);
+              listSelector.removeChild(option);
+            } catch (e) {
+              console.error(e);
+            }
+          });
+        document
+          .getElementById(`li-list-${list.id}`)
+          .addEventListener("click", (event) => {
+            event.preventDefault();
+            populateTasks(`/api/tasks/search/all`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ listId: list.id }),
+            });
+          });
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    return listId;
+  }
+
+  listSelector.addEventListener("change", async (event) => {
+    const listId = listSelector.value;
+    console.log("change", listId);
+    try {
+      const res = await fetch(`/api/tasks/${currentTask.id}/edit`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listId }),
+      });
+      let html = "";
+      const { task, listName } = await res.json();
+      currentTask = task;
+      currentTask.TasksWithTags.forEach((tag) => {
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${
+          tagColors[tag.id % 17]
+        };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
+          tag.id
+        }">  x</span></span>`;
+      });
+      tagsList.innerHTML = html;
+      const xTagButtons = document.querySelectorAll(".x-button");
+      xTagButtons.forEach((button) => {
+        button.addEventListener("click", (event) => {
+          removeTag(button);
+        });
+      });
+      currentList.innerText = listName;
+      populateTasks();
+    } catch (e) {}
+  });  
+
 });

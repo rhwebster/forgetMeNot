@@ -595,7 +595,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const tagHtml = [];
 
       tags.forEach((tag) => {
-        let html = `<li id="li-${
+        let html = `<li class="left-link" id="li-${
           tag.id
         }"><div class="left-tag-div"><div class="color-tag" style="background-color:${
           tagColors[tag.id % 17]
@@ -636,6 +636,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         document
           .getElementById(`li-${tag.id}`)
           .addEventListener("click", (event) => {
+            currentListHeader.innerHTML = tag.name;
+            const leftLinks = document.querySelectorAll(".left-link");
+            leftLinks.forEach((link) => {
+              link.classList.remove("highlighted");
+            });
+            document
+              .getElementById(`li-${tag.id}`)
+              .classList.add("highlighted");
             event.preventDefault();
             listForBody = inboxId;
             searchAndDisplay(tag.id);
@@ -755,6 +763,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     if (!textToSearch.length) textToSearch = "all";
     globalLink = `/api/tasks/search/${textToSearch}/${tagName}`;
     globalObject = {};
+    currentListHeader.innerHTML = `Search results for ${textToSearch}`;
     populateTasks(`/api/tasks/search/${textToSearch}/${tagName}`);
     searchText.value = "";
   }
@@ -906,6 +915,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const nextWeekLink = document.getElementById("next-week");
 
   allTaskLink.addEventListener("click", () => {
+    const leftLinks = document.querySelectorAll(".left-link");
+    leftLinks.forEach((link) => {
+      link.classList.remove("highlighted");
+    });
+    allTaskLink.classList.add("highlighted");
     listForBody = inboxId;
     currentListHeader.innerHTML = "All Tasks";
     detailPanel.classList.add("panel-hidden");
@@ -916,6 +930,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     populateTasks("/api/tasks/all");
   });
   todayLink.addEventListener("click", (event) => {
+    const leftLinks = document.querySelectorAll(".left-link");
+    leftLinks.forEach((link) => {
+      link.classList.remove("highlighted");
+    });
+    todayLink.classList.add("highlighted");
     listForBody = inboxId;
     currentListHeader.innerHTML = "Today";
     timesClicked = 0;
@@ -924,6 +943,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     fetchDateLink(new Date());
   });
   tomorrowLink.addEventListener("click", (event) => {
+    const leftLinks = document.querySelectorAll(".left-link");
+    leftLinks.forEach((link) => {
+      link.classList.remove("highlighted");
+    });
+    tomorrowLink.classList.add("highlighted");
     listForBody = inboxId;
     timesClicked = 0;
     currentListHeader.innerHTML = "Tomorrow";
@@ -934,6 +958,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     fetchDateLink(tomorrowDate);
   });
   thisWeekLink.addEventListener("click", (event) => {
+    const leftLinks = document.querySelectorAll(".left-link");
+    leftLinks.forEach((link) => {
+      link.classList.remove("highlighted");
+    });
+    thisWeekLink.classList.add("highlighted");
     listForBody = inboxId;
     timesClicked = 0;
     currentListHeader.innerHTML = "This Week";
@@ -942,6 +971,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     fetchDateLink(new Date(), true);
   });
   nextWeekLink.addEventListener("click", (event) => {
+    const leftLinks = document.querySelectorAll(".left-link");
+    leftLinks.forEach((link) => {
+      link.classList.remove("highlighted");
+    });
+    nextWeekLink.classList.add("highlighted");
     listForBody = inboxId;
     timesClicked = 0;
     currentListHeader.innerHTML = "Next Week";
@@ -1039,7 +1073,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const listHtml = [];
 
       lists.forEach((list) => {
-        let html = `<li id="li-list-${list.id}"><div class="left-list-div"><div class="color-list"></div><span>${list.name}</span></div><button class="tag-button" id="btn-list-${list.id}"><span class="tag-button-text">-</span></button></li>`;
+        let html = `<li class="left-link "id="li-list-${list.id}"><div class="left-list-div"><div class="color-list"></div><span>${list.name}</span></div><button class="tag-button" id="btn-list-${list.id}"><span class="tag-button-text">-</span></button></li>`;
         listHtml.push(html);
       });
       listContainer.innerHTML = listHtml.join("");
@@ -1070,8 +1104,15 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         document
           .getElementById(`li-list-${list.id}`)
           .addEventListener("click", (event) => {
+            const leftLinks = document.querySelectorAll(".left-link");
+            leftLinks.forEach((link) => {
+              link.classList.remove("highlighted");
+            });
             globalObject = {};
             event.preventDefault();
+            document
+              .getElementById(`li-list-${list.id}`)
+              .classList.add("highlighted");
             globalLink = `/api/lists/${list.id}`;
             detailPanel.classList.add("panel-hidden");
             detailPanel.classList.remove("panel-shown");

@@ -1146,6 +1146,22 @@ body {
   .button-checked {
     display: none !important;
   }
+  #top-nav-name {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 616px) {
+  .search-container {
+    left: 60px !important;
+    transition-duration: 0.3s;
+  }
+}
+
+@media screen and (min-width: 617px) {
+  .search-container {
+    transition-duration: 0.3s;
+  }
 }
 
 @media screen and (min-width: 1001px) {

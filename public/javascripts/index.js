@@ -215,7 +215,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
             const newDate = new Date(
               date.getTime() + Math.abs(date.getTimezoneOffset() * 60000)
             );
-            const today = new Date();
+            let today = new Date();
+            today.setHours(0, 0, 0);
+            newDate.setHours(0, 0, 1);
             const todayMonth = today.getMonth();
             const todayDate = today.getDate();
             const todayYear = today.getYear();
@@ -396,7 +398,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           } else {
             currentListHeader.innerHTML = currentListForHeader;
           }
-
+          noteList.innerHTML = "";
           populateNotes();
 
           let html = "";

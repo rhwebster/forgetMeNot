@@ -75,6 +75,27 @@ router.post(
   })
 );
 
+router.delete(
+  "/tasks/:id",
+  asyncHandler(async (req, res) => {
+    const taskId = req.params.id;
+    const taggedTasks = await TaggedTask.findAll({
+      where: {
+        taskId,
+      },
+    });
+    console.log("I'm here");
+    if (taggedTasks) {
+      taggedTasks.forEach(async (tag) => {
+        await tag.destroy();
+      });
+    }
+    const task = await Task.findByPk(taskId);
+    await task.destroy();
+    res.json({ message: "Deleted" });
+  })
+);
+
 router.get(
   "/tasks/:id",
   asyncHandler(async (req, res) => {

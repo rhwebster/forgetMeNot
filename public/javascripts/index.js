@@ -107,11 +107,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   });
 
   async function populateTasks(link = "/api/tasks", taskObject = {}) {
-    let tempHtml = [];
-    for (let i = 0; i < 50; i++) {
-      tempHtml.push(`<li><span></span></li>`);
-    }
-    taskContainer.innerHTML = tempHtml.join("");
     numChecked = 0;
     completeButton.classList.remove("num-checked-pos");
     textComplete.classList.remove("num-checked-pos");

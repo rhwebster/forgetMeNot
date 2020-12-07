@@ -6,7 +6,7 @@ html {
 }
 
 body {
-  font-family: "Segoe UI", "Helvetica";
+  font-family: "Helvetica Neue", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .wholepage {
@@ -24,6 +24,18 @@ body {
   width: 100%;
   height: auto;
   overflow: clip;
+}
+
+.left-link a {
+  font-size: 15px !important;
+}
+
+.tags-header span {
+  font-size: 15px !important;
+}
+
+.left-list-div span {
+  font-size: 15px !important;
 }
 
 .main-body {
@@ -47,6 +59,7 @@ body {
   background-color: rgb(215, 231, 245);
   box-sizing: border-box;
   height: auto;
+
   width: 180px;
   min-width: 180px;
   margin-left: 15px;
@@ -114,6 +127,14 @@ body {
 
 .highlighted {
   background-color: rgb(191, 215, 239);
+}
+
+.highlighted span {
+  color: rgb(0, 96, 191);
+}
+
+.highlighted a {
+  color: rgb(0, 96, 191);
 }
 
 .tasks-num-div {

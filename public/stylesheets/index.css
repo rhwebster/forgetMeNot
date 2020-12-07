@@ -536,6 +536,10 @@ body {
   color: rgba(0, 0, 0, 0.4);
 }
 
+#fmn-logo {
+  padding-top: 8px;
+}
+
 #task-top-navbar {
   border-bottom: 1px dotted rgb(229, 229, 229);
   display: flex;
@@ -550,6 +554,7 @@ body {
   margin-right: 6px;
   padding: 8px 8px 3px 8px;
   color: rgb(0 96 191);
+  cursor: pointer;
 }
 
 #complete {
@@ -557,6 +562,7 @@ body {
   top: 1px;
   padding: 8px 8px 3px 8px;
   color: rgb(0 96 191);
+  cursor: pointer;
 }
 
 #incomplete.selected {

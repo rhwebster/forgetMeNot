@@ -1,6 +1,7 @@
 append head
   link(rel="stylesheet" href="/stylesheets/top-navbar.css")
   link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")  
+  link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css")
 div(id='top-navbar' class='top-navbar')
   span(class='top-navbar-left-space top-navbar-link' id="bars")
     i(style="font-size:20px" class="fa fa-bars" id="bars-text") 
@@ -11,7 +12,7 @@ div(id='top-navbar' class='top-navbar')
     span(class='top-navbar-link') Welcome #{user.firstName}!
     span(class='top-navbar-link')
       a(href="https://github.com/rhwebster/forgetMeNot" target="_blank")
-        i(style="font-size:22px" class="fa fa-github" aria-hidden="true" id="github")
+        i(style="font-size:22px" class="fab fa-github" aria-hidden="true" id="github")
     span(id="settings" class='top-navbar-link')
       i(style="font-size:22px" class="fa fa-gear")
     div(class="settings-menu menu-hidden")
@@ -42,7 +43,8 @@ div(id='top-navbar' class='top-navbar')
           li(class="settings-link")
             button(method='post' class="log-out-button")
               a(href='/users/logout') Logout
-            
+  div(id="alert-window" class="hidden") Test was moved to another list
+    span(id="alert-close" class="fa") &#xf00d
 
 
         

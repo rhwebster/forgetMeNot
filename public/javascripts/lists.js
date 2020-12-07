@@ -72,7 +72,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
             //   const taskNameInput = document.getElementById("name-panel-text");
             try {
                 const id = taskEle.id.slice(4);
-                console.log(id);
+                // console.log(id);
                 const res = await fetch(`/api/tasks/${id}`);
                 let { task } = await res.json();
                 taskNameInput.value = task.name;
@@ -172,7 +172,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
             const resJson = await res.json();
             if (!res.ok) {
                 const p = document.getElementById('p-add-errors');
-                console.log(resJson.errors);
+                // console.log(resJson.errors);
                 p.innerText = resJson.errors.join("/br");
                 return;
             }
@@ -195,7 +195,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
                                 body: JSON.stringify({ name: tag.name }),
                             });
                             let { name } = await res.json();
-                            console.log("json back", name);
+                            // console.log("json back", name);
                             const li = document.getElementById(`li-${name}`);
                             tagContainer.removeChild(li);
                         } catch (e) {
@@ -216,7 +216,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     const addTagBtn = document.getElementById("addTagBtn");
     const addListBtn = document.getElementById("addListBtn");
 
-    const popupAddTagBtn = document.getElementById("addTag");
+    const popupAddTagBtn = document.getElementById("addTagOrList");
 
     popupAddTagBtn.addEventListener("click", async (event) => {
         event.preventDefault();
@@ -234,7 +234,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
     // Get the <span> element that closes the modal
     const span = document.getElementsByClassName("close")[0];
-    console.log("span", span);
+    // console.log("span", span);
 
     // When the user clicks the button, open the modal
     addTagBtn.onclick = function () {

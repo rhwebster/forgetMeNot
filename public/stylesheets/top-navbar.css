@@ -191,3 +191,37 @@
   margin-left: -5px;
   margin-top: -2px;
 }
+
+#alert-window {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  background-color: rgb(249, 237, 190);
+  box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.2);
+  border: solid 1px rgb(229, 217, 170);
+  width: fit-content;
+  padding: 7px 9px;
+  top: 25px;
+  font-size: 15px;
+  font-weight: bold;
+  opacity: 1;
+  visibility: visible;
+  transition-property: opacity;
+  transition-duration: 0.3s;
+}
+
+#alert-close {
+  padding-left: 7px;
+}
+
+#alert-close:hover {
+  cursor: pointer;
+}
+
+#alert-window.hidden {
+  visibility: hidden;
+  opacity: 0;
+}

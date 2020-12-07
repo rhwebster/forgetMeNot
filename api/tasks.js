@@ -53,6 +53,8 @@ router.post(
       const list = await List.findOne({ where: { userId, name: "Inbox" } });
       listId = list.id;
     }
+    due = new Date(due);
+    due.setHours(24, 0, 1);
     const newTask = await Task.create({
       name,
       due,
@@ -228,6 +230,8 @@ router.put(
       });
       res.json({ task });
     } else if (due) {
+      due = new Date(due);
+      due.setHours(24, 0, 1);
       await task.update({ due });
       res.json({ task });
     } else if (listId) {

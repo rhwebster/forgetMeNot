@@ -6,8 +6,18 @@ div(id='main-task-view-div' class='main-task-view-div')
       span Completed
   div(id='task-action-bar' class='task-action-bar')
     div(id="action-first-group")
-      div(id="checkmark") &#10003
-      span(id="mark-complete") Mark complete
+      div(id="checkmark")
+        i(class="fas fa-check" id="check-logo")
+      div(id="delete-tasks")
+        i(class="fas fa-trash" id="delete-logo") 
+      div(id="selection-menu")
+        i(id="select-logo" style="font-size:20px" class="fas fa-ellipsis-h")
+        div(id="selection-box" class="hidden")
+          ul
+            li(id="select-all" class="o-1 select-option")
+              span(class="o-1 select-span") Select all
+            li(id="select-none" class="o-2 select-option")   
+              span(class="o-2 select-span") Select none
     div(id="sort-menu")
       i(id="sort-cog" style="font-size:23px" class="fa fa-gear")  &#9662
       div(id="sort-box" class="hidden")

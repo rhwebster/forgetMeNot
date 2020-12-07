@@ -27,7 +27,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const completedTab = document.getElementById("complete");
   const incompletedTab = document.getElementById("incomplete");
   const currentListHeader = document.getElementById("current-list-header");
-  const textComplete = document.getElementById("mark-complete");
   const sidePanel = document.getElementById("side-panel");
   const sideNavBar = document.getElementById("side-navbar");
   const topBars = document.getElementById("bars");
@@ -37,10 +36,15 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const sortCog = document.getElementById("sort-cog");
   const sortBox = document.getElementById("sort-box");
   const sortOptions = document.querySelectorAll(".sort-option");
+  const selectOptions = document.querySelectorAll(".select-option");
   const sortChecks = document.querySelectorAll(".sort-check");
+  const selectLogo = document.getElementById("selection-menu");
+  const selectionBox = document.getElementById("selection-box");
   const alertWindow = document.getElementById("alert-window");
   const modalHeader = document.getElementById("modal-header");
   const modalCancel = document.getElementById("close-modal-cancel");
+  const checkIcon = document.getElementById("check-logo");
+  const deleteButton = document.getElementById("delete-tasks");
   let globalLink = "/api/tasks";
   let globalObject = {};
   let listForBody = null;
@@ -48,6 +52,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   let completedFlag = false;
   let orderFlag = "1";
   let completeTasks = {};
+  let deleteTasks = {};
   let numChecked = 0;
   let timesClicked = 0;
   let numTotalTasks = 0;
@@ -95,8 +100,21 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     }
   });
 
+  selectLogo.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (selectionBox.classList.contains("hidden")) {
+      selectionBox.classList.remove("hidden");
+    } else {
+      selectionBox.classList.add("hidden");
+    }
+  });
+
   window.addEventListener("click", () => {
     sortBox.classList.add("hidden");
+  });
+
+  window.addEventListener("click", () => {
+    selectionBox.classList.add("hidden");
   });
 
   sortOptions.forEach((option) => {
@@ -106,15 +124,47 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     });
   });
 
+  selectOptions.forEach((option) => {
+    option.addEventListener("click", (event) => {
+      let selectFlag = event.target.classList[0].slice(2);
+      checkingBoxes(selectFlag);
+    });
+  });
+
+  function checkingBoxes(flag) {
+    console.log(flag);
+    const checkboxes = document.querySelectorAll(".task-check-box");
+    checkboxes.forEach((checkbox) => {
+      let id = checkbox.id.slice(3);
+      const ele = document.getElementById(`ele-${id}`);
+      if (flag === "1") {
+        numChecked++;
+        ele.classList.add("checked-list");
+        checkbox.checked = true;
+        if (!completedFlag) {
+          completeTasks[id] = true;
+        } else {
+          completeTasks[id] = false;
+        }
+        deleteTasks[id] = true;
+      } else if (flag === "2") {
+        checkbox.checked = false;
+        ele.classList.remove("checked-list");
+        numChecked = 0;
+        if (!completedFlag) {
+          completeTasks[id] = false;
+        } else {
+          completeTasks[id] = true;
+        }
+        deleteTasks[id] = false;
+      }
+    });
+  }
+
   async function populateTasks(link = "/api/tasks", taskObject = {}) {
-    let tempHtml = [];
-    for (let i = 0; i < 50; i++) {
-      tempHtml.push(`<li><span></span></li>`);
-    }
-    taskContainer.innerHTML = tempHtml.join("");
     numChecked = 0;
     completeButton.classList.remove("num-checked-pos");
-    textComplete.classList.remove("num-checked-pos");
+    deleteButton.classList.remove("num-checked-pos");
     try {
       const res = await fetch(link, taskObject);
       let { tasks } = await res.json();
@@ -141,7 +191,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       numTotalTasks = incompleteList.length;
       numCompleted = completedList.length;
 
-      console.log(incompleteList);
       const taskHtml = [];
       let html;
       if (!completedFlag) {
@@ -244,15 +293,16 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     }
     const checkboxes = document.querySelectorAll(".task-check-box");
     completeTasks = {};
+    deleteTasks = {};
     checkboxes.forEach((checkbox) => {
       let id = checkbox.id.slice(3);
+      deleteTasks[id] = false;
       if (completedFlag === false) {
         completeTasks[id] = false;
       } else {
         completeTasks[id] = true;
       }
     });
-    console.log(completeTasks);
 
     checkboxes.forEach((checkbox) => {
       checkbox.addEventListener("click", (event) => {
@@ -266,6 +316,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           } else {
             completeTasks[id] = false;
           }
+          deleteTasks[id] = true;
         } else {
           numChecked--;
           ele.classList.remove("checked-list");
@@ -274,17 +325,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           } else {
             completeTasks[id] = true;
           }
+          deleteTasks[id] = false;
         }
         if (numChecked > 0) {
           detailPanel.classList.add("button-checked");
           completeButton.classList.add("num-checked-pos");
-          textComplete.classList.add("num-checked-pos");
+          deleteButton.classList.add("num-checked-pos");
         } else {
           completeButton.classList.remove("num-checked-pos");
-          textComplete.classList.remove("num-checked-pos");
+          deleteButton.classList.remove("num-checked-pos");
         }
 
-        console.log(numChecked);
+        console.log(deleteTasks);
       });
     });
 
@@ -304,7 +356,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         }
       }
       taskEle.addEventListener("click", async (event) => {
-        console.log(event.target);
         const id = event.target.classList[0].slice(3);
         timesClicked++;
         if (event.target.type !== "checkbox") {
@@ -371,7 +422,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           detailPanel.classList.add("panel-shown");
         }
         currentClicked = id;
-        console.log(currentTask.List);
         listSelector.value = currentTask.List.id;
       });
     });
@@ -381,8 +431,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   currentListForHeader = "Inbox";
   currentListHeader.innerHTML = currentListForHeader;
   completeButton.addEventListener("click", (event) => {
-    console.log(completeTasks);
     markComplete(completeTasks);
+  });
+  deleteButton.addEventListener("click", (event) => {
+    deleteSelected(deleteTasks);
   });
   topBars.addEventListener("click", (event) => {
     if (sideNavBar.classList.contains("hidden")) {
@@ -393,8 +445,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   });
   completedTab.addEventListener("click", (event) => {
     completedFlag = true;
-    textComplete.innerHTML = "Uncomplete";
-    completeButton.innerHTML = "&#8634";
+    checkIcon.classList.add("fa-history");
+    checkIcon.classList.remove("fa-check");
     incompletedTab.classList.remove("selected");
     completedTab.classList.add("selected");
     addTaskDiv.classList.add("hidden");
@@ -408,8 +460,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   });
   incompletedTab.addEventListener("click", (event) => {
     completedFlag = false;
-    textComplete.innerHTML = "Complete";
-    completeButton.innerHTML = "&#10003";
+    checkIcon.classList.remove("fa-history");
+    checkIcon.classList.add("fa-check");
     incompletedTab.classList.add("selected");
     completedTab.classList.remove("selected");
     addTaskDiv.classList.remove("hidden");
@@ -678,7 +730,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nameToSend),
       });
-      console.log("tagId", tagId);
       if (tagId > 0) {
         // add this new tag to the select tagSelector
         const newTagOption = document.createElement("option");
@@ -697,7 +748,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nameToSend),
       });
-      console.log("listId", listId);
       if (listId > 0) {
         // add this new tag to the select tagSelector
         const newListOption = document.createElement("option");
@@ -830,31 +880,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       console.error(e);
     }
   }
-  async function markComplete(completeTasks) {
-    for (let task in completeTasks) {
-      const completed = completeTasks[task];
-      try {
-        const res = await fetch(`/api/tasks/${task}/edit`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ completed }),
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    timesClicked = 0;
-    detailPanel.classList.add("panel-hidden");
-    detailPanel.classList.remove("panel-shown");
-    populateTasks(globalLink, globalObject);
-  }
 
   // tagSelector.addEventListener('click', event => {
   //   // console.log('click', event);
   // });
   tagSelector.addEventListener("change", async (event) => {
     const tagId = tagSelector.value;
-    console.log("change", tagId);
     try {
       const res = await fetch(`/api/tasks/${currentTask.id}/edit`, {
         method: "PUT",
@@ -1130,7 +1161,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
   listSelector.addEventListener("change", async (event) => {
     const listId = listSelector.value;
-    console.log("change", listId);
     let oldList = currentTask.List.name;
     try {
       const res = await fetch(`/api/tasks/${currentTask.id}/edit`, {
@@ -1155,7 +1185,6 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       //       removeTag(button);
       //     });
       //   });
-      console.log("I'm here");
       currentList.innerText = listName;
       alertWindow.innerHTML = `Task "${task.name}" moved from "${oldList}" to "${listName}"<span id="alert-close" class="fa">&#xf00d</span>`;
       alertWindow.classList.remove("hidden");
@@ -1175,5 +1204,69 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     setTimeout(() => {
       alertWindow.classList.add("hidden");
     }, 6000);
+  }
+
+  async function markComplete(completeTasks) {
+    let amount = 0;
+    for (let task in completeTasks) {
+      const completed = completeTasks[task];
+      if (completed) {
+        amount++;
+      }
+      try {
+        const res = await fetch(`/api/tasks/${task}/edit`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ completed }),
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    if (!completedFlag) {
+      if (amount === 1) {
+        alertWindow.innerHTML = `You completed this task<span id="alert-close" class="fa">&#xf00d</span>`;
+        alertWindow.classList.remove("hidden");
+        closeWindow();
+      } else if (amount > 1) {
+        alertWindow.innerHTML = `You completed ${amount} tasks. Nice!<span id="alert-close" class="fa">&#xf00d</span>`;
+        alertWindow.classList.remove("hidden");
+        closeWindow();
+      }
+    }
+    timesClicked = 0;
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
+    populateTasks(globalLink, globalObject);
+  }
+
+  async function deleteSelected(tasks) {
+    let amount = 0;
+    for (let task in tasks) {
+      const deleted = tasks[task];
+      if (deleted) {
+        try {
+          const res = await fetch(`/api/tasks/${task}`, {
+            method: "DELETE",
+          });
+          amount++;
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+    if (amount === 1) {
+      alertWindow.innerHTML = `Successfully deleted ${amount} task<span id="alert-close" class="fa">&#xf00d</span>`;
+      alertWindow.classList.remove("hidden");
+      closeWindow();
+    } else if (amount > 1) {
+      alertWindow.innerHTML = `Successfully deleted ${amount} tasks<span id="alert-close" class="fa">&#xf00d</span>`;
+      alertWindow.classList.remove("hidden");
+      closeWindow();
+    }
+    timesClicked = 0;
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
+    populateTasks(globalLink, globalObject);
   }
 });

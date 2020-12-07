@@ -6,7 +6,7 @@ html {
 }
 
 body {
-  font-family: "Segoe UI", "Helvetica";
+  font-family: "Helvetica Neue", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .wholepage {
@@ -24,6 +24,18 @@ body {
   width: 100%;
   height: auto;
   overflow: clip;
+}
+
+.left-link a {
+  font-size: 15px !important;
+}
+
+.tags-header span {
+  font-size: 15px !important;
+}
+
+.left-list-div span {
+  font-size: 15px !important;
 }
 
 .main-body {
@@ -47,6 +59,7 @@ body {
   background-color: rgb(215, 231, 245);
   box-sizing: border-box;
   height: auto;
+
   width: 180px;
   min-width: 180px;
   margin-left: 15px;
@@ -114,6 +127,14 @@ body {
 
 .highlighted {
   background-color: rgb(191, 215, 239);
+}
+
+.highlighted span {
+  color: rgb(0, 96, 191);
+}
+
+.highlighted a {
+  color: rgb(0, 96, 191);
 }
 
 .tasks-num-div {
@@ -564,18 +585,96 @@ body {
   font-weight: bold;
 }
 
-#action-first-group {
-  display: flex;
-  align-items: center;
-}
-
 #task-action-bar {
   border-bottom: 1px dotted rgb(229, 229, 229);
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0px 30px;
+  /* margin: 0px 30px; */
+  padding: 0px 30px;
+}
+
+#action-first-group {
+  /* border: 1px solid black; */
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+#action-first-group > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#action-first-group > div:hover {
+  color: rgb(50, 50, 50);
+  box-shadow: 0px 1px 0px 1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+#selection-menu {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  color: rgb(160, 160, 160);
+  border: 1px solid rgb(180, 180, 180);
+  border-left: none;
+  width: 60px;
+  height: 30px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  z-index: 1;
+  padding-top: 4px;
+}
+
+#selection-box {
+  position: absolute;
+  top: 29px;
+  left: 0px;
+  width: 88px;
+  background-color: white;
+  border-radius: 2px;
+  box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.15);
+  font-size: 10px;
+  cursor: pointer;
+  text-align: left;
+  padding: 0px 0px;
+  z-index: 1;
+}
+
+#selection-box.hidden {
+  display: none;
+}
+
+.select-option {
+  display: flex;
+  justify-content: left;
+  list-style: none;
+}
+
+.select-span {
+  font-size: 14px;
+}
+
+#selection-box li {
+  padding: 3px 6px;
+  display: block;
+}
+
+#selection-box li:hover {
+  background-color: rgb(209, 227, 245);
+}
+
+#delete-tasks {
+  border: 1px solid rgb(180, 180, 180);
+  position: relative;
+  width: 60px;
+  height: 30px;
+  color: rgb(160, 160, 160);
 }
 
 #sort-menu {
@@ -587,6 +686,18 @@ body {
   border-radius: 2px;
   z-index: 1;
   padding-top: 4px;
+}
+
+#checkmark {
+  position: relative;
+  font-size: 22px;
+  color: rgb(160, 160, 160);
+  width: 60px;
+  height: 30px;
+  border: 1px solid rgb(180, 180, 180);
+  border-right: none;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
 }
 
 #sort-menu > i {
@@ -643,29 +754,6 @@ body {
   color: #888;
 }
 
-#checkmark:hover {
-  color: rgb(155, 155, 155);
-  border: 1px solid rgb(190, 190, 190);
-}
-
-#checkmark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  cursor: pointer;
-  color: rgb(204, 204, 204);
-  width: 60px;
-  height: 30px;
-  border: 1px solid rgb(204, 204, 204);
-  border-radius: 2px;
-}
-
-#mark-complete {
-  padding-left: 10px;
-  color: rgb(190, 190, 190);
-}
-
 .list-of-tasks-class {
   background-color: white;
   width: auto;
@@ -685,6 +773,10 @@ body {
   border-bottom: 1px dotted rgb(229, 229, 229);
   align-items: center;
   height: 32px;
+}
+
+.left-tag-div > span {
+  font-size: 15px !important;
 }
 
 #list-of-tasks li.filled {

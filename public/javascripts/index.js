@@ -688,6 +688,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         document
           .getElementById(`li-${tag.id}`)
           .addEventListener("click", (event) => {
+            console.log(tag.name);
             currentListHeader.innerHTML = tag.name;
             const leftLinks = document.querySelectorAll(".left-link");
             leftLinks.forEach((link) => {
@@ -813,7 +814,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     if (!textToSearch.length) textToSearch = "all";
     globalLink = `/api/tasks/search/${textToSearch}/${tagName}`;
     globalObject = {};
-    currentListHeader.innerHTML = `Search results for ${textToSearch}`;
+
+    if (tagName === "") {
+      currentListHeader.innerHTML = `Search results for ${textToSearch}`;
+    }
     populateTasks(`/api/tasks/search/${textToSearch}/${tagName}`);
     searchText.value = "";
   }

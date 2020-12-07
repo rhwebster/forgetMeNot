@@ -192,7 +192,7 @@ router.get(
 router.put(
   "/tasks/:id/edit",
   asyncHandler(async (req, res) => {
-    const { name, due, notes, listId, tagId, completed } = req.body;
+    let { name, due, notes, listId, tagId, completed } = req.body;
     const task = await Task.findByPk(req.params.id);
     if (name !== undefined) {
       await task.update({ name });

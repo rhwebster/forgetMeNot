@@ -39,7 +39,7 @@ router.post(
   asyncHandler(async (req, res) => {
     const { name } = req.body;
     const { userId } = req.session.auth;
-    console.log("\n\n\n", name, userId);
+    // console.log("\n\n\n", name, userId);
     const listFoundInDB = await db.List.findOne({ where: { name, userId } });
     let list;
     if (!listFoundInDB) {

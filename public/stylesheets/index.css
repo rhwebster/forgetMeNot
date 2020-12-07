@@ -591,7 +591,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0px 30px;
+  /* margin: 0px 30px; */
+  padding: 0px 30px;
 }
 
 #action-first-group {

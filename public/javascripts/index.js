@@ -382,12 +382,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           let { task } = await res.json();
           currentTask = task;
           taskNameInput.value = task.name;
+          taskDueDateSpan.innerHTML = "";
           if (task.due) {
             const date = new Date(task.due);
             const newDate = new Date(
               date.getTime() + Math.abs(date.getTimezoneOffset() * 60000)
             ).toDateString();
             let dateHtml = newDate;
+
             taskDueDateSpan.innerHTML = dateHtml;
           }
 
@@ -399,6 +401,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
             currentListHeader.innerHTML = currentListForHeader;
           }
           noteList.innerHTML = "";
+
           populateNotes();
 
           let html = "";

@@ -309,6 +309,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
     checkboxes.forEach((checkbox) => {
       checkbox.addEventListener("click", (event) => {
+        timesClicked = 0;
         let id = event.target.id.slice(3);
         const ele = document.getElementById(`ele-${id}`);
         if (checkbox.checked) {

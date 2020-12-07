@@ -132,7 +132,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   });
 
   function checkingBoxes(flag) {
-    console.log(flag);
+    // console.log(flag);
     const checkboxes = document.querySelectorAll(".task-check-box");
     checkboxes.forEach((checkbox) => {
       let id = checkbox.id.slice(3);
@@ -336,7 +336,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           deleteButton.classList.remove("num-checked-pos");
         }
 
-        console.log(deleteTasks);
+        // console.log(deleteTasks);
       });
     });
 
@@ -639,7 +639,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const resJson = await res.json();
       if (!res.ok) {
         const p = document.getElementById("p-add-errors");
-        console.log(resJson.errors);
+        // console.log(resJson.errors);
         p.innerText = resJson.errors.join("/br");
         return tagId;
       }
@@ -688,7 +688,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         document
           .getElementById(`li-${tag.id}`)
           .addEventListener("click", (event) => {
-            console.log(tag.name);
+            // console.log(tag.name);
             currentListHeader.innerHTML = tag.name;
             const leftLinks = document.querySelectorAll(".left-link");
             leftLinks.forEach((link) => {
@@ -1100,7 +1100,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const resJson = await res.json();
       if (!res.ok) {
         const p = document.getElementById("p-add-errors");
-        console.log(resJson.errors);
+        // console.log(resJson.errors);
         p.innerText = resJson.errors.join("/br");
         return listId;
       }

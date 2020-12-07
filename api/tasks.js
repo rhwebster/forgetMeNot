@@ -45,10 +45,10 @@ router.get(
 router.post(
   "/tasks",
   asyncHandler(async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     let { name, due, listId } = req.body;
     const userId = req.session.auth.userId;
-    console.log(listId === null);
+    // console.log(listId === null);
     if (listId === null) {
       const list = await List.findOne({ where: { userId, name: "Inbox" } });
       listId = list.id;
@@ -84,7 +84,7 @@ router.delete(
         taskId,
       },
     });
-    console.log("I'm here");
+    // console.log("I'm here");
     if (taggedTasks) {
       taggedTasks.forEach(async (tag) => {
         await tag.destroy();

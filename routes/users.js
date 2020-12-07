@@ -6,7 +6,8 @@ const bcrypt = require("bcryptjs");
 const db = require("../db/models");
 const { check, validationResult } = require("express-validator");
 const { csrfProtection, asyncHandler } = require("./utils");
-const { loginUser, logoutUser } = require("../auth");
+const { loginUser, logoutUser, requireAuth } = require("../auth");
+const { Op } = require('sequelize');
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -173,9 +174,71 @@ router.post(
   })
 );
 
+
 router.all("/logout", (req, res) => {
   logoutUser(req, res);
   res.redirect("/users/login");
 });
+
+router.post('/addfriend',
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const { userId } = req.session.auth;
+    const { email } = req.body;
+    const userToAdd = await db.User.findOne({
+      where: {
+        email
+      }
+    });
+    if (userToAdd) {
+      // res.json({ userToAdd });
+      let user1Id = userId;
+      let user2Id = userToAdd.id;
+      if (user1Id > user2Id) {
+        let temp = user1Id;
+        user1Id = user2Id;
+        user2Id = temp;
+      }
+      // res.json({user1Id, user2Id});
+      const request = await db.Relationship.create({
+        user1Id,
+        user2Id,
+        status: 0,
+        lastActionUserId: userId
+      });
+      // console.log("\n\n", db.Relationship);
+      res.json({ request });
+    } else {
+      res.status(400).json({ error: "User not found to add" });
+    }
+  })
+);
+
+router.get('/relationships', 
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const { userId } = req.session.auth;
+    const relationships1 = await db.Relationship.findAll({
+      where: {
+        user1Id: userId,
+        status: 0,
+        lastActionUserId: {
+          [Op.ne]: userId
+        }
+      }
+    });
+    const relationships2 = await db.Relationship.findAll({
+      where: {
+        user1Id: userId,
+        status: 0,
+        lastActionUserId: {
+          [Op.ne]: userId
+        }
+      }
+    });
+    const count = relationships1.length + relationships2.length;
+    res.json({relationships1, relationships2, count})
+  })
+);
 
 module.exports = router;

@@ -42,9 +42,15 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   const selectionBox = document.getElementById("selection-box");
   const alertWindow = document.getElementById("alert-window");
   const modalHeader = document.getElementById("modal-header");
+  const friendModalHeader = document.getElementById("friend-modal-header");
+  const friendRequestModalHeader = document.getElementById("friend-request-modal-header");
   const modalCancel = document.getElementById("close-modal-cancel");
+  const friendModalCancel = document.getElementById("close-friend-modal-cancel");
+  const friendRequestModalCancel = document.getElementById("close-friend-request-modal-cancel");
   const checkIcon = document.getElementById("check-logo");
   const deleteButton = document.getElementById("delete-tasks");
+  const listOfRequests = document.getElementById('list-of-friend-requests');
+  
   let globalLink = "/api/tasks";
   let globalObject = {};
   let listForBody = null;
@@ -202,11 +208,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           if (tags) {
             html = `<li id="ele-${task.id}" class="li-${task.id} filled"><div class="li-${task.id} left-border"></div><input class="li-${task.id} task-check-box" id="cb-${task.id}" type="checkbox"><span class="li-${task.id} task-text">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="li-${
-                task.id
-              } no-color-tag-class" style="background-color:${
-                tagColors[tag.id % 17]
-              };">${tag.name}</span>`;
+              html += `<span class="li-${task.id
+                } no-color-tag-class" style="background-color:${tagColors[tag.id % 17]
+                };">${tag.name}</span>`;
             });
           }
 
@@ -252,11 +256,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           if (tags) {
             html = `<li id="ele-${task.id}" class="li-${task.id} filled"><div class="li-${task.id} left-border"></div><input class="li-${task.id} task-check-box" id="cb-${task.id}" type="checkbox"><span class="li-${task.id} task-text complete-task">${task.name}</span>`;
             tags.forEach((tag) => {
-              html += `<span class="li-${
-                task.id
-              } no-color-tag-class" style="background-color:${
-                tagColors[tag.id % 17]
-              };">${tag.name}</span>`;
+              html += `<span class="li-${task.id
+                } no-color-tag-class" style="background-color:${tagColors[tag.id % 17]
+                };">${tag.name}</span>`;
             });
           }
           taskHtml.push(html);
@@ -401,11 +403,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
           let html = "";
           currentTask.TasksWithTags.forEach((tag) => {
-            html += `<span class="no-color-tag-class remove-tag" style="background-color:${
-              tagColors[tag.id % 17]
-            };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
-              tag.id
-            }">  x</span></span>`;
+            html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 17]
+              };">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id
+              }">  x</span></span>`;
           });
 
           tagsList.innerHTML = html;
@@ -652,15 +652,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const tagHtml = [];
 
       tags.forEach((tag) => {
-        let html = `<li class="left-link" id="li-${
-          tag.id
-        }"><div class="left-tag-div"><div class="color-tag" style="background-color:${
-          tagColors[tag.id % 17]
-        };"></div><span>${
-          tag.name
-        }</span></div><button class="tag-button" id="btn-${
-          tag.id
-        }"><span class="tag-button-text">-</span></button></li>`;
+        let html = `<li class="left-link" id="li-${tag.id
+          }"><div class="left-tag-div"><div class="color-tag" style="background-color:${tagColors[tag.id % 17]
+          };"></div><span>${tag.name
+          }</span></div><button class="tag-button" id="btn-${tag.id
+          }"><span class="tag-button-text">-</span></button></li>`;
         tagHtml.push(html);
         const option = document.getElementById(`option-${tag.id}`);
         if (option) option.style = `background-color:${tagColors[tag.id % 17]}`;
@@ -716,14 +712,21 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   populateTags();
   // Get the modal
   const modal = document.getElementById("myModal");
+  const friendModal = document.getElementById("friendModal");
+  const friendRequestModal = document.getElementById("friendRequestModal");
 
   let addFunction;
   // Get the button that opens the modal
   const addTagBtn = document.getElementById("addTagBtn");
   const addListBtn = document.getElementById("addListBtn");
+  const addFriendBtn = document.getElementById("addFriendBtn");
+  const topNavNotification = document.getElementById('top-nav-notification');
   const inputName = document.getElementById("inputName");
+  const inputEmail = document.getElementById("inputEmail");
 
   const popupAddTagBtn = document.getElementById("addTagOrList");
+  const popupAddFriendBtn = document.getElementById("addFriend");
+  const popupAddFriendRequestBtn = document.getElementById("addFriendRequest");
 
   popupAddTagBtn.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -769,6 +772,21 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     }
   });
 
+  popupAddFriendBtn.addEventListener('click', async (event) => {
+    event.preventDefault();
+    const email = inputEmail.value;
+    const emailToSend = { email };
+    const res = await fetch('/users/addfriend', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(emailToSend),
+    });
+    const resJson = await res.json();
+    console.log(resJson);
+    inputEmail.value = "";
+    friendModal.style.display = "none";
+  });
+
   // Get the <span> element that closes the modal
   const span = document.getElementsByClassName("close")[0];
 
@@ -791,6 +809,30 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     addFunction = "addList";
     timesClicked = 0;
   };
+  addFriendBtn.onclick = function () {
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
+    friendModal.style.display = "block";
+    friendModalHeader.innerText = "Add a friend";
+    inputEmail.focus();
+    timesClicked = 0;
+  };
+  topNavNotification.addEventListener('click', async (event) => {
+    detailPanel.classList.add("panel-hidden");
+    detailPanel.classList.remove("panel-shown");
+    friendRequestModal.style.display = "block";
+    friendRequestModalHeader.innerText = "You have the following requests";
+    
+    const res = await fetch('/users/relationships');
+    const resJson = await res.json();
+    const {relationships1, relationships2, count } = resJson;
+    relationships1.forEach(relationships => {
+      let p = `<p>${count} </p>`
+      //listOfRequests
+    });
+
+    timesClicked = 0;
+  });
   // addListBtn.onclick = function () {
   //   modal.style.display = "block";
   //   popupAddListBtn.innerText = "Add List";
@@ -800,11 +842,20 @@ window.addEventListener("DOMContentLoaded", async (event) => {
   // When the user clicks on <span> (x), close the modal
   span.onclick = function () {
     modal.style.display = "none";
+    friendModal.style.display = "none";
   };
 
   modalCancel.onclick = function (event) {
     event.preventDefault();
     modal.style.display = "none";
+  };
+  friendModalCancel.onclick = function (event) {
+    event.preventDefault();
+    friendModal.style.display = "none";
+  };
+  friendRequestModalCancel.onclick = function (event) {
+    event.preventDefault();
+    friendRequestModal.style.display = "none";
   };
 
   const searchButton = document.getElementById("searchButton");
@@ -870,11 +921,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const { task } = await res.json();
       currentTask = task;
       currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="no-color-tag-class remove-tag" style="background-color:${
-          tagColors[tag.id % 17]
-        };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
-          tag.id
-        }">  x</span></span>`;
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 17]
+          };">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id
+          }">  x</span></span>`;
       });
       tagsList.innerHTML = html;
       const xTagButtons = document.querySelectorAll(".x-button");
@@ -905,11 +954,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const { task } = await res.json();
       currentTask = task;
       currentTask.TasksWithTags.forEach((tag) => {
-        html += `<span class="no-color-tag-class remove-tag" style="background-color:${
-          tagColors[tag.id % 17]
-        };">${tag.name}<span class="x-button" id="${currentTask.id}tt${
-          tag.id
-        }">  x</span></span>`;
+        html += `<span class="no-color-tag-class remove-tag" style="background-color:${tagColors[tag.id % 17]
+          };">${tag.name}<span class="x-button" id="${currentTask.id}tt${tag.id
+          }">  x</span></span>`;
       });
       tagsList.innerHTML = html;
       const xTagButtons = document.querySelectorAll(".x-button");
@@ -920,7 +967,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       });
       tagSelector.value = "";
       populateTasks(globalLink, globalObject);
-    } catch (e) {}
+    } catch (e) { }
   });
   sideDueInput.addEventListener("change", async (event) => {
     const newDueDate = new Date(sideDueInput.value);
@@ -936,7 +983,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       const taskDueDate = new Date(task.due);
       const newDate = new Date(
         taskDueDate.getTime() +
-          Math.abs(taskDueDate.getTimezoneOffset() * 60000)
+        Math.abs(taskDueDate.getTimezoneOffset() * 60000)
       ).toDateString();
       let dateHtml = newDate;
       taskDueDateSpan.innerHTML = dateHtml;
@@ -1203,7 +1250,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       detailPanel.classList.add("panel-hidden");
       detailPanel.classList.remove("panel-shown");
       populateTasks(globalLink, globalObject);
-    } catch (e) {}
+    } catch (e) { }
   });
   function closeWindow() {
     document
@@ -1279,4 +1326,13 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     detailPanel.classList.remove("panel-shown");
     populateTasks(globalLink, globalObject);
   }
+
+  async function showNotification() {
+    const res = await fetch('/users/relationships');
+    const resJson = await res.json();
+    const {relationships1, relationships2, count } = resJson;
+    console.log(relationships1, relationships2, count );
+  };
+  showNotification();
+
 });

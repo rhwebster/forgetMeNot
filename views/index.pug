@@ -41,6 +41,12 @@ block content
               a(class='timed-list') This Week
             div(class="inbox-link left-link" id='next-week')
               a(class='timed-list') Next Week
+          div(class='tags nav-ele' id='friends')
+            div(class="tags-header")
+              span(id="tag-span") People
+              span 
+                button(id='addFriendBtn' class="tag-button") +
+            div(id='list-of-friendss-div' class='list-of-tags-class')              
           //- div(class="wrap-collabsible nav-ele")
           //-   div(class="tags-header")
           //-     input(id="collapsible" class="toggle" type="checkbox" checked) 
@@ -69,6 +75,16 @@ block content
               div(class="modal-content")
                 span(class="close fa" id="modal-x") &#xf00d
                 include add-tag-or-list-pop-up.pug
+            div(id="friendModal" class="modal")
+              //- Modal content
+              div(class="modal-content")
+                span(class="close fa" id="friend-modal-x") &#xf00d
+                include add-a-friend.pug
+            div(id="friendRequestModal" class="modal")
+              //- Modal content
+              div(class="modal-content")
+                span(class="close fa" id="friend-request-modal-x") &#xf00d
+                include friend-requests.pug
           div(id='side-panel' class='side-panel')
             div(id="current-list-header") Placeholder
             div(id="num-tasks-container")

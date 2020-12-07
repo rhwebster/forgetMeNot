@@ -212,17 +212,18 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
           if (task.due) {
             const date = new Date(task.due);
+            const newDate = new Date(
+              date.getTime() + Math.abs(date.getTimezoneOffset() * 60000)
+            );
             const today = new Date();
-            today.setHours(0, 0, 0);
-            date.setHours(0, 0, 1);
             const todayMonth = today.getMonth();
             const todayDate = today.getDate();
             const todayYear = today.getYear();
-            const month = date.getMonth();
+            const month = newDate.getMonth();
             const monthText = months[month];
-            const day = date.getDate();
-            const year = date.getYear();
-            if (date < today) {
+            const day = newDate.getDate();
+            const year = newDate.getYear();
+            if (newDate < today) {
               numOverdue++;
               html += `<span class="li-${task.id} overdue date-text">${monthText} ${day}</span>`;
             } else if (
@@ -380,7 +381,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
           currentTask = task;
           taskNameInput.value = task.name;
           if (task.due) {
-            let dateHtml = new Date(task.due).toDateString();
+            const date = new Date(task.due);
+            const newDate = new Date(
+              date.getTime() + Math.abs(date.getTimezoneOffset() * 60000)
+            ).toDateString();
+            let dateHtml = newDate;
             taskDueDateSpan.innerHTML = dateHtml;
           }
 
@@ -926,6 +931,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         body: JSON.stringify({ due: newDueDate }),
       });
       let { task } = await res.json();
+      taskDueDateSpan.innerHTML = task.due;
       populateTasks(globalLink, globalObject);
       const taskDueDate = new Date(task.due);
       const newDate = new Date(

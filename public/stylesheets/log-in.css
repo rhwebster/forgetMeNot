@@ -19,9 +19,8 @@ h1 {
   color: #525252;
   padding: 20px;
 }
-.form-group{
- color: #525252;
- 
+.form-group {
+  color: #525252;
 }
 .box {
   background: white;
@@ -71,6 +70,14 @@ button {
   margin-left: 16px;
   font-weight: 800;
   font-size: 0.8em;
+}
+
+.demo {
+  background: rgb(46, 140, 235) !important;
+}
+
+.demo:hover {
+  background-color: rgb(26, 120, 215) !important;
 }
 
 .btn:hover {

@@ -828,45 +828,48 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     detailPanel.classList.add("panel-hidden");
     detailPanel.classList.remove("panel-shown");
     friendRequestModal.style.display = "block";
-    friendRequestModalHeader.innerText = "You have the following requests from:";
 
     const res = await fetch('/users/relationships');
     const resJson = await res.json();
     const { awaitingContacts } = resJson;
+    if (awaitingContacts.length) {
+      friendRequestModalHeader.innerText = "You have the following friend requests from:";
+    } else {
+      friendRequestModalHeader.innerText = "You have no pending friend requests.";
+    }
     listOfRequests.innerHTML = "";
     awaitingContacts.forEach(contact => {
       let p = document.createElement('p');
-      p.innerHTML = `<p>${contact.firstName} ${contact.lastName}  
-        <button id="accept-request-${contact.id}">Accept</button>
-        <button id="deny-request-${contact.id}">Deny</button>
-        <button id="block-request-${contact.id}">Block</button>
+      p.innerHTML = `<p>${contact.firstName} ${contact.lastName}, ${contact.email} 
+        <button type='submit' id="accept-request-${contact.id}">Accept</button>
+        <button type='submit' id="deny-request-${contact.id}">Deny</button>
+        <button type='submit' id="block-request-${contact.id}">Block</button>
       </p>` //
       listOfRequests.appendChild(p);
-      
-      const acceptBtn = document.getElementById(`accept-request-${contact.id}`);
-      async function postRelationship(action){
-        try{
+
+      async function postRelationship(action) {
+        try {
           const res = await fetch("/users/relationships", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({friendId: contact.id, action}),            
+            body: JSON.stringify({ friendId: contact.id, action }),
           });
           const resJson = await res.json();
           console.log(resJson);
-        } catch (e){
-
+        } catch (e) {
+          
         }
       }
+      const acceptBtn = document.getElementById(`accept-request-${contact.id}`);
       acceptBtn.addEventListener('click', async event => {
         postRelationship("accept");
       });
       const denyBtn = document.getElementById(`deny-request-${contact.id}`);
-      denyBtn.removeEventListener('click', async event => {
+      denyBtn.addEventListener('click', async event => {
         postRelationship("deny");
       });
-
       const blockBtn = document.getElementById(`block-request-${contact.id}`);
-      blockBtn.removeEventListener('click', async event => {
+      blockBtn.addEventListener('click', async event => {
         postRelationship("block");
       });
     });
@@ -1371,15 +1374,19 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     const res = await fetch('/users/relationships');
     const resJson = await res.json();
     const { awaitingContacts, awaitingRelationships } = resJson;
-    if(awaitingContacts && awaitingContacts.length)
+    if (awaitingContacts && awaitingContacts.length) {
       awaitingCN.innerText = awaitingContacts.length;
+      awaitingCN.classList.add('badge');
+    } else {
+      awaitingCN.classList.remove('badge');
+    }
     console.log("awaitingContacts", awaitingContacts);
     console.log("awaitingRelationships", awaitingRelationships);
   };
   showNotification();
   populateContacts();
 
-  async function populateContacts(contactPostObject = {}){
+  async function populateContacts(contactPostObject = {}) {
     try {
       const res = await fetch("/users/relationships", contactPostObject);
       const resJson = await res.json();

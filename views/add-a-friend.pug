@@ -5,7 +5,7 @@ form(id="friend-modal-form")
   if locals.authenticated
     h1(id="friend-modal-header")
     input(type='hidden' name='_csrf' value=csrfToken)
-    p(id='p-add-errors' style="color:red;")
+    p(id='p-add-errors-contacts' style="color:red;")
     +field("Email", 'inputEmail', '', 'email')
     //- mixin field(labelText, fieldName, fieldValue, fieldType='text')
     div(class='py-4 modal-buttons')

@@ -284,6 +284,8 @@ router.post('/relationships',
       user1Id = user2Id;
       user2Id = temp;
     }
+    console.log('\n\naction', action);
+    
     const relationship = await db.Relationship.findOne({
       where: {
         user1Id,

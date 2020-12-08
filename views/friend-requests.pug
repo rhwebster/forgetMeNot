@@ -1,0 +1,12 @@
+include utils.pug
+//- +validationErrorSummary(errors)
+form(id="friend-request-modal-form")
+  //- (action="/tags", method="post")
+  if locals.authenticated
+    h4(id="friend-request-modal-header")
+    input(type='hidden' name='_csrf' value=csrfToken)
+    p(id='p-add-errors' style="color:red;")
+    p(id="list-of-friend-requests")
+    div(class='py-4 modal-buttons')
+      button(id="close-friend-request-modal-cancel") Close
+  else

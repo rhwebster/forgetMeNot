@@ -225,3 +225,30 @@
   visibility: hidden;
   opacity: 0;
 }
+/* .notification {
+  background-color: #555;
+  color: white;
+  text-decoration: none;
+  padding: 15px 26px;
+  position: relative;
+  display: inline-block;
+  border-radius: 2px;
+} */
+
+.notification:hover {
+  background-color: rgb(38, 120, 201);
+  transition-duration: 0.3s;
+}
+
+/* .notification  */
+
+.badge {
+  position: relative;
+  top: -10px;
+  right: 10px;
+  padding: 0px 5px;
+  border-radius: 50%;
+  background: red;
+  color: white;
+  font-size: small;
+}

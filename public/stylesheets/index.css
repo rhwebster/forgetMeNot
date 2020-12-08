@@ -1039,6 +1039,76 @@ body {
   border-radius: 2px;
 }
 
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 5; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(255, 255, 255, 0.6); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.friend-modal-content {
+  background-color: #fefefe;
+  margin-top: 25vh;
+  padding: 28px;
+  border: 1px solid rgb(220 220 220);
+  box-shadow: 0 7px 13px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  width: 400px;
+  margin-left: 35vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#friend-modal-form {
+  margin-top: -5px;
+  display: flex;
+  flex-direction: column;
+}
+
+#inputEmail {
+  align-self: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 30px;
+
+  border: 1px solid rgb(229, 229, 229);
+  border-radius: 2px;
+}
+
+#inputEmail:hover {
+  border: 1px solid rgb(190, 190, 190);
+}
+
+#inputEmail:focus {
+  outline: none;
+  border: 1px solid rgb(50, 149, 255);
+  border-radius: 2px;
+}
+/* The Modal (background) */
+.friend-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 5; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(255, 255, 255, 0.6); /* Black w/ opacity */
+}
+
 #due-date-input {
   color: rgb(100, 100, 100);
 }
@@ -1065,8 +1135,31 @@ body {
 #modal-form h1 {
   font-size: x-large;
 }
+
+#friend-request-modal-form h4 {
+  font-size: large;
+}
 /* The Close Button */
 #modal-x {
+  color: #aaaaaa;
+  /* float: right; */
+  font-size: 20px;
+  font-weight: normal;
+  align-self: flex-end;
+}
+
+#friend-modal-x:hover,
+#friend-modal-x:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#friend-modal-form h1 {
+  font-size: x-large;
+}
+/* The Close Button */
+#friend-modal-x {
   color: #aaaaaa;
   /* float: right; */
   font-size: 20px;

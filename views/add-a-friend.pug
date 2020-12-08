@@ -1,0 +1,14 @@
+include utils.pug
++validationErrorSummary(errors)
+form(id="friend-modal-form")
+  //- (action="/tags", method="post")
+  if locals.authenticated
+    h1(id="friend-modal-header")
+    input(type='hidden' name='_csrf' value=csrfToken)
+    p(id='p-add-errors' style="color:red;")
+    +field("Email", 'inputEmail', '', 'email')
+    //- mixin field(labelText, fieldName, fieldValue, fieldType='text')
+    div(class='py-4 modal-buttons')
+      button(type='submit' id="addFriend") Add
+      button(id="close-friend-modal-cancel") Cancel
+  else

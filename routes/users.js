@@ -194,7 +194,11 @@ router.post('/addfriend',
       // res.json({ userToAdd });
       let user1Id = userId;
       let user2Id = userToAdd.id;
-      checkAndSwapSoFirstIDSmallerThanSecondID(user1Id, user2Id);
+      if (user1Id > user2Id) {
+        let temp = user1Id;
+        user1Id = user2Id;
+        user2Id = temp;
+      }
       const requests = await db.Relationship.findOne({
         where: {
           user1Id,
@@ -226,17 +230,17 @@ router.get('/relationships',
     const relationships1 = await db.Relationship.findAll({
       where: {
         user1Id: userId,
-        lastActionUserId: {
-          [Op.ne]: userId
-        }
+        // lastActionUserId: {
+        //   [Op.ne]: userId
+        // }
       }
     });
     const relationships2 = await db.Relationship.findAll({
       where: {
         user2Id: userId,
-        lastActionUserId: {
-          [Op.ne]: userId
-        }
+        // lastActionUserId: {
+        //   [Op.ne]: userId
+        // }
       }
     });
     const allRelationships = [...relationships1, ...relationships2];
@@ -254,7 +258,7 @@ router.get('/relationships',
     }
 
     const awaitingRelationships = allRelationships.filter(relationship => {
-      return relationship.status === 0;
+      return (relationship.status === 0 && relationship.lastActionUserId !== userId);
     });
     const awaitingContacts = [];
     for (let i = 0; i < awaitingRelationships.length; i++) {
@@ -275,7 +279,11 @@ router.post('/relationships',
     const { friendId, action } = req.body;
     let user1Id = userId;
     let user2Id = friendId;
-    checkAndSwapSoFirstIDSmallerThanSecondID(user1Id, user2Id);
+    if (user1Id > user2Id) {
+      let temp = user1Id;
+      user1Id = user2Id;
+      user2Id = temp;
+    }
     const relationship = await db.Relationship.findOne({
       where: {
         user1Id,
@@ -307,11 +315,4 @@ router.post('/relationships',
   })
 );
 
-function checkAndSwapSoFirstIDSmallerThanSecondID(id1, id2) {
-  if (id1 > id2) {
-    let temp = id2;
-    id1 = id2;
-    id2 = temp;
-  }
-}
 module.exports = router;

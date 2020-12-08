@@ -831,7 +831,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     awaitingContacts.forEach(contact => {
       let p = document.createElement('p');
       p.innerHTML = `<p>${contact.firstName} ${contact.lastName}  
-        <button type="submit" id="accept-request-${contact.id}">Accept</button>
+        <button id="accept-request-${contact.id}">Accept</button>
         <button id="deny-request-${contact.id}">Deny</button>
         <button id="block-request-${contact.id}">Block</button>
       </p>` //

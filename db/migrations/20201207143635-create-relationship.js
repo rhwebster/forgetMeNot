@@ -38,10 +38,10 @@ module.exports = {
           }
         },
         user1Role: {
-          type: Sequelize.STRING(50)
+          type: Sequelize.ARRAY(Sequelize.INTEGER)
         },
         user2Role: {
-          type: Sequelize.STRING(50)
+          type: Sequelize.ARRAY(Sequelize.INTEGER)
         },
         createdAt: {
           allowNull: false,

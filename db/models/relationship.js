@@ -37,10 +37,10 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       user1Role: {
-        type: DataTypes.STRING(50)
+        type: DataTypes.ARRAY(DataTypes.INTEGER)
       },
       user2Role: {
-        type: DataTypes.STRING(50)
+        type: DataTypes.ARRAY(DataTypes.INTEGER)
       },
       createdAt: {
         allowNull: false,

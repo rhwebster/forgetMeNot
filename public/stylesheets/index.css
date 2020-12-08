@@ -1129,6 +1129,10 @@ body {
 #modal-form h1 {
   font-size: x-large;
 }
+
+#friend-request-modal-form h4 {
+  font-size: large;
+}
 /* The Close Button */
 #modal-x {
   color: #aaaaaa;

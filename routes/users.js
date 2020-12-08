@@ -194,12 +194,17 @@ router.post('/addfriend',
       // res.json({ userToAdd });
       let user1Id = userId;
       let user2Id = userToAdd.id;
-      if (user1Id > user2Id) {
-        let temp = user1Id;
-        user1Id = user2Id;
-        user2Id = temp;
+      checkAndSwapSoFirstIDSmallerThanSecondID(user1Id, user2Id);
+      const requests = await db.Relationship.findOne({
+        where: {
+          user1Id,
+          user2Id,
+        }
+      });
+      if (requests) {
+        return res.status(400).json({ error: "Relationship already exists" });
       }
-      // res.json({user1Id, user2Id});
+
       const request = await db.Relationship.create({
         user1Id,
         user2Id,
@@ -214,14 +219,13 @@ router.post('/addfriend',
   })
 );
 
-router.get('/relationships', 
+router.get('/relationships',
   requireAuth,
   asyncHandler(async (req, res) => {
     const { userId } = req.session.auth;
     const relationships1 = await db.Relationship.findAll({
       where: {
         user1Id: userId,
-        status: 0,
         lastActionUserId: {
           [Op.ne]: userId
         }
@@ -229,16 +233,85 @@ router.get('/relationships',
     });
     const relationships2 = await db.Relationship.findAll({
       where: {
-        user1Id: userId,
-        status: 0,
+        user2Id: userId,
         lastActionUserId: {
           [Op.ne]: userId
         }
       }
     });
-    const count = relationships1.length + relationships2.length;
-    res.json({relationships1, relationships2, count})
+    const allRelationships = [...relationships1, ...relationships2];
+    const addedRelationships = allRelationships.filter(relationship => {
+      return relationship.status === 1;
+    });
+
+    const addedContacts = [];
+    for (let i = 0; i < addedRelationships.length; i++) {
+      let rel = addedRelationships[i];
+      let idToFind = rel.user1Id;
+      if (idToFind === userId) idToFind = rel.user2Id;
+      const contact = await db.User.findByPk(idToFind);
+      addedContacts.push(contact);
+    }
+
+    const awaitingRelationships = allRelationships.filter(relationship => {
+      return relationship.status === 0;
+    });
+    const awaitingContacts = [];
+    for (let i = 0; i < awaitingRelationships.length; i++) {
+      let rel = awaitingRelationships[i];
+      let idToFind = rel.user1Id;
+      if (idToFind === userId) idToFind = rel.user2Id;
+      const contact = await db.User.findByPk(idToFind);
+      awaitingContacts.push(contact);
+    }
+    res.json({ addedContacts, awaitingContacts, addedRelationships, awaitingRelationships });
   })
 );
 
+router.post('/relationships',
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const { userId } = req.session.auth;
+    const { friendId, action } = req.body;
+    let user1Id = userId;
+    let user2Id = friendId;
+    checkAndSwapSoFirstIDSmallerThanSecondID(user1Id, user2Id);
+    const relationship = await db.Relationship.findOne({
+      where: {
+        user1Id,
+        user2Id,
+        status: 0,
+        lastActionUserId: friendId
+      }
+    });
+    if (relationship) {
+      if (action === "accept" || action === "block") {
+        let status = 1;
+        let requestStatus = "added";
+        if (action === "block") {
+          status = 3;
+          requestStatus = "blocked"
+        }
+        await relationship.update({
+          status,
+          lastActionUserId: userId
+        });
+        res.json({ requestStatus });
+      } else if (action === "deny") {
+        await relationship.destroy();
+        res.json({ requestStatus: "denied" });
+      }
+    } else {
+      res.status(400).json({ error: "something wrong" });
+    }
+  })
+);
+
+function checkAndSwapSoFirstIDSmallerThanSecondID(id1, id2) {
+  if (id1 > id2) {
+    let temp = id2;
+    id1 = id2;
+    id2 = temp;
+  }
+}
 module.exports = router;

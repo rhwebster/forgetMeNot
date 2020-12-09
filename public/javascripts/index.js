@@ -862,15 +862,21 @@ window.addEventListener("DOMContentLoaded", async (event) => {
       }
       const acceptBtn = document.getElementById(`accept-request-${contact.id}`);
       acceptBtn.addEventListener('click', async event => {
+        event.preventDefault();
         postRelationship("accept");
+        friendRequestModal.style.display = "none";
       });
       const denyBtn = document.getElementById(`deny-request-${contact.id}`);
       denyBtn.addEventListener('click', async event => {
+        event.preventDefault();
         postRelationship("deny");
+        friendRequestModal.style.display = "none";
       });
       const blockBtn = document.getElementById(`block-request-${contact.id}`);
       blockBtn.addEventListener('click', async event => {
+        event.preventDefault();
         postRelationship("block");
+        friendRequestModal.style.display = "none";
       });
     });
 

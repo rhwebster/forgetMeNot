@@ -39,4 +39,8 @@ router.get('/images/logo', asyncHandler(async (req, res, next) => {
   // res.sendFile(path.join(__dirname, '../images/fmnlogo2.png')); //the forgetmenot flower logo
 }));
 
+router.get('/images/rtm', asyncHandler(async (req, res, next) => {
+  res.sendFile(path.join(__dirname, '../images/rtm_screenshot.png'));
+}));
+
 module.exports = router;

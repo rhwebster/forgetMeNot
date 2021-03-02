@@ -7,11 +7,17 @@ body {
   margin: 20px 0px 20px 0px;
 }
 
+#main-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
 p {
-  padding-top: 8px;
+  /* padding-top: 8px; */
   font-size: 12px;
   text-decoration: none;
-  color: #72abd1;
+  color: #2980b9;
 }
 
 h1 {
@@ -19,9 +25,24 @@ h1 {
   color: #525252;
   padding: 20px;
 }
+
+h3 {
+  font-size: 18px;
+  text-decoration: none;
+  color: #2980b9;
+}
+
 .form-group {
   color: #525252;
 }
+
+.splash {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 75px;
+}
+
 .box {
   background: white;
   width: 300px;

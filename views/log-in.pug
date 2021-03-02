@@ -5,15 +5,22 @@ append head
 include utils.pug
 
 block content
-  +validationErrorSummary(errors)
-  div(class='box')
-    h1 Log In
-    form(action='/users/login' method='post')
-      input(type='hidden' name='_csrf' value=csrfToken)
-      +field('Email Address', 'email', email, 'email')
-      +field('Password', 'password', null, 'password')
-      div(class='py-4 two-buttons')
-        button(type='submit' class='btn btn-primary') Login
-        button(type="" class="btn btn-primary demo") Demo
-    div
-      p: a(href='/users/signup') Don't have an account?  
+  div(id='main-body')
+    div(class='splash')
+      h1 Welcome To ForgetMeNot
+      h3 A Clone Of The Task Reminder App:
+      p: a(href='https://www.rememberthemilk.com/') Remember the Milk
+      div(id='rtm-screenshot')
+        img(src='/images/rtm' style='width:400px;height:200px;')
+    +validationErrorSummary(errors)
+    div(class='box')
+      h1 Log In
+      form(action='/users/login' method='post')
+        input(type='hidden' name='_csrf' value=csrfToken)
+        +field('Email Address', 'email', email, 'email')
+        +field('Password', 'password', null, 'password')
+        div(class='py-4 two-buttons')
+          button(type='submit' class='btn btn-primary') Login
+          button(type="" class="btn btn-primary demo") Demo
+      div
+        p: a(href='/users/signup') Don't have an account?  

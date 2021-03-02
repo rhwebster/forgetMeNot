@@ -236,7 +236,7 @@
 } */
 
 .notification:hover {
-  background-color: rgb(38, 120, 201);
+  background-color: rgba(38, 120, 201, 0.1);
   transition-duration: 0.3s;
 }
 

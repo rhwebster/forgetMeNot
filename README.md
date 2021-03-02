@@ -74,7 +74,7 @@
    <summary>Screenshots: Login and Homepage</summary>
    <div style="display: flex">
       <img src="/images/screenshotlogin.png" width="31%" height="30%" style="margin: 5px"/>
-      <img src="/images/screenshotlogin.png" width="31%" height="30%"  style="margin: 5px"/>
+      <img src="/images/screenshothome.png" width="31%" height="30%"  style="margin: 5px"/>
    <div>
 </details>
 

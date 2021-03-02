@@ -8,11 +8,11 @@
 [![LinkedIn][linkedin-shield]][linkedin-url]
 <!--ReactSkipperStart -->
 
-<h1>Forget Me Not </h1>
+<h1>Forget Me Not(es) </h1>
 <br />
 <p align="center"  style='margin-top: -40px; margin-bottom: -10px;'>
   <a href="https://github.com/rhwebster/forgetMeNot">
-    <img src="./images/fmnlogo1.png" alt="Logo" width="160" height="60" style="object-fit: contain">
+    <img src="./images/fmnlogo1.png" alt="Logo" width="160" height="160" style="object-fit: contain">
   </a>
 
   <p align="center">
